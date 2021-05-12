@@ -12,6 +12,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // if the user is logged in go to the tab bar, else, go to the welcome screen
         if AuthManager.shared.isSignedIn {
+            /// as soon as the app launches it will refresh the token if needed
+            AuthManager.shared.refreshIfNeeded(completion: nil)
+            
             window.rootViewController = TabBarController()
         } else {
             let navVC = UINavigationController(rootViewController: WelcomeController())

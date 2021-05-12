@@ -143,8 +143,13 @@ final class AuthManager {
         }
     }
     
-    // make an api call to reqeust a refresh token
-    public func refreshIfNeeded(completion: @escaping (Bool) -> Void) {
+    /**
+     * make an api call to reqeust a refresh token
+     * the completion handler is optional cause when we check for the isSignedIn variable
+       inside the AppDelegate, if the user is signed in we wanna refresh the token
+       without needing the completion handler there
+     */
+    public func refreshIfNeeded(completion: ((Bool) -> Void)?) {
         // if we not refreshing the token, proceed to the rest of the function's body
         guard !refreshingToken else {
             return
@@ -153,7 +158,7 @@ final class AuthManager {
         // if this varibale's true, proceed, if it's not, then get out of the function
         guard shouldRefreshToken else {
             // this means we shouldn't refresh the token cause it's still valide
-            completion(true)
+            completion?(true)
             return
         }
         
@@ -193,7 +198,7 @@ final class AuthManager {
         // 3- make a base64String from the data above
         guard let base64String = data?.base64EncodedString() else {
             print("Failure to get base64")
-            completion(false)
+            completion?(false)
             return
         }
         // set the header value for this Authorization field
@@ -205,7 +210,7 @@ final class AuthManager {
             self?.refreshingToken = false
             
             guard let data = data, error == nil else {
-                completion(false)
+                completion?(false)
                 return
             }
             
@@ -227,10 +232,10 @@ final class AuthManager {
                 self?.onRefreshBlocks.removeAll()
                 
                 self?.cacheToken(result: result)
-                completion(true)
+                completion?(true)
             } catch {
                 print(error.localizedDescription)
-                completion(false)
+                completion?(false)
             }
         }
         task.resume()
