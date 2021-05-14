@@ -10,10 +10,10 @@ final class AuthManager {
     
     static let shared = AuthManager()
     
-    //
+    // to control the refresh token process
     private var refreshingToken = false
     
-    //
+    // for avoiding repeatdly refreshing the token
     private var onRefreshBlocks = [((String) -> Void)]()
     
     /// this is the url that the web view inside the auth manager will load for sign the user in

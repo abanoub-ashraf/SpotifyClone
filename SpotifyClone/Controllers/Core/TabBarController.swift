@@ -26,6 +26,11 @@ class TabBarController: UITabBarController {
         let nav2 = UINavigationController(rootViewController: vc2)
         let nav3 = UINavigationController(rootViewController: vc3)
         
+        /// the tint color for each navigation controller
+        nav1.navigationBar.tintColor = .label
+        nav2.navigationBar.tintColor = .label
+        nav3.navigationBar.tintColor = .label
+        
         /// the title and the image for bottom of the tab bar controller
         nav1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
         nav2.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
