@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 struct Constants {
     
@@ -17,10 +18,26 @@ struct Constants {
     /// API BaseURL
     static let baseAPIURL = "https://api.spotify.com/v1"
     
+    // MARK: - EndPoints -
+    
+    struct EndPoints {
+        
+        static let getCurrentUser       = "\(Constants.baseAPIURL)/me"
+        static let getNewReleases       = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
+        static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
+        static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
+        static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
+        
+    }
+    
     // MARK: - CollectionViewCells -
     
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
+    
+    // MARK: - Colors -
+    
+    static let mainColor = UIColor(named: "mainColor")
 
 }

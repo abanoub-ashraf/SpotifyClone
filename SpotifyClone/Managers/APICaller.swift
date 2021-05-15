@@ -15,7 +15,7 @@ final class APICaller {
     // get the current user api call
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfileModel, Error>) -> Void) {
         createRequest(
-            with: URL(string: Constants.baseAPIURL + "/me"),
+            with: URL(string: Constants.EndPoints.getCurrentUser),
             type: .GET
         ) { baseRequest in
             let task = URLSession.shared.dataTask(with: baseRequest) { data, _, error in
@@ -39,7 +39,7 @@ final class APICaller {
     // get a list of new album releases featured in spotify
     public func getNewReleases(completion: @escaping (Result<NewReleasesResponse, Error>) -> Void) {
         createRequest(
-            with: URL(string: Constants.baseAPIURL + "/browse/new-releases?limit=50"),
+            with: URL(string: Constants.EndPoints.getNewReleases),
             type: .GET
         ) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
@@ -62,7 +62,7 @@ final class APICaller {
     // get a list of spotify featuredplaylists
     public func getFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
         createRequest(
-            with: URL(string: Constants.baseAPIURL + "/browse/featured-playlists?limit=50"),
+            with: URL(string: Constants.EndPoints.getFeaturedPlaylists),
             type: .GET
         ) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
@@ -85,7 +85,7 @@ final class APICaller {
     // get a list of the recommended genres
     public func getRecommendedGenres(completion: @escaping (Result<RecommendedGenresResponse, Error>) -> Void) {
         createRequest(
-            with: URL(string: Constants.baseAPIURL + "/recommendations/available-genre-seeds"),
+            with: URL(string: Constants.EndPoints.getRecommendedGenres),
             type: .GET
         ) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
@@ -113,7 +113,7 @@ final class APICaller {
         let seeds = genres.joined(separator: ",")
         
         createRequest(
-            with: URL(string: Constants.baseAPIURL + "/recommendations?limit=40&seed_genres=\(seeds)"),
+            with: URL(string: Constants.EndPoints.getRecommendations + "&seed_genres=\(seeds)"),
             type: .GET
         ) { request in
             
