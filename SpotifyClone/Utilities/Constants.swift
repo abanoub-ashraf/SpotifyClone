@@ -16,5 +16,11 @@ struct Constants {
     
     /// API BaseURL
     static let baseAPIURL = "https://api.spotify.com/v1"
+    
+    // MARK: - CollectionViewCells -
+    
+    static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
+    static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
+    static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
 
 }
