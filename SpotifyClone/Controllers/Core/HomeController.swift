@@ -1,17 +1,24 @@
 import UIKit
 
+// each case gonna be an array of elements for each section in the collection view
 enum BrowseSectionType {
-    case newReleases
-    case featuredPlaylists
-    case recommendedTracks
+    case newReleases(viewModels: [NewReleasesCellViewModel])
+    case featuredPlaylists(viewModels: [FeaturedPlaylistsCellViewModel])
+    case recommendedTracks(viewModels: [RecommendedTracksCellViewModel])
 }
 
 class HomeController: UIViewController {
+    
+    // MARK: - Variables -
+    
+    // array of sections for the collection view sections
+    private var sections = [BrowseSectionType]()
     
     // MARK: - UI -
     
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
+        // setup the collection view compositional layout
         collectionViewLayout: UICollectionViewCompositionalLayout { sectionIndex, _ -> NSCollectionLayoutSection? in
             return HomeController.createSectionsLayout(section: sectionIndex)
     })
@@ -56,14 +63,76 @@ class HomeController: UIViewController {
     private func configureCollectionView() {
         view.addSubview(collectionView)
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        /// each section in the collection view is gonna use its own different cell
+        collectionView.register(
+            NewReleasesCollectionViewCell.self,
+            forCellWithReuseIdentifier: NewReleasesCollectionViewCell.identifier
+        )
+        
+        collectionView.register(
+            FeaturedPlaylistsCollectionViewCell.self,
+            forCellWithReuseIdentifier: FeaturedPlaylistsCollectionViewCell.identifier
+        )
+        
+        collectionView.register(
+            RecommendedTracksCollectionViewCell.self,
+            forCellWithReuseIdentifier: RecommendedTracksCollectionViewCell.identifier
+        )
+        
         collectionView.dataSource = self
         collectionView.delegate = self
+        
         collectionView.backgroundColor = .systemBackground
     }
     
-    // fetch New Releases, Featured Playlists, Recommended Tracks
+    // fetch the New Releases, Featured Playlists, Recommended Tracks data from their 3 api calls
     func fetchData() {
+        // enter the execution of the nubmer of the api calls we wanna execute
+        let group = DispatchGroup()
+        group.enter()
+        group.enter()
+        group.enter()
+                
+        // 3 models to get the response from each api call
+        var newReleases: NewReleasesResponse?
+        var featuredPlaylists: FeaturedPlaylistsResponse?
+        var recommendations: RecommendationsResponse?
+        
+        // get the New Releases from the api
+        APICaller.shared.getNewReleases { result in
+            /// defer let us set up some work to be performed when the current scope exits
+            defer {
+                // this is gonna get executed once getting the result is done
+                group.leave()
+            }
+            
+            switch result {
+                case .success(let model):
+                    newReleases = model
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    break
+            }
+        }
+        
+        // get the Featured Playlists from the api
+        APICaller.shared.getFeaturedPlaylists { result in
+            defer {
+                group.leave()
+            }
+            
+            switch result {
+                case .success(let model):
+                    featuredPlaylists = model
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    break
+            }
+        }
+        
+        // get the Recommended genres from the api so we can get the recommended tracks
         APICaller.shared.getRecommendedGenres { result in
             switch result {
                 case .success(let model):
@@ -76,16 +145,79 @@ class HomeController: UIViewController {
                         }
                     }
 
-                    APICaller.shared.getRecommendations(genres: seeds) { _ in
-
-                }
+                    // get the Recommended Tracks from the api
+                    // this needs 5 random genres from the api call above
+                    APICaller.shared.getRecommendations(genres: seeds) { recommendedResult in
+                        defer {
+                            group.leave()
+                        }
+                        
+                        switch recommendedResult {
+                            case .success(let model):
+                                recommendations = model
+                                break
+                            case .failure(let error):
+                                print(error.localizedDescription)
+                                break
+                        }
+                    }
                 case .failure(let error):
+                    print(error.localizedDescription)
                     break
             }
         }
+        
+        // once the 3 api calls are dont getting the data notify the main thread with that
+        group.notify(queue: .main) {
+            guard
+                // extract the data we wanna use from the responses models we got from the api
+                let newAlbums = newReleases?.albums.items,
+                let playlists = featuredPlaylists?.playlists.items,
+                let tracks = recommendations?.tracks
+            else {
+                return
+            }
+            
+            // pass the data we extracted to this function to convert them into 3 viewmodels
+            self.configureModels(newAlbums: newAlbums, playlists: playlists, tracks: tracks)
+        }
+    
     }
     
-    // create sections for the collection view
+    // convert the models params into viewmodels so we can append those viewmodels to the sections enums array
+    private func configureModels(newAlbums: [Album], playlists: [PlaylistModel], tracks: [AudioTrackModel]) {
+        // convert the newAlbums array into a viewmodel array then append it to the sections array
+        sections.append(.newReleases(viewModels: newAlbums.compactMap({
+            return NewReleasesCellViewModel(
+                name: $0.name,
+                artWorkURL: URL(string: $0.images.first?.url ?? ""),
+                numberOfTracks: $0.total_tracks,
+                artistName: $0.artists.first?.name ?? "-"
+            )
+        })))
+        
+        // convert the playlists array into a viewmodel array then append it to the sections array
+        sections.append(.featuredPlaylists(viewModels: playlists.compactMap({
+            return FeaturedPlaylistsCellViewModel(
+                name: $0.name,
+                artworkURL: URL(string: $0.images.first?.url ?? ""),
+                creatorName: $0.owner.display_name
+            )
+        })))
+        
+        // convert the tracks array into a viewmodel array then append it to the sections array
+        sections.append(.recommendedTracks(viewModels: tracks.compactMap({
+            return RecommendedTracksCellViewModel(
+                name: $0.name,
+                artistName: $0.artists.first?.name ?? "-",
+                artworkURL: URL(string: $0.album.images.first?.url ?? "")
+            )
+        })))
+        
+        collectionView.reloadData()
+    }
+    
+    // create the layouts for the collection view sections
     private static func createSectionsLayout(section: Int) -> NSCollectionLayoutSection {
         switch section {
             case 0:
@@ -228,26 +360,70 @@ class HomeController: UIViewController {
 
 extension HomeController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return sections.count
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // each section in this array is a viewmodel array
+        let type = sections[section]
+        
+        switch type {
+            // return the count of each array inside each section cause each section has different amount of data
+            case .newReleases(let viewModels):
+                return viewModels.count
+            case .featuredPlaylists(let viewModels):
+                return viewModels.count
+            case .recommendedTracks(let viewModels):
+                return viewModels.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        // each type is an enum element that contains array of viewmodels
+        let type = sections[indexPath.section]
         
-        if indexPath.section == 0 {
-            cell.backgroundColor = .systemGreen
-        } else if indexPath.section == 1 {
-            cell.backgroundColor = .systemPink
-        } else if indexPath.section == 2 {
-            cell.backgroundColor = .systemBlue
+        //
+        switch type {
+            // each case element has viewmodels array
+            case .newReleases(let viewModels):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: NewReleasesCollectionViewCell.identifier,
+                    for: indexPath
+                ) as? NewReleasesCollectionViewCell else {
+                    return UICollectionViewCell()
+                }
+                
+                // get every single viewmodel and configure the cell with it
+                let viewModel = viewModels[indexPath.row]
+                cell.configure(with: viewModel)
+                
+                return cell
+            case .featuredPlaylists(let viewModels):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: FeaturedPlaylistsCollectionViewCell.identifier,
+                    for: indexPath
+                ) as? FeaturedPlaylistsCollectionViewCell else {
+                    return UICollectionViewCell()
+                }
+                
+                let viewModel = viewModels[indexPath.row]
+                cell.configure(with: viewModel)
+                
+                return cell
+            case .recommendedTracks(let viewModels):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: RecommendedTracksCollectionViewCell.identifier,
+                    for: indexPath
+                ) as? RecommendedTracksCollectionViewCell else {
+                    return UICollectionViewCell()
+                }
+                
+                let viewModel = viewModels[indexPath.row]
+                cell.configure(with: viewModel)
+                
+                return cell
         }
-        
-        return cell
     }
     
 }

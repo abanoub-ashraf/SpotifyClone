@@ -59,6 +59,7 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
     // fill the ui with the user profile's data
     private func updateUI(with model: UserProfileModel) {
         tableView.isHidden = false
+        tableView.separatorStyle = .none
         
         models.append("Full Name: \(model.display_name)")
         models.append("Email Address: \(model.email)")
@@ -86,6 +87,8 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         imageView.sd_setImage(with: url, completed: nil)
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = imageSize / 2
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor.systemGray.cgColor
         
         tableView.tableHeaderView = headerView
     }

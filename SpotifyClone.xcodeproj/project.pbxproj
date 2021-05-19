@@ -13,6 +13,9 @@
 		2E75D05526504C6600F87444 /* NewReleasesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05426504C6600F87444 /* NewReleasesCollectionViewCell.swift */; };
 		2E75D05726504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05626504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift */; };
 		2E75D05926504DA800F87444 /* RecommendedTracksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05826504DA800F87444 /* RecommendedTracksCollectionViewCell.swift */; };
+		2E75D05B26505FCA00F87444 /* NewReleasesCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05A26505FCA00F87444 /* NewReleasesCellViewModel.swift */; };
+		2E75D05D26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05C26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift */; };
+		2E75D05F26518AD100F87444 /* RecommendedTracksCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05E26518AD100F87444 /* RecommendedTracksCellViewModel.swift */; };
 		2E7947A026444FB500C1201A /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E79479F26444FB500C1201A /* AuthResponse.swift */; };
 		2EA7E418264D53C0000C9ED2 /* NewReleasesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA7E417264D53C0000C9ED2 /* NewReleasesResponse.swift */; };
 		2EA7E41A264D90B2000C9ED2 /* APIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA7E419264D90B2000C9ED2 /* APIImage.swift */; };
@@ -53,6 +56,9 @@
 		2E75D05426504C6600F87444 /* NewReleasesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleasesCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E75D05626504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E75D05826504DA800F87444 /* RecommendedTracksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedTracksCollectionViewCell.swift; sourceTree = "<group>"; };
+		2E75D05A26505FCA00F87444 /* NewReleasesCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleasesCellViewModel.swift; sourceTree = "<group>"; };
+		2E75D05C26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsCellViewModel.swift; sourceTree = "<group>"; };
+		2E75D05E26518AD100F87444 /* RecommendedTracksCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedTracksCellViewModel.swift; sourceTree = "<group>"; };
 		2E79479F26444FB500C1201A /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
 		2EA7E417264D53C0000C9ED2 /* NewReleasesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleasesResponse.swift; sourceTree = "<group>"; };
 		2EA7E419264D90B2000C9ED2 /* APIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIImage.swift; sourceTree = "<group>"; };
@@ -139,6 +145,9 @@
 		2E6A565F26375352008BDE9A /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				2E75D05A26505FCA00F87444 /* NewReleasesCellViewModel.swift */,
+				2E75D05C26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift */,
+				2E75D05E26518AD100F87444 /* RecommendedTracksCellViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -389,6 +398,7 @@
 				2EFB55032637570300D9745F /* SettingsController.swift in Sources */,
 				2EA7E41A264D90B2000C9ED2 /* APIImage.swift in Sources */,
 				2EFB54F92637568100D9745F /* SearchController.swift in Sources */,
+				2E75D05D26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift in Sources */,
 				2EFB55072637573600D9745F /* PlayerController.swift in Sources */,
 				2EFB5501263756EA00D9745F /* WelcomeController.swift in Sources */,
 				2EFB550D263757AB00D9745F /* AuthManager.swift in Sources */,
@@ -397,8 +407,10 @@
 				2EBBD6FB26347BE500812376 /* SceneDelegate.swift in Sources */,
 				2EFB55172637583100D9745F /* ArtistModel.swift in Sources */,
 				2EFB55052637571D00D9745F /* ProfileController.swift in Sources */,
+				2E75D05F26518AD100F87444 /* RecommendedTracksCellViewModel.swift in Sources */,
 				2EFB550F263757C000D9745F /* APICaller.swift in Sources */,
 				2EA7E418264D53C0000C9ED2 /* NewReleasesResponse.swift in Sources */,
+				2E75D05B26505FCA00F87444 /* NewReleasesCellViewModel.swift in Sources */,
 				2EFB550B2637577500D9745F /* SearchResultsController.swift in Sources */,
 				2EFB55192637585900D9745F /* UserProfileModel.swift in Sources */,
 				2EF3D0AF264EF0AC0012EB32 /* RecommendedGenresResponse.swift in Sources */,
@@ -473,7 +485,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -528,7 +540,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -546,7 +558,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6JX84M9ZS;
 				INFOPLIST_FILE = SpotifyClone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,7 +578,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6JX84M9ZS;
 				INFOPLIST_FILE = SpotifyClone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

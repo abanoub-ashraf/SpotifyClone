@@ -39,5 +39,10 @@ struct Constants {
     // MARK: - Colors -
     
     static let mainColor = UIColor(named: "mainColor")
+    
+    // MARK: - Images -
+    
+    static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
+    static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
 
 }
