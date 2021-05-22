@@ -1,4 +1,3 @@
-import Foundation
 import UIKit
 
 /// use these new properties we made instead of using long things like (frame.size.width)

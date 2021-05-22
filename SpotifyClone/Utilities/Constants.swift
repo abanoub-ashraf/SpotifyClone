@@ -18,28 +18,36 @@ struct Constants {
     /// API BaseURL
     static let baseAPIURL = "https://api.spotify.com/v1"
     
-    // MARK: - EndPoints -
+    // MARK: - API EndPoints -
     
     struct EndPoints {
         
+        /// Users
         static let getCurrentUser       = "\(Constants.baseAPIURL)/me"
         
+        /// Browse
         static let getNewReleases       = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
         static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
         static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
         static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
         
+        /// Albums
         static let getAlbumDetails      = "\(Constants.baseAPIURL)/albums/"
         
+        /// Playlists
         static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
         
     }
     
     // MARK: - CollectionViewCells -
     
+    /// collection view sections
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
+    
+    /// collection view header
+    static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
     
     // MARK: - Colors -
     
@@ -47,7 +55,9 @@ struct Constants {
     
     // MARK: - Images -
     
+    /// placeholders
     static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
     static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
+    static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
 
 }

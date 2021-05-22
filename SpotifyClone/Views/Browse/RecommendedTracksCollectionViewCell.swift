@@ -10,7 +10,7 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
     
     private let albumCoverImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = Constants.newReleasesPlaceholderImage
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -62,10 +62,11 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
             height: contentView.height - 4
         )
         
-        albumCoverImageView.layer.masksToBounds = true
-        albumCoverImageView.layer.cornerRadius = albumCoverImageView.width / 2
-        albumCoverImageView.layer.borderWidth = 0.5
-        albumCoverImageView.layer.borderColor = UIColor.systemGray.cgColor
+        albumCoverImageView.setRoundedBorder(
+            radiusFloatPoints: albumCoverImageView.width / 2,
+            borderWidthPoints: 0.5,
+            borderColor: UIColor.systemGray.cgColor
+        )
         
         trackNameLabel.frame = CGRect(
             x: albumCoverImageView.right + 10,

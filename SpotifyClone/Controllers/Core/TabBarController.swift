@@ -7,6 +7,12 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureTabBar()
+    }
+    
+    // MARK: - Helper Functions -
+    
+    private func configureTabBar() {
         /// the controllers for this tab bar controller
         let vc1 = HomeController()
         let vc2 = SearchController()
