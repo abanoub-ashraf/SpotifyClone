@@ -43,7 +43,7 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
     
     // fetch the current logged in user profile
     private func fetchProfile() {
-        APICaller.shared.getCurrentUserProfile { [weak self] result in
+        NetworkManager.shared.getCurrentUserProfile { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                     case .success(let model):

@@ -14,6 +14,11 @@ class HomeController: UIViewController {
     // array of sections for the collection view sections
     private var sections = [BrowseSectionType]()
     
+    /// to use the models we get from the api calls
+    private var newAlbums: [Album] = []
+    private var playlists: [PlaylistModel] = []
+    private var tracks: [AudioTrackModel] = []
+    
     // MARK: - UI -
     
     private var collectionView: UICollectionView = UICollectionView(
@@ -99,7 +104,7 @@ class HomeController: UIViewController {
         var recommendations: RecommendationsResponse?
         
         // get the New Releases from the api
-        APICaller.shared.getNewReleases { result in
+        NetworkManager.shared.getNewReleases { result in
             /// defer let us set up some work to be performed when the current scope exits
             defer {
                 // this is gonna get executed once getting the result is done
@@ -117,7 +122,7 @@ class HomeController: UIViewController {
         }
         
         // get the Featured Playlists from the api
-        APICaller.shared.getFeaturedPlaylists { result in
+        NetworkManager.shared.getFeaturedPlaylists { result in
             defer {
                 group.leave()
             }
@@ -133,7 +138,7 @@ class HomeController: UIViewController {
         }
         
         // get the Recommended genres from the api so we can get the recommended tracks
-        APICaller.shared.getRecommendedGenres { result in
+        NetworkManager.shared.getRecommendedGenres { result in
             switch result {
                 case .success(let model):
                     let genres = model.genres
@@ -147,7 +152,7 @@ class HomeController: UIViewController {
 
                     // get the Recommended Tracks from the api
                     // this needs 5 random genres from the api call above
-                    APICaller.shared.getRecommendations(genres: seeds) { recommendedResult in
+                    NetworkManager.shared.getRecommendations(genres: seeds) { recommendedResult in
                         defer {
                             group.leave()
                         }
@@ -186,7 +191,13 @@ class HomeController: UIViewController {
     
     // convert the models params into viewmodels so we can append those viewmodels to the sections enums array
     private func configureModels(newAlbums: [Album], playlists: [PlaylistModel], tracks: [AudioTrackModel]) {
+        /// save the models we get from the api to use them to access their individual items
+        self.newAlbums = newAlbums
+        self.playlists = playlists
+        self.tracks = tracks
+        
         // convert the newAlbums array into a viewmodel array then append it to the sections array
+        /// news releases are the new albums that are released
         sections.append(.newReleases(viewModels: newAlbums.compactMap({
             return NewReleasesCellViewModel(
                 name: $0.name,
@@ -210,7 +221,7 @@ class HomeController: UIViewController {
             return RecommendedTracksCellViewModel(
                 name: $0.name,
                 artistName: $0.artists.first?.name ?? "-",
-                artworkURL: URL(string: $0.album.images.first?.url ?? "")
+                artworkURL: URL(string: $0.album?.images.first?.url ?? "")
             )
         })))
         
@@ -356,9 +367,9 @@ class HomeController: UIViewController {
 
 }
 
-// MARK: - CollectionView Functions -
+// MARK: - UICollectionViewDataSource -
 
-extension HomeController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension HomeController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count
@@ -423,6 +434,49 @@ extension HomeController: UICollectionViewDelegate, UICollectionViewDataSource {
                 cell.configure(with: viewModel)
                 
                 return cell
+        }
+    }
+    
+}
+
+// MARK: - UICollectionViewDataSource -
+
+extension HomeController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let section = sections[indexPath.section]
+        
+        switch section {
+            case .featuredPlaylists:
+                let playlist = playlists[indexPath.row]
+                
+                /**
+                 * i can pass the selected album to the album controller as computed property
+                   or use this current way of passing it to the initializer of the album controller
+                 */
+                let vc = PlaylistController(playlist: playlist)
+                vc.title = playlist.name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                
+                navigationController?.pushViewController(vc, animated: true)
+                break
+            case .newReleases:
+                let album = newAlbums[indexPath.row]
+                
+                /**
+                 * i can pass the selected album to the album controller as computed property
+                   or use this current way of passing it to the initializer of the album controller
+                 */
+                let vc = AlbumController(album: album)
+                vc.title = album.name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                
+                navigationController?.pushViewController(vc, animated: true)
+                break
+            case .recommendedTracks:
+                break
         }
     }
     

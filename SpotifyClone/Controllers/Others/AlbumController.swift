@@ -1,15 +1,15 @@
 import UIKit
 
-class PlaylistController: UIViewController {
+class AlbumController: UIViewController {
     
     // MARK: - Variables -
     
-    private let playlist: PlaylistModel
+    private let album: Album
     
     // MARK: - Init -
     
-    init(playlist: PlaylistModel) {
-        self.playlist = playlist
+    init(album: Album) {
+        self.album = album
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -22,10 +22,10 @@ class PlaylistController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = playlist.name
+        title = album.name
         view.backgroundColor = .systemBackground
         
-        NetworkManager.shared.getPlaylistDetails(for: playlist) { result in
+        NetworkManager.shared.getAlbumDetails(for: album) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let model):
@@ -39,4 +39,3 @@ class PlaylistController: UIViewController {
     }
 
 }
-

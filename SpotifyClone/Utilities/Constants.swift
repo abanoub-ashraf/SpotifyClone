@@ -23,10 +23,15 @@ struct Constants {
     struct EndPoints {
         
         static let getCurrentUser       = "\(Constants.baseAPIURL)/me"
+        
         static let getNewReleases       = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
         static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
         static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
         static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
+        
+        static let getAlbumDetails      = "\(Constants.baseAPIURL)/albums/"
+        
+        static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
         
     }
     

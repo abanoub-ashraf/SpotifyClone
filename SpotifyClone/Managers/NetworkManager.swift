@@ -1,18 +1,47 @@
 import Foundation
 
-final class APICaller {
+final class NetworkManager {
     
     // MARK: - Variables -
     
-    static let shared  = APICaller()
+    static let shared  = NetworkManager()
     
     // MARK: - Init -
     
     private init() {}
     
-    // MARK: - API Calls -
+    // MARK: - Enums -
     
-    // get the current user api call
+    enum HTTPMethod: String {
+        // String means each case will have a string value of its own name
+        case GET
+        case POST
+    }
+    
+    enum APIError: Error {
+        case failedToGetData
+    }
+    
+    // MARK: - Helper Functions -
+    
+    // a generic request that every api call will be building on top of it
+    // instead of repeating those lines inside of many times
+    private func createRequest(with url: URL?, type: HTTPMethod, completion: @escaping (URLRequest) -> Void) {
+        AuthManager.shared.withValidToken { token in
+            guard let apiURL = url else { return }
+            
+            var request = URLRequest(url: apiURL)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.httpMethod = type.rawValue
+            request.timeoutInterval = 30
+            
+            completion(request)
+        }
+    }
+    
+    // MARK: - Users -
+    
+    // get the current logged in user
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfileModel, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getCurrentUser),
@@ -35,6 +64,8 @@ final class APICaller {
             task.resume()
         }
     }
+    
+    // MARK: - Browse -
     
     // get a list of new album releases featured in spotify
     public func getNewReleases(completion: @escaping (Result<NewReleasesResponse, Error>) -> Void) {
@@ -59,7 +90,7 @@ final class APICaller {
         }
     }
     
-    // get a list of spotify featuredplaylists
+    // get a list of spotify featured playlists
     public func getFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getFeaturedPlaylists),
@@ -135,32 +166,60 @@ final class APICaller {
         }
     }
     
-    // MARK: - Enums -
+    // MARK: - Albums -
     
-    enum HTTPMethod: String {
-        // String means each case will have a string value of its own name
-        case GET
-        case POST
-    }
-    
-    enum APIError: Error {
-        case failedToGetData
-    }
-    
-    // MARK: - Helper Functions -
-    
-    // a generic request that every api call will be building on top of it
-    // instead of repeating those lines inside of many times
-    private func createRequest(with url: URL?, type: HTTPMethod, completion: @escaping (URLRequest) -> Void) {
-        AuthManager.shared.withValidToken { token in
-            guard let apiURL = url else { return }
-            
-            var request = URLRequest(url: apiURL)
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.httpMethod = type.rawValue
-            request.timeoutInterval = 30
-            
-            completion(request)
+    // get a single album of the new released albums
+    public func getAlbumDetails(
+        for album: Album,
+        completion: @escaping (Result<AlbumDetailsResponse, Error>) -> Void
+    ) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getAlbumDetails + album.id),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(AlbumDetailsResponse.self, from: data)
+                    completion(.success(results))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
         }
     }
+    
+    // MARK: - Playlists -
+    
+    // get a single playlist of the feature dplaylists
+    public func getPlaylistDetails(
+        for playlist: PlaylistModel,
+        completion: @escaping (Result<PlaylistDetailsResponse, Error>) -> Void
+    ) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getPlaylistDetails + playlist.id),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(PlaylistDetailsResponse.self, from: data)
+                    completion(.success(results))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
 }

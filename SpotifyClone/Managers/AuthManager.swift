@@ -102,10 +102,6 @@ final class AuthManager {
             }
             
             do {
-                // get the json form of the data to see how the response looks like
-                // let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                // print("SUCCESS: \(json)")
-                
                 // decode the json response and cache it using UserDefaults
                 let result = try JSONDecoder().decode(AuthResponse.self, from: data)
                 self?.cacheToken(result: result)
