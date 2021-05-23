@@ -41,11 +41,14 @@ struct Constants {
     
     // MARK: - CollectionViews -
     
-    /// collection view sections
+    /// sections cells
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
+    
+    /// sections headers
     static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
+    static let titleCollectionViewHeaderIdentifier           = "TitleHeader"
     
     // MARK: - Colors -
     

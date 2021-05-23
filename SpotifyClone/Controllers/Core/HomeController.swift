@@ -1,10 +1,23 @@
 import UIKit
 
-// each case gonna be an array of elements for each section in the collection view
+/// each case gonna be an array of elements for each section in the collection view
 enum BrowseSectionType {
+    /// each case will have that title variable we defined underneath the cases
     case newReleases(viewModels: [NewReleasesCellViewModel])
     case featuredPlaylists(viewModels: [FeaturedPlaylistsCellViewModel])
     case recommendedTracks(viewModels: [RecommendedTracksCellViewModel])
+    
+    /// use the value of this title to set the title of each section of the collection view
+    var title: String {
+        switch self {
+            case .newReleases:
+                return "New Released Albums"
+            case .featuredPlaylists:
+                return "Featured Playlists"
+            case .recommendedTracks:
+                return "Recommended Tracks"
+        }
+    }
 }
 
 class HomeController: UIViewController {
@@ -82,6 +95,13 @@ class HomeController: UIViewController {
         collectionView.register(
             RecommendedTracksCollectionViewCell.self,
             forCellWithReuseIdentifier: RecommendedTracksCollectionViewCell.identifier
+        )
+        
+        /// register the header of each section of the collection view
+        collectionView.register(
+            TitleHeader.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: TitleHeader.identifier
         )
         
         collectionView.dataSource = self
@@ -230,6 +250,18 @@ class HomeController: UIViewController {
     
     // create the layouts for the collection view sections
     private static func createSectionsLayout(section: Int) -> NSCollectionLayoutSection {
+        /// the layout of the header of each section in the collection view
+        let supplementaryHeaderView = [
+            NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(50)
+                ),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top
+            )
+        ]
+        
         switch section {
             case 0:
                 /// the section that will display the fetch New Releases
@@ -276,6 +308,9 @@ class HomeController: UIViewController {
                 // setting this and the group to be horizontal makes the collectionview a horizontal one
                 section.orthogonalScrollingBehavior = .groupPaging
                 
+                /// assign the header layout we created to each section
+                section.boundarySupplementaryItems = supplementaryHeaderView
+                
                 return section
             case 1:
                 /// the section that will display the Featured Playlists
@@ -309,6 +344,9 @@ class HomeController: UIViewController {
                 let section = NSCollectionLayoutSection(group: horizontalGroup)
                 section.orthogonalScrollingBehavior = .continuous
                 
+                /// assign the header layout we created to each section
+                section.boundarySupplementaryItems = supplementaryHeaderView
+                
                 return section
             case 2:
                 /// Recommended Tracks
@@ -331,6 +369,10 @@ class HomeController: UIViewController {
                 )
                 
                 let section = NSCollectionLayoutSection(group: group)
+                
+                /// assign the header layout we created to each section
+                section.boundarySupplementaryItems = supplementaryHeaderView
+                
                 return section
             default:
                 let item = NSCollectionLayoutItem(
@@ -352,6 +394,10 @@ class HomeController: UIViewController {
                 )
                 
                 let section = NSCollectionLayoutSection(group: group)
+                
+                /// assign the header layout we created to each section
+                section.boundarySupplementaryItems = supplementaryHeaderView
+                
                 return section
         }
     }
@@ -436,9 +482,29 @@ extension HomeController: UICollectionViewDataSource {
         }
     }
     
+    ///
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        guard
+            let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: TitleHeader.identifier,
+                for: indexPath
+            ) as? TitleHeader,
+            kind == UICollectionView.elementKindSectionHeader
+        else {
+            return UICollectionReusableView()
+        }
+        
+        /// grab the title of ecah case inside the enum array
+        header.configure(with: sections[indexPath.section].title)
+        
+        return header
+    }
+    
 }
 
-// MARK: - UICollectionViewDataSource -
+// MARK: - UICollectionViewDelegate -
 
 extension HomeController: UICollectionViewDelegate {
     
