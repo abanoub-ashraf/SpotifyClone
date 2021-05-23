@@ -40,10 +40,7 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(trackNameLabel)
         contentView.addSubview(artistNameLabel)
         
-        contentView.layer.cornerRadius = 10
-        contentView.layer.masksToBounds = true
-        contentView.layer.borderWidth = 0.5
-        contentView.layer.borderColor = UIColor.systemGray.cgColor
+        contentView.setRoundedColoredBorders()
     }
     
     required init?(coder: NSCoder) {
@@ -57,13 +54,13 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
         
         albumCoverImageView.frame = CGRect(
             x: 5,
-            y: 2,
-            width: contentView.height - 4,
-            height: contentView.height - 4
+            y: 4,
+            width: contentView.height - 8,
+            height: contentView.height - 8
         )
         
         albumCoverImageView.setRoundedBorder(
-            radiusFloatPoints: albumCoverImageView.width / 2,
+            radiusFloatPoints: nil,
             borderWidthPoints: 0.5,
             borderColor: UIColor.systemGray.cgColor
         )

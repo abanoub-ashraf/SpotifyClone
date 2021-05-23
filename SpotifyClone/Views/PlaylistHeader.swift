@@ -1,9 +1,17 @@
 import UIKit
 import SDWebImage
 
+/// notify the PlaylistController that this the button inside the PlaylistHeader is tapped
+protocol PlaylistHeaderDelegate: AnyObject {
+    /// the param is the view that is making the delegate call
+    func playlistHeaderDidTapPlayAll(_ header: PlaylistHeader)
+}
+
 final class PlaylistHeader: UICollectionReusableView {
     
     // MARK: - Variables -
+    
+    weak var delegate: PlaylistHeaderDelegate?
     
     static let identifier = Constants.playlistCollectionViewHeaderIdentifier
     
@@ -43,6 +51,24 @@ final class PlaylistHeader: UICollectionReusableView {
         return imageView
     }()
     
+    private let playAllButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = Constants.mainColor
+        let image = UIImage(
+            systemName: "play.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 30, weight: .regular)
+        )
+        button.alpha = 0
+        button.setImage(image, for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.layer.cornerRadius = 30
+        button.layer.masksToBounds = true
+        button.tintColor = .label
+        button.layer.borderWidth = 1.5
+        button.layer.borderColor = UIColor.systemGray.cgColor
+        return button
+    }()
+    
     // MARK: - Init -
     
     override init(frame: CGRect) {
@@ -54,6 +80,10 @@ final class PlaylistHeader: UICollectionReusableView {
         addSubview(descriptionLabel)
         addSubview(ownerLabel)
         addSubview(imageView)
+        addSubview(playAllButton)
+        
+        /// start playing all the list in queue, the protocol on top of this file is doing that
+        playAllButton.addTarget(self, action: #selector(didTapPlayAll), for: .touchUpInside)
         
         animateUI()
     }
@@ -103,6 +133,13 @@ final class PlaylistHeader: UICollectionReusableView {
             height: 44
         )
         
+        playAllButton.frame = CGRect(
+            x: width - 80,
+            y: height - 80,
+            width: 60,
+            height: 60
+        )
+        
     }
     
     // MARK: - Helper Functions -
@@ -124,7 +161,15 @@ final class PlaylistHeader: UICollectionReusableView {
             self.descriptionLabel.alpha = 1
             self.ownerLabel.alpha = 1
             self.imageView.alpha = 1
+            self.playAllButton.alpha = 1
         }
+    }
+    
+    // MARK: - Selectors -
+    
+    @objc private func didTapPlayAll() {
+        /// call the protocol delegate function to play the list in queue
+        delegate?.playlistHeaderDidTapPlayAll(self)
     }
     
 }

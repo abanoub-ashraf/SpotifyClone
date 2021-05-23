@@ -51,10 +51,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(artistNameLabel)
         contentView.addSubview(numberOfTracksLabel)
         
-        contentView.layer.cornerRadius = 10
-        contentView.layer.masksToBounds = true
-        contentView.layer.borderWidth = 0.5
-        contentView.layer.borderColor = UIColor.systemGray.cgColor
+        contentView.setRoundedColoredBorders()
     }
     
     required init?(coder: NSCoder) {
@@ -126,7 +123,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         
         albumCoverImageView.sd_setImage(
             with: viewModel.artWorkURL,
-            placeholderImage: Constants.newReleasesPlaceholderImage,
+            placeholderImage: Constants.albumCoverPlaceholder,
             completed: nil
         )
     }

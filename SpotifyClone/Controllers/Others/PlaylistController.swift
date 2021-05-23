@@ -6,6 +6,7 @@ class PlaylistController: UIViewController {
     
     private let playlist: PlaylistModel
     
+    // this is the model.tracks.items that's coming from the api
     private var viewModels = [RecommendedTracksCellViewModel]()
     
     // MARK: - UI -
@@ -42,6 +43,13 @@ class PlaylistController: UIViewController {
         configureCollectionView()
         
         fetchPlaylistDetails()
+        
+        /// a button to share the playlist with other apps
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .action,
+            target: self,
+            action: #selector(didTapShare)
+        )
     }
     
     override func viewDidLayoutSubviews() {
@@ -111,9 +119,12 @@ class PlaylistController: UIViewController {
     }
     
     private func fetchPlaylistDetails() {
+        // pass the playlist that's passed to this controller to get its full details from the api
         NetworkManager.shared.getPlaylistDetails(for: playlist) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
+                    /// the model we get from the api is the playlist details
+                    /// we want to extract the tracks out of it
                     case .success(let model):
                         /**
                          * we converts the response model we get from the api to a viewmodel
@@ -136,6 +147,30 @@ class PlaylistController: UIViewController {
                         break
                 }
             }
+        }
+    }
+    
+    // MARK: - Selectors -
+    
+    /// share the playlist link with other apps
+    @objc private func didTapShare() {
+        // the playlist url we wanna share
+        guard let url = URL(string: playlist.external_urls["spotify"] ?? "") else { return }
+        
+        // the controller that will do the sharing
+        let vc = UIActivityViewController(
+            activityItems: [url],
+            applicationActivities: []
+        )
+        
+        vc.view.backgroundColor = Constants.mainColor
+        
+        // so the app doesn't crash on the ipad
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        
+        // chagne the color inside of it after it's presented on the screen
+        present(vc, animated: true) {
+            UINavigationBar.appearance().tintColor = Constants.mainColor
         }
     }
 
@@ -164,7 +199,7 @@ extension PlaylistController: UICollectionViewDataSource {
         return cell
     }
     
-    /// for the collection view header
+    /// the header of the collection view
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard
@@ -189,6 +224,13 @@ extension PlaylistController: UICollectionViewDataSource {
         
         /// then configure the header ui with the view model we made above
         header.configure(with: headerViewModel)
+        
+        /**
+         * set the delegate property of the PlaylistHeader file that will call the protocol delegate function
+           to start playling the list of tracks that are inside this controller
+         */
+        header.delegate = self
+        
         return header
     }
     
@@ -200,7 +242,19 @@ extension PlaylistController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        // Play song
     }
     
 }
 
+// MARK: - PlaylistHeaderDelegate -
+
+extension PlaylistController: PlaylistHeaderDelegate {
+    
+    /// implement the protocol delegate function that's gonna be called from the PlaylistHeader
+    func playlistHeaderDidTapPlayAll(_ header: PlaylistHeader) {
+        // start playling the tracks list in queue
+        print("Playing All")
+    }
+    
+}

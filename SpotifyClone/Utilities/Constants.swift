@@ -39,14 +39,12 @@ struct Constants {
         
     }
     
-    // MARK: - CollectionViewCells -
+    // MARK: - CollectionViews -
     
     /// collection view sections
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
-    
-    /// collection view header
     static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
     
     // MARK: - Colors -
@@ -59,5 +57,6 @@ struct Constants {
     static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
     static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
     static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
+    static let albumCoverPlaceholder       = UIImage(named: "albumCoverPlaceholder")
 
 }

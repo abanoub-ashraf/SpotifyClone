@@ -44,10 +44,7 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(playlistNameLabel)
         contentView.addSubview(creatorNameLabel)
         
-        contentView.layer.cornerRadius = 10
-        contentView.layer.masksToBounds = true
-        contentView.layer.borderWidth = 0.5
-        contentView.layer.borderColor = UIColor.systemGray.cgColor
+        contentView.setRoundedColoredBorders()
     }
     
     required init?(coder: NSCoder) {
@@ -80,6 +77,12 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
             y: 3,
             width: imageSize,
             height: imageSize
+        )
+        
+        playlistCoverImageView.setRoundedBorder(
+            radiusFloatPoints: imageSize / 2,
+            borderWidthPoints: 1,
+            borderColor: UIColor.systemGray.cgColor
         )
     }
     

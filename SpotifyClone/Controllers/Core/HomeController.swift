@@ -324,7 +324,7 @@ class HomeController: UIViewController {
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(80)
+                        heightDimension: .absolute(70)
                     ),
                     subitem: item,
                     count: 1
@@ -394,7 +394,6 @@ extension HomeController: UICollectionViewDataSource {
         // each type is an enum element that contains array of viewmodels
         let type = sections[indexPath.section]
         
-        //
         switch type {
             // each case element has viewmodels array
             case .newReleases(let viewModels):
@@ -450,6 +449,8 @@ extension HomeController: UICollectionViewDelegate {
         
         switch section {
             case .featuredPlaylists:
+                /// this home controller display all the playlists
+                /// we need to get each playlist the user select to display its full details in a new controller
                 let playlist = playlists[indexPath.row]
                 
                 /**

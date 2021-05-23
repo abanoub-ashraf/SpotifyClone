@@ -32,6 +32,8 @@ class AuthController: UIViewController, WKNavigationDelegate {
         title = "Sign In"
         view.backgroundColor = .systemBackground
         
+        navigationController?.navigationBar.tintColor = Constants.mainColor
+        
         /**
          * once the web page redirtects to our redirectUri or any error occurs,
            this will help us detect all those events

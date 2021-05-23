@@ -27,4 +27,11 @@ extension UIView {
         return top + height
     }
     
+    func setRoundedColoredBorders() {
+        self.layer.cornerRadius = 4
+        self.layer.masksToBounds = true
+        self.layer.borderWidth = 0.5
+        self.layer.borderColor = UIColor.systemGray.cgColor
+    }
+    
 }
