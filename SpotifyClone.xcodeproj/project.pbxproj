@@ -26,6 +26,7 @@
 		2E8D4434265AB6BF00172C59 /* TitleHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8D4433265AB6BF00172C59 /* TitleHeader.swift */; };
 		2E8D446C265AD64E00172C59 /* AlbumTracksCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8D446B265AD64E00172C59 /* AlbumTracksCollectionViewCell.swift */; };
 		2E8D446F265AD95500172C59 /* AlbumTracksCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8D446E265AD95500172C59 /* AlbumTracksCellViewModel.swift */; };
+		2E90EA6A2664006000D5E038 /* GenreCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E90EA692664006000D5E038 /* GenreCollectionViewCell.swift */; };
 		2EA1448126593E050012E5B6 /* AlbumController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA1448026593E050012E5B6 /* AlbumController.swift */; };
 		2EA14484265953590012E5B6 /* AlbumDetailsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA14483265953590012E5B6 /* AlbumDetailsResponse.swift */; };
 		2EA7E418264D53C0000C9ED2 /* NewReleasesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA7E417264D53C0000C9ED2 /* NewReleasesResponse.swift */; };
@@ -80,6 +81,7 @@
 		2E8D4433265AB6BF00172C59 /* TitleHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleHeader.swift; sourceTree = "<group>"; };
 		2E8D446B265AD64E00172C59 /* AlbumTracksCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTracksCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E8D446E265AD95500172C59 /* AlbumTracksCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTracksCellViewModel.swift; sourceTree = "<group>"; };
+		2E90EA692664006000D5E038 /* GenreCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreCollectionViewCell.swift; sourceTree = "<group>"; };
 		2EA1448026593E050012E5B6 /* AlbumController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumController.swift; sourceTree = "<group>"; };
 		2EA14483265953590012E5B6 /* AlbumDetailsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailsResponse.swift; sourceTree = "<group>"; };
 		2EA7E417264D53C0000C9ED2 /* NewReleasesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleasesResponse.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		2E6A565D26375342008BDE9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2E90EA682664000800D5E038 /* Search */,
 				2E75D05326504C2500F87444 /* Browse */,
 				2EBBD70326347BF300812376 /* LaunchScreen.storyboard */,
 			);
@@ -260,6 +263,14 @@
 				2E8D4439265AC8DC00172C59 /* Cells */,
 			);
 			path = CollectionViews;
+			sourceTree = "<group>";
+		};
+		2E90EA682664000800D5E038 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				2E90EA692664006000D5E038 /* GenreCollectionViewCell.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 		2EBBD6EC26347BE500812376 = {
@@ -478,6 +489,7 @@
 				2E8D446C265AD64E00172C59 /* AlbumTracksCollectionViewCell.swift in Sources */,
 				2E03AF80264AB66F0029CF3F /* SettingsModels.swift in Sources */,
 				2EF3D0AD264D98690012EB32 /* FeaturedPlaylistsResponse.swift in Sources */,
+				2E90EA6A2664006000D5E038 /* GenreCollectionViewCell.swift in Sources */,
 				2EFB55032637570300D9745F /* SettingsController.swift in Sources */,
 				2EA14484265953590012E5B6 /* AlbumDetailsResponse.swift in Sources */,
 				2E8D446F265AD95500172C59 /* AlbumTracksCellViewModel.swift in Sources */,
@@ -650,7 +662,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6JX84M9ZS;
 				INFOPLIST_FILE = SpotifyClone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -670,7 +682,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U6JX84M9ZS;
 				INFOPLIST_FILE = SpotifyClone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -46,6 +46,7 @@ struct Constants {
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
     static let albumTracksCollectionViewCellIdentifier       = "AlbumTracksCollectionViewCell"
+    static let genreCollectionViewCellIdentifier             = "GenreCollectionViewCell"
     
     /// sections headers
     static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
