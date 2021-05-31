@@ -16,19 +16,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="66v-6n-mtS">
-                                <rect key="frame" x="107" y="348" width="200" height="200"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="bJm-Kp-4MK"/>
-                                    <constraint firstAttribute="height" constant="200" id="uez-Bc-hkn"/>
-                                </constraints>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img" translatesAutoresizingMaskIntoConstraints="NO" id="66v-6n-mtS">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="launchScreenBackground"/>
                         <constraints>
-                            <constraint firstItem="66v-6n-mtS" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="S7I-hS-eSl"/>
-                            <constraint firstItem="66v-6n-mtS" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="kRa-rt-q6t"/>
+                            <constraint firstAttribute="bottom" secondItem="66v-6n-mtS" secondAttribute="bottom" id="Hn4-96-Sbg"/>
+                            <constraint firstItem="66v-6n-mtS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Ngd-of-ywC"/>
+                            <constraint firstItem="66v-6n-mtS" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Yau-cl-86S"/>
+                            <constraint firstItem="66v-6n-mtS" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="tIe-qH-sGV"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,7 +36,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="512" height="512"/>
+        <image name="img" width="250" height="250"/>
         <namedColor name="launchScreenBackground">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

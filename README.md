@@ -1,4 +1,4 @@
-![Git]()
+![Desktop HD](https://user-images.githubusercontent.com/10991489/120122574-df01c100-c1a9-11eb-8416-1058ae282772.png)
 
 
 
@@ -6,7 +6,7 @@
 ### Hi there, This is ***Spotify Clone*** - iOS Native App Written in [Swift 5][Swift 5] and based on [Spotify REST API][website] 👋
 
 
-<img alt="Spotify" src="https://img.shields.io/badge/spotify%20-green.svg?&style=for-the-badge&logo=spotify&logoColor=white"/><img alt="Swift" src="https://img.shields.io/badge/swift-%23FA7343.svg?&style=for-the-badge&logo=swift&logoColor=white"/><img alt="IOS" src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white"><img alt="Git" src="https://img.shields.io/badge/git%20-%23F05033.svg?&style=for-the-badge&logo=git&logoColor=white"/><img alt="GitHub" src="https://img.shields.io/badge/github%20-%23121011.svg?&style=for-the-badge&logo=github&logoColor=white"/>
+<img alt="Spotify" src="https://img.shields.io/badge/spotify%20-green.svg?&style=for-the-badge&logo=spotify&logoColor=white"/><img alt="Swift" src="https://img.shields.io/badge/swift-%23FA7343.svg?&style=for-the-badge&logo=swift&logoColor=white"/><img alt="IOS" src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white"><img alt="Git" src="https://img.shields.io/badge/git%20-%23F05033.svg?&style=for-the-badge&logo=git&logoColor=white"/><img alt="GitHub" src="https://img.shields.io/badge/github%20-%23121011.svg?&style=for-the-badge&logo=github&logoColor=white"/><img alt="Canva" src="https://img.shields.io/badge/Canva%20-%2300C4CC.svg?&style=for-the-badge&logo=Canva&logoColor=white"/>
 
 
 <img height="62em" src="https://user-images.githubusercontent.com/10991489/119416278-918ddb80-bcf3-11eb-9106-2e73b8f45902.png"/> ![Swift](https://www.vectorlogo.zone/logos/swift/swift-icon.svg) <img height="67em" src="https://developer.apple.com/design/human-interface-guidelines/macos/images/app-icon-realistic-materials_2x.png"/>  ![GitHub](https://www.vectorlogo.zone/logos/github/github-icon.svg) <img height="62em" src="https://user-images.githubusercontent.com/10991489/119416543-285a9800-bcf4-11eb-8755-a9351330ef0d.jpg"/> ![Git](https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg) ![gitkraken](https://www.vectorlogo.zone/logos/gitkraken/gitkraken-icon.svg) 
@@ -15,16 +15,16 @@
 ## App Features: 
 
 - Supporting Dark Mode.
-- blank
-- blank
-- blank
-- blank
-- blank
-- blank
-- blank
+- ()
+- ()
+- ()
+- ()
+- ()
+- ()
+- ()
 
 
-## Some App Views Screenshots (There is more and updates every week):
+## Some App Screenshots:
 
 ![]()
 ![]()
@@ -39,10 +39,10 @@
  
 * App Current Version: V1.0
 * Supported IOS : IOS 14 or above
-* Swift Frameworks : UIKit -  
+* Swift Frameworks : UIKit - WebKit 
 * DataStorage : 
-* Third party Libraries : 
-* Pattern : MVVM
+* Third party Libraries : SDWebImage
+* Pattern : MVVM - Singleton
 * Supported languages in App : English
 
 
@@ -53,7 +53,7 @@
 
 ## Important Notes:
   
-- blank
+- ()
 
 
 
