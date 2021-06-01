@@ -2,6 +2,10 @@ import UIKit
 
 class SearchController: UIViewController {
     
+    // MARK: - Variables -
+    
+    private var categories = [CategoryModel]()
+    
     // MARK: - UI -
     
     let searchController: UISearchController = {
@@ -51,6 +55,21 @@ class SearchController: UIViewController {
         super.viewDidLoad()
         
         configureUI()
+        
+        NetworkManager.shared.getCategories { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                    case .success(let categories):
+                        ///
+                        ///
+                        self?.categories = categories
+                        self?.collectionView.reloadData()
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        break
+                }
+            }
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -83,11 +102,49 @@ class SearchController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         
         collectionView.register(
-            GenreCollectionViewCell.self,
-            forCellWithReuseIdentifier: GenreCollectionViewCell.identifier
+            CategoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier
         )
     }
 
+}
+
+// MARK: - UICollectionViewDataSource -
+
+extension SearchController: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: CategoryCollectionViewCell.identifier,
+            for: indexPath
+        ) as? CategoryCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let category = categories[indexPath.row]
+        cell.configure(with: CategoryCollectionViewCellViewModel(
+            title: category.name,
+            artworkURL: URL(string: category.icons.first?.url ?? "")
+        ))
+        return cell
+    }
+    
+}
+
+// MARK: - UICollectionViewDelegate -
+
+extension SearchController: UICollectionViewDelegate {
+    
+    
+    
 }
 
 // MARK: - UISearchResultsUpdating -
@@ -123,39 +180,5 @@ extension SearchController: UISearchResultsUpdating {
 //        perform search
 //        NetworkManager.shared.search
     }
-    
-}
-
-// MARK: - UICollectionViewDataSource -
-
-extension SearchController: UICollectionViewDataSource {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: GenreCollectionViewCell.identifier,
-            for: indexPath
-        ) as? GenreCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        cell.configure(with: "Rock")
-        return cell
-    }
-    
-}
-
-// MARK: - UICollectionViewDelegate -
-
-extension SearchController: UICollectionViewDelegate {
-    
-    
     
 }

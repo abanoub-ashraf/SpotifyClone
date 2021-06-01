@@ -124,7 +124,7 @@ class HomeController: UIViewController {
         var recommendations: RecommendationsResponse?
         
         // get the New Releases from the api
-        NetworkManager.shared.getNewReleases { result in
+        NetworkManager.shared.getNewAlbumsReleases { result in
             /// defer let us set up some work to be performed when the current scope exits
             defer {
                 // this is gonna get executed once getting the result is done

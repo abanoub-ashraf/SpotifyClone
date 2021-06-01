@@ -37,31 +37,35 @@ struct Constants {
         /// Playlists
         static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
         
+        /// Categories
+        static let getCategories        = "\(Constants.baseAPIURL)/browse/categories?limit=50"
+        static let getCategoryPlaylists = "\(Constants.baseAPIURL)/browse/categories/"
+        
     }
     
     // MARK: - CollectionViews -
     
-    /// sections cells
+    /// collection view cells
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
     static let albumTracksCollectionViewCellIdentifier       = "AlbumTracksCollectionViewCell"
-    static let genreCollectionViewCellIdentifier             = "GenreCollectionViewCell"
+    static let CategoryCollectionViewCellIdentifier          = "CategoryCollectionViewCell"
     
     /// sections headers
     static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
     static let titleCollectionViewHeaderIdentifier           = "TitleHeader"
     
-    // MARK: - Colors -
-    
-    static let mainColor = UIColor(named: "mainColor")
-    
     // MARK: - Images -
     
-    /// placeholders
+    /// image placeholders
     static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
     static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
     static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
     static let albumCoverPlaceholder       = UIImage(named: "albumCoverPlaceholder")
+    
+    // MARK: - Colors -
+    
+    static let mainColor = UIColor(named: "mainColor")
 
 }
