@@ -41,7 +41,7 @@ class SearchController: UIViewController {
                     count: 2
                 )
                 
-                group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+                group.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 2, bottom: 7, trailing: 2)
                 
                 let section = NSCollectionLayoutSection(group: group)
                 return section
@@ -56,20 +56,7 @@ class SearchController: UIViewController {
         
         configureUI()
         
-        NetworkManager.shared.getCategories { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                    case .success(let categories):
-                        ///
-                        ///
-                        self?.categories = categories
-                        self?.collectionView.reloadData()
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                        break
-                }
-            }
-        }
+        fetchCategories()
     }
     
     override func viewDidLayoutSubviews() {
@@ -77,7 +64,7 @@ class SearchController: UIViewController {
         
         collectionView.frame = view.bounds
     }
-    
+        
     // MARK: - Helper Functions -
     
     private func configureUI() {
@@ -106,6 +93,23 @@ class SearchController: UIViewController {
             forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier
         )
     }
+    
+    private func fetchCategories() {
+        NetworkManager.shared.getCategories { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                    case .success(let categories):
+                        /// to fill the collection view with data using this categories array
+                        ///
+                        self?.categories = categories
+                        self?.collectionView.reloadData()
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        break
+                }
+            }
+        }
+    }
 
 }
 
@@ -130,6 +134,7 @@ extension SearchController: UICollectionViewDataSource {
         }
         
         let category = categories[indexPath.row]
+        
         cell.configure(with: CategoryCollectionViewCellViewModel(
             title: category.name,
             artworkURL: URL(string: category.icons.first?.url ?? "")
@@ -143,7 +148,15 @@ extension SearchController: UICollectionViewDataSource {
 
 extension SearchController: UICollectionViewDelegate {
     
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let category = categories[indexPath.row]
+        
+        let vc = CategoryController(category: category)
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
 }
 

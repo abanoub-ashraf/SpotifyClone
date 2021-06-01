@@ -264,7 +264,7 @@ final class NetworkManager {
         completion: @escaping (Result<[PlaylistModel], Error>) -> Void
     ) {
         createRequest(
-            with: URL(string: Constants.EndPoints.getCategoryPlaylists + category.id + "/playlists?limit=4"),
+            with: URL(string: Constants.EndPoints.getCategoryPlaylists + category.id + "/playlists?limit=50"),
             type: .GET
         ) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in

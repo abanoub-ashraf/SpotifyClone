@@ -23,8 +23,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .white
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = .label
         imageView.image = UIImage(
             systemName: "music.quarternote.3",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 50, weight: .regular)
@@ -34,7 +34,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     private let label: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .label
         label.font = .systemFont(ofSize: 22, weight: .semibold)
         return label
     }()
@@ -60,6 +60,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        contentView.setRoundedColoredBorders()
+        
         label.frame = CGRect(
             x: 10,
             y: contentView.height / 2,
@@ -68,10 +70,16 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         )
         
         imageView.frame = CGRect(
-            x: contentView.width / 2,
+            x: (contentView.width / 2) - 10,
             y: 10,
             width: contentView.width / 2,
             height: contentView.height / 2
+        )
+        
+        imageView.setRoundedBorder(
+            radiusFloatPoints: 10,
+            borderWidthPoints: 1,
+            borderColor: UIColor.systemGray.cgColor
         )
     }
     
