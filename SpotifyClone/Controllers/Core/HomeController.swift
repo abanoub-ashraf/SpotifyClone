@@ -1,25 +1,5 @@
 import UIKit
 
-/// each case gonna be an array of elements for each section in the collection view
-enum BrowseSectionType {
-    /// each case will have that title variable we defined underneath the cases
-    case newReleases(viewModels: [NewReleasesCellViewModel])
-    case featuredPlaylists(viewModels: [FeaturedPlaylistsCellViewModel])
-    case recommendedTracks(viewModels: [RecommendedTracksCellViewModel])
-    
-    /// use the value of this title to set the title of each section of the collection view
-    var title: String {
-        switch self {
-            case .newReleases:
-                return "New Released Albums"
-            case .featuredPlaylists:
-                return "Featured Playlists"
-            case .recommendedTracks:
-                return "Recommended Tracks"
-        }
-    }
-}
-
 class HomeController: UIViewController {
     
     // MARK: - Variables -
@@ -28,7 +8,7 @@ class HomeController: UIViewController {
     private var sections = [BrowseSectionType]()
     
     /// to use the models we get from the api calls
-    private var newAlbums: [Album] = []
+    private var newAlbums: [AlbumModel] = []
     private var playlists: [PlaylistModel] = []
     private var tracks: [AudioTrackModel] = []
     
@@ -210,7 +190,7 @@ class HomeController: UIViewController {
     }
     
     // convert the models params into viewmodels so we can append those viewmodels to the sections enums array
-    private func configureModels(newAlbums: [Album], playlists: [PlaylistModel], tracks: [AudioTrackModel]) {
+    private func configureModels(newAlbums: [AlbumModel], playlists: [PlaylistModel], tracks: [AudioTrackModel]) {
         /// save the models we get from the api to use them to access their individual items
         self.newAlbums = newAlbums
         self.playlists = playlists

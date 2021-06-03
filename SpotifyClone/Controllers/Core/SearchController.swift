@@ -73,6 +73,10 @@ class SearchController: UIViewController {
         /// The object responsible for updating the contents of the search results controller
         ///
         searchController.searchResultsUpdater = self
+        
+        /// to be able to perform search when the search bar's search button is clicked
+        ///
+        searchController.searchBar.delegate = self
 
         /// set the search controller of the navigation item to be the search controller we created
         ///
@@ -160,6 +164,49 @@ extension SearchController: UICollectionViewDelegate {
     
 }
 
+// MARK: - UISearchBarDelegate -
+
+extension SearchController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard
+            /**
+             * get the searchResultsController of the searchController ui we created above
+             * then cast it to the SearchResultsController we set inside the searchController ui element
+             * so now we can access it's update() function that will take each result
+               the search controller updates and display it inside that SearchResultsController
+             */
+            let resultsController = searchController.searchResultsController as? SearchResultsController,
+            
+            // make sure the query is not nil
+            //
+            let query = searchBar.text,
+            
+            // make sure it's not an empty white spaces either
+            //
+            !query.trimmingCharacters(in: .whitespaces).isEmpty
+        else {
+            return
+        }
+        
+        // perform the search api call
+        //
+        NetworkManager.shared.search(with: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                    case .success(let results):
+                        /// update the searchBar's resultsController with the results we got from the api
+                        ///
+                        resultsController.update(with: results)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+}
+
 // MARK: - UISearchResultsUpdating -
 
 /// to update the SearchResultsController with the results of the search we do in here
@@ -169,29 +216,6 @@ extension SearchController: UISearchResultsUpdating {
     /// Asks the object to update the search results for a specified controller
     ///
     func updateSearchResults(for searchController: UISearchController) {
-        guard
-            /**
-             * get the searchResultsController of the searchController ui we created above
-             * then cast it to the SearchResultsController we set inside the searchController ui anon block
-             * so now we can access it's update() function that will take each result
-               the search controller updates and display it inside that SearchResultsController
-             */
-            let resultsController = searchController.searchResultsController as? SearchResultsController,
-            // make sure the query is not nil
-            //
-            let query = searchController.searchBar.text,
-            // make sure it's not an empty white spaces either
-            //
-            !query.trimmingCharacters(in: .whitespaces).isEmpty
-        else {
-            return
-        }
-        
-        print(query)
-
-//        resultsController.update(with: results)
-//        perform search
-//        NetworkManager.shared.search
     }
     
 }

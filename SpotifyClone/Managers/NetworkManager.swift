@@ -206,7 +206,7 @@ final class NetworkManager {
     // get a single album of the new released albums
     //
     public func getAlbumDetails(
-        for album: Album,
+        for album: AlbumModel,
         completion: @escaping (Result<AlbumDetailsResponse, Error>) -> Void
     ) {
         createRequest(
@@ -277,6 +277,48 @@ final class NetworkManager {
                     let result = try JSONDecoder().decode(CategoryPlaylistsResponse.self, from: data)
                     let playlists = result.playlists.items
                     completion(.success(playlists))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    }
+    
+    // MARK: - Search -
+    
+    // search for tracks, artists, albums, and playlists
+    //
+    public func search(with query: String, completion: @escaping (Result<[SearchResult], Error>) -> Void) {
+        // encode the url so if the suer enter a space it turns into a %20
+        //
+        let urlString = Constants.EndPoints.search + "&q=" + (query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
+        
+        createRequest(
+            with: URL(string: urlString),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(SearchResultsResponse.self, from: data)
+                    var searchResults: [SearchResult] = []
+                    
+                    /// each case is an element of the SearchResult enumb array
+                    /// each case represents an array of its own
+                    /// make an array of (each case's array) from the results array we decoded from the api
+                    ///
+                    searchResults.append(contentsOf: results.tracks.items.compactMap({ .track(model: $0) }))
+                    searchResults.append(contentsOf: results.albums.items.compactMap({ .album(model: $0) }))
+                    searchResults.append(contentsOf: results.artists.items.compactMap({ .artist(model: $0) }))
+                    searchResults.append(contentsOf: results.playlists.items.compactMap({ .playlist(model: $0) }))
+                    
+                    completion(.success(searchResults))
                 } catch {
                     completion(.failure(error))
                 }

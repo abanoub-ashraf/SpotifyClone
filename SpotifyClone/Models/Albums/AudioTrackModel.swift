@@ -1,7 +1,7 @@
 import Foundation
 
 struct AudioTrackModel: Codable {
-    let album: Album?
+    let album: AlbumModel?
     let artists: [ArtistModel]
     let available_markets: [String]
     let disc_number: Int

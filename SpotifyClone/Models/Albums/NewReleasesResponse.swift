@@ -5,10 +5,10 @@ struct NewReleasesResponse: Codable {
 }
 
 struct AlbumsResponse: Codable {
-    let items: [Album]
+    let items: [AlbumModel]
 }
 
-struct Album: Codable {
+struct AlbumModel: Codable {
     let album_type: String
     let available_markets: [String]
     let id: String

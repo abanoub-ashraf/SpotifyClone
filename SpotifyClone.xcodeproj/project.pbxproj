@@ -18,6 +18,10 @@
 		2E67AD8D266689C20025AD3D /* AllCategoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67AD8C266689C20025AD3D /* AllCategoriesResponse.swift */; };
 		2E67AD9926669D980025AD3D /* CategoryCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67AD9826669D980025AD3D /* CategoryCollectionViewCellViewModel.swift */; };
 		2E67ADAD2666B1D50025AD3D /* CategoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67ADAC2666B1D50025AD3D /* CategoryController.swift */; };
+		2E67ADF12667FC800025AD3D /* SearchResultsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67ADF02667FC800025AD3D /* SearchResultsResponse.swift */; };
+		2E67ADF62667FF780025AD3D /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67ADF52667FF780025AD3D /* SearchResult.swift */; };
+		2E67AE7126691E6D0025AD3D /* SerchSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67AE7026691E6D0025AD3D /* SerchSection.swift */; };
+		2E67AE7426692E9E0025AD3D /* BrowseSectionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E67AE7326692E9E0025AD3D /* BrowseSectionType.swift */; };
 		2E6A5663263753C8008BDE9A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6A5662263753C8008BDE9A /* Constants.swift */; };
 		2E75D05526504C6600F87444 /* NewReleasesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05426504C6600F87444 /* NewReleasesCollectionViewCell.swift */; };
 		2E75D05726504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E75D05626504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift */; };
@@ -76,6 +80,10 @@
 		2E67AD8C266689C20025AD3D /* AllCategoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCategoriesResponse.swift; sourceTree = "<group>"; };
 		2E67AD9826669D980025AD3D /* CategoryCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		2E67ADAC2666B1D50025AD3D /* CategoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryController.swift; sourceTree = "<group>"; };
+		2E67ADF02667FC800025AD3D /* SearchResultsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsResponse.swift; sourceTree = "<group>"; };
+		2E67ADF52667FF780025AD3D /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
+		2E67AE7026691E6D0025AD3D /* SerchSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerchSection.swift; sourceTree = "<group>"; };
+		2E67AE7326692E9E0025AD3D /* BrowseSectionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseSectionType.swift; sourceTree = "<group>"; };
 		2E6A5662263753C8008BDE9A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E75D05426504C6600F87444 /* NewReleasesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewReleasesCollectionViewCell.swift; sourceTree = "<group>"; };
 		2E75D05626504D2400F87444 /* FeaturedPlaylistsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -143,7 +151,7 @@
 				2E79479F26444FB500C1201A /* AuthResponse.swift */,
 				2EF3D0AE264EF0AC0012EB32 /* RecommendedGenresResponse.swift */,
 				2EA7E419264D90B2000C9ED2 /* APIImage.swift */,
-				2E67AD8C266689C20025AD3D /* AllCategoriesResponse.swift */,
+				2E67AE7326692E9E0025AD3D /* BrowseSectionType.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -200,6 +208,17 @@
 			path = Users;
 			sourceTree = "<group>";
 		};
+		2E67ADF32667FCBB0025AD3D /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				2E67ADF02667FC800025AD3D /* SearchResultsResponse.swift */,
+				2E67AD8C266689C20025AD3D /* AllCategoriesResponse.swift */,
+				2E67ADF52667FF780025AD3D /* SearchResult.swift */,
+				2E67AE7026691E6D0025AD3D /* SerchSection.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		2E6A565C2637533B008BDE9A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +241,7 @@
 		2E6A565E2637534B008BDE9A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2E67ADF32667FCBB0025AD3D /* Search */,
 				2E67AD9426669D050025AD3D /* Users */,
 				2E67AD9126669C6C0025AD3D /* Playlists */,
 				2E67AD9326669C8C0025AD3D /* Albums */,
@@ -515,6 +535,7 @@
 				2EBBD70E2635D2DB00812376 /* Config.swift in Sources */,
 				2E8D4434265AB6BF00172C59 /* TitleHeader.swift in Sources */,
 				2EFB55132637580300D9745F /* PlaylistModel.swift in Sources */,
+				2E67AE7126691E6D0025AD3D /* SerchSection.swift in Sources */,
 				2EFB54FB2637569C00D9745F /* LibraryController.swift in Sources */,
 				2EFB55152637581E00D9745F /* AudioTrackModel.swift in Sources */,
 				2E75D05926504DA800F87444 /* RecommendedTracksCollectionViewCell.swift in Sources */,
@@ -525,6 +546,7 @@
 				2EF3D0AD264D98690012EB32 /* FeaturedPlaylistsResponse.swift in Sources */,
 				2E67AD8D266689C20025AD3D /* AllCategoriesResponse.swift in Sources */,
 				2E90EA6A2664006000D5E038 /* CategoryCollectionViewCell.swift in Sources */,
+				2E67AE7426692E9E0025AD3D /* BrowseSectionType.swift in Sources */,
 				2EFB55032637570300D9745F /* SettingsController.swift in Sources */,
 				2EA14484265953590012E5B6 /* AlbumDetailsResponse.swift in Sources */,
 				2E8D446F265AD95500172C59 /* AlbumTracksCellViewModel.swift in Sources */,
@@ -552,10 +574,12 @@
 				2EFB550B2637577500D9745F /* SearchResultsController.swift in Sources */,
 				2EFB55192637585900D9745F /* UserProfileModel.swift in Sources */,
 				2EF3D0AF264EF0AC0012EB32 /* RecommendedGenresResponse.swift in Sources */,
+				2E67ADF12667FC800025AD3D /* SearchResultsResponse.swift in Sources */,
 				2EA1448126593E050012E5B6 /* AlbumController.swift in Sources */,
 				2E7947A026444FB500C1201A /* AuthResponse.swift in Sources */,
 				2E4F650126599B54002C4F8C /* PlaylistHeaderViewModel.swift in Sources */,
 				2EFB55092637574B00D9745F /* PlaylistController.swift in Sources */,
+				2E67ADF62667FF780025AD3D /* SearchResult.swift in Sources */,
 				2EF3D0B1264EF7EE0012EB32 /* RecommendationsResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

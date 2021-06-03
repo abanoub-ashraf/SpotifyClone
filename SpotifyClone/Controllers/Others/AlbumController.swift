@@ -4,7 +4,7 @@ class AlbumController: UIViewController {
     
     // MARK: - Variables -
     
-    private let album: Album
+    private let album: AlbumModel
     
     private var viewModels = [AlbumTracksCellViewModel]()
     
@@ -22,7 +22,7 @@ class AlbumController: UIViewController {
     
     // MARK: - Init -
     
-    init(album: Album) {
+    init(album: AlbumModel) {
         self.album = album
         super.init(nibName: nil, bundle: nil)
     }
