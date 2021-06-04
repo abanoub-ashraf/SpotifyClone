@@ -189,6 +189,10 @@ extension SearchController: UISearchBarDelegate {
             return
         }
         
+        /// to use the SearchResultsControllerDelegate
+        ///
+        resultsController.delegate = self
+        
         // perform the search api call
         //
         NetworkManager.shared.search(with: query) { result in
@@ -216,6 +220,35 @@ extension SearchController: UISearchResultsUpdating {
     /// Asks the object to update the search results for a specified controller
     ///
     func updateSearchResults(for searchController: UISearchController) {
+    }
+    
+}
+
+// MARK: - SearchResultsControllerDelegate -
+
+extension SearchController: SearchResultsControllerDelegate {
+    
+    /// switch on the result we got from the search results controller
+    /// and display the controller that matches the result case we tapped on
+    ///
+    func didTapResult(_ result: SearchResult) {
+        switch result {
+            case .artist(model: let model):
+                break
+                
+            case .album(model: let model):
+                let vc = AlbumController(album: model)
+                vc.navigationItem.largeTitleDisplayMode = .never
+                navigationController?.pushViewController(vc, animated: true)
+            
+            case .track(model: let model):
+                break
+    
+            case .playlist(model: let model):
+                let vc = PlaylistController(playlist: model)
+                vc.navigationItem.largeTitleDisplayMode = .never
+                navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
 }

@@ -307,9 +307,14 @@ final class NetworkManager {
                 
                 do {
                     let results = try JSONDecoder().decode(SearchResultsResponse.self, from: data)
+                    
+                    /// this new struct will be an enum of 4 cases
+                    /// the array of this struct represents the 4 elements in the SearchResultsResponse
+                    /// each element has an array so this struct array will be of 4 arrays elements
+                    ///
                     var searchResults: [SearchResult] = []
                     
-                    /// each case is an element of the SearchResult enumb array
+                    /// each case is an element of the SearchResult enum array
                     /// each case represents an array of its own
                     /// make an array of (each case's array) from the results array we decoded from the api
                     ///

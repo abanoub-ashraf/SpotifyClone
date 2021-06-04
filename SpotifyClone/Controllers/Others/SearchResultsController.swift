@@ -1,10 +1,21 @@
 import UIKit
 
+/// a protocol that will make the search controller push a new controller
+/// based on the result that gets tapped on in the search results controller
+///
+protocol SearchResultsControllerDelegate: AnyObject {
+    func didTapResult(_ result: SearchResult)
+}
+
 /// this controller will display the results of the search that happens inside the SearchController
 ///
 class SearchResultsController: UIViewController {
     
     // MARK: - Variables -
+    
+    /// for the protocol we created above
+    ///
+    weak var delegate: SearchResultsControllerDelegate?
     
     /// the sections of the table view, each section will have its own array of items
     ///
@@ -42,8 +53,7 @@ class SearchResultsController: UIViewController {
     /// this function will have the search results we get from the apin from the SearchController
     ///
     func update(with results: [SearchResult]) {
-        /// grab the array of each case of the results enum array
-        /// grab the artists array, the first case of the results enum array param
+        /// grab each array element this results enum array (array of 4 elements, each element is ana rray)
         ///
         let artists = results.filter({
             switch $0 {
@@ -56,8 +66,6 @@ class SearchResultsController: UIViewController {
             }
         })
         
-        /// grab the albums array, the second case of the results enum array param
-        ///
         let albums = results.filter({
             switch $0 {
                 case .album:
@@ -67,8 +75,6 @@ class SearchResultsController: UIViewController {
             }
         })
         
-        /// grab the tracks array, the third case of the results enum array param
-        ///
         let tracks = results.filter({
             switch $0 {
                 case .track:
@@ -78,8 +84,6 @@ class SearchResultsController: UIViewController {
             }
         })
         
-        /// grab the playlists array, the fourth case of the results enum array param
-        ///
         let playlists = results.filter({
             switch $0 {
                 case .playlist:
@@ -89,7 +93,9 @@ class SearchResultsController: UIViewController {
             }
         })
         
-        /// each element of this section is a title and an array associatted with it
+        /// each element of this sections is a title and an array associatted with it
+        /// make an array of 4 elements representing the 4 array we got above
+        /// each array is gonna be an element in this SearchSection struct array
         ///
         self.sections = [
             /// first section of the sections array is gonna be the artists
@@ -160,24 +166,10 @@ extension SearchResultsController: UITableViewDelegate {
         
         let result = sections[indexPath.section].results[indexPath.row]
 
-        switch result {
-            case .artist(model: let model):
-                break
-                
-            case .album(model: let model):
-                let vc = AlbumController(album: model)
-                vc.navigationItem.largeTitleDisplayMode = .never
-                navigationController?.pushViewController(vc, animated: true)
-            
-            case .track(model: let model):
-                break
-            
-            case .playlist(model: let model):
-                let vc = PlaylistController(playlist: model)
-                vc.navigationItem.largeTitleDisplayMode = .never
-                navigationController?.pushViewController(vc, animated: true)
-        }
-        
+        /// send the result we clicked on to the delegate to push its controller from the SearchController
+        /// cause this controller is not in a navigation stack
+        ///
+        delegate?.didTapResult(result)
     }
     
 }
