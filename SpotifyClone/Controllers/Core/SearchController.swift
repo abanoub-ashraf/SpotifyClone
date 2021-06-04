@@ -1,4 +1,5 @@
 import UIKit
+import SafariServices
 
 class SearchController: UIViewController {
     
@@ -234,7 +235,12 @@ extension SearchController: SearchResultsControllerDelegate {
     func didTapResult(_ result: SearchResult) {
         switch result {
             case .artist(model: let model):
-                break
+                /// display the artist page in a safari controller
+                ///
+                guard let url = URL(string: model.external_urls["spotify"] ?? "") else { return }
+                let vc = SFSafariViewController(url: url)
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true, completion: nil)
                 
             case .album(model: let model):
                 let vc = AlbumController(album: model)

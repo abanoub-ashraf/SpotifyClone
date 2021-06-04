@@ -27,21 +27,21 @@ struct Constants {
         
         /// Users
         ///
-        static let getCurrentUser       = "\(Constants.baseAPIURL)/me"
+        static let getCurrentUser = "\(Constants.baseAPIURL)/me"
         
         /// Browse
         ///
-        static let getNewReleases       = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
-        static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
         static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
         static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
         
         /// Albums
         ///
-        static let getAlbumDetails      = "\(Constants.baseAPIURL)/albums/"
+        static let getNewReleases  = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
+        static let getAlbumDetails = "\(Constants.baseAPIURL)/albums/"
         
         /// Playlists
         ///
+        static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
         static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
         
         /// Categories
@@ -51,13 +51,14 @@ struct Constants {
         
         /// Search
         ///
-        static let search               = "\(Constants.baseAPIURL)/search?limit=20&type=album,artist,playlist,track"
+        static let search = "\(Constants.baseAPIURL)/search?limit=20&type=album,artist,playlist,track"
         
     }
     
     // MARK: - CollectionViews -
     
     /// collection view cells
+    ///
     static let newReleasesCollectionViewCellIdentifier       = "NewReleasesCollectionViewCell"
     static let featuredPlaylistsCollectionViewCellIdentifier = "FeaturedPlaylistsCollectionViewCell"
     static let recommendedTracksCollectionViewCellIdentifier = "RecommendedTracksCollectionViewCell"
@@ -65,12 +66,19 @@ struct Constants {
     static let CategoryCollectionViewCellIdentifier          = "CategoryCollectionViewCell"
     
     /// sections headers
-    static let playlistCollectionViewHeaderIdentifier        = "PlaylistHeader"
-    static let titleCollectionViewHeaderIdentifier           = "TitleHeader"
+    ///
+    static let playlistCollectionViewHeaderIdentifier = "PlaylistHeader"
+    static let titleCollectionViewHeaderIdentifier    = "TitleHeader"
+    
+    // MARK: - TableViews -
+    
+    static let searchResultDefaultTableCell  = "SearchResultDefaultTableCell"
+    static let searchResultSubtitleTableCell = "SearchResultSubtitleTableCell"
     
     // MARK: - Images -
     
     /// image placeholders
+    ///
     static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
     static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
     static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
