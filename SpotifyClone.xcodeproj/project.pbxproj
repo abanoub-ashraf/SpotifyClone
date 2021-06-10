@@ -48,6 +48,7 @@
 		2EBBD70226347BF300812376 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EBBD70126347BF300812376 /* Assets.xcassets */; };
 		2EBBD70526347BF300812376 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EBBD70326347BF300812376 /* LaunchScreen.storyboard */; };
 		2EBBD70E2635D2DB00812376 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBD70D2635D2DB00812376 /* Config.swift */; };
+		2EBF6A53267289E400962E62 /* PlaybackPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */; };
 		2EF3D0AD264D98690012EB32 /* FeaturedPlaylistsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0AC264D98690012EB32 /* FeaturedPlaylistsResponse.swift */; };
 		2EF3D0AF264EF0AC0012EB32 /* RecommendedGenresResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0AE264EF0AC0012EB32 /* RecommendedGenresResponse.swift */; };
 		2EF3D0B1264EF7EE0012EB32 /* RecommendationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0B0264EF7EE0012EB32 /* RecommendationsResponse.swift */; };
@@ -116,6 +117,7 @@
 		2EBBD70426347BF300812376 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2EBBD70626347BF300812376 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EBBD70D2635D2DB00812376 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackPresenter.swift; sourceTree = "<group>"; };
 		2EF3D0AC264D98690012EB32 /* FeaturedPlaylistsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsResponse.swift; sourceTree = "<group>"; };
 		2EF3D0AE264EF0AC0012EB32 /* RecommendedGenresResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedGenresResponse.swift; sourceTree = "<group>"; };
 		2EF3D0B0264EF7EE0012EB32 /* RecommendationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsResponse.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 		2EBBD6F726347BE500812376 /* SpotifyClone */ = {
 			isa = PBXGroup;
 			children = (
+				2EBF6A51267289A300962E62 /* Presenter */,
 				2E4F650C2659A485002C4F8C /* Extensions */,
 				2E6A56612637536B008BDE9A /* Resources */,
 				2E6A566026375360008BDE9A /* Managers */,
@@ -402,6 +405,14 @@
 				2E6A5662263753C8008BDE9A /* Constants.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		2EBF6A51267289A300962E62 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */,
+			);
+			path = Presenter;
 			sourceTree = "<group>";
 		};
 		2EFB54FC263756AC00D9745F /* Core */ = {
@@ -575,6 +586,7 @@
 				2E67AE7126691E6D0025AD3D /* SerchSection.swift in Sources */,
 				2EFB54FB2637569C00D9745F /* LibraryController.swift in Sources */,
 				2EFB55152637581E00D9745F /* AudioTrackModel.swift in Sources */,
+				2EBF6A53267289E400962E62 /* PlaybackPresenter.swift in Sources */,
 				2E75D05926504DA800F87444 /* RecommendedTracksCollectionViewCell.swift in Sources */,
 				2EFB54FF263756D600D9745F /* AuthController.swift in Sources */,
 				2E67AD9926669D980025AD3D /* CategoryCollectionViewCellViewModel.swift in Sources */,

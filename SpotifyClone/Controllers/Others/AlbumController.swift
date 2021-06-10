@@ -6,6 +6,8 @@ class AlbumController: UIViewController {
     
     private let album: AlbumModel
     
+    private var tracks = [AudioTrackModel]()
+    
     private var viewModels = [AlbumTracksCellViewModel]()
     
     // MARK: - UI -
@@ -114,20 +116,24 @@ class AlbumController: UIViewController {
         NetworkManager.shared.getAlbumDetails(for: album) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                /// same as what we did in the PlaylistController
-                case .success(let model):
-                    self?.viewModels = model.tracks.items.compactMap({
-                        return AlbumTracksCellViewModel(
-                            name: $0.name,
-                            artistName: $0.artists.first?.name ?? "-"
-                        )
-                    })
-                    
-                    self?.collectionView.reloadData()
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    break
+                    ///
+                    /// same as what we did in the PlaylistController
+                    ///
+                    case .success(let model):
+                        self?.tracks = model.tracks.items
+                        
+                        self?.viewModels = model.tracks.items.compactMap({
+                            return AlbumTracksCellViewModel(
+                                name: $0.name,
+                                artistName: $0.artists.first?.name ?? "-"
+                            )
+                        })
+                        
+                        self?.collectionView.reloadData()
+                        break
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        break
                 }
             }
         }
@@ -202,7 +208,11 @@ extension AlbumController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        // Play song
+        ///
+        /// same as in the playlist controller file
+        ///
+        let track = tracks[indexPath.row]
+        PlaybackPresenter.startPlyback(from: self, track: track)
     }
     
 }
@@ -218,8 +228,10 @@ extension AlbumController: PlaylistHeaderDelegate {
     
     /// implement the protocol delegate function that's gonna be called from the PlaylistHeader
     func playlistHeaderDidTapPlayAll(_ header: PlaylistHeader) {
-        // start playling the tracks list in queue
-        print("Playing All")
+        ///
+        /// same as in the playlist controller file
+        ///
+        PlaybackPresenter.startPlyback(from: self, tracks: tracks)
     }
     
 }

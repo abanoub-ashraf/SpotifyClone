@@ -248,7 +248,10 @@ extension SearchController: SearchResultsControllerDelegate {
                 navigationController?.pushViewController(vc, animated: true)
             
             case .track(model: let model):
-                break
+                ///
+                /// when a single track is tapped, present the player controller
+                ///
+                PlaybackPresenter.startPlyback(from: self, track: model)
     
             case .playlist(model: let model):
                 let vc = PlaylistController(playlist: model)

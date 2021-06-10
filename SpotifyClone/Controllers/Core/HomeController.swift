@@ -495,8 +495,10 @@ extension HomeController: UICollectionViewDelegate {
         
         switch section {
             case .featuredPlaylists:
+                ///
                 /// this home controller display all the playlists
                 /// we need to get each playlist the user select to display its full details in a new controller
+                ///
                 let playlist = playlists[indexPath.row]
                 
                 /**
@@ -509,6 +511,7 @@ extension HomeController: UICollectionViewDelegate {
                 
                 navigationController?.pushViewController(vc, animated: true)
                 break
+                
             case .newReleases:
                 let album = newAlbums[indexPath.row]
                 
@@ -522,7 +525,13 @@ extension HomeController: UICollectionViewDelegate {
                 
                 navigationController?.pushViewController(vc, animated: true)
                 break
+                
             case .recommendedTracks:
+                ///
+                /// present the playler controller when a track is tapped
+                ///
+                let track = tracks[indexPath.row]
+                PlaybackPresenter.startPlyback(from: self, track: track)
                 break
         }
     }

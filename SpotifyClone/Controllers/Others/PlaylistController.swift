@@ -6,6 +6,8 @@ class PlaylistController: UIViewController {
     
     private let playlist: PlaylistModel
     
+    private var tracks = [AudioTrackModel]()
+    
     // this is the model.tracks.items that's coming from the api
     private var viewModels = [RecommendedTracksCellViewModel]()
     
@@ -123,17 +125,27 @@ class PlaylistController: UIViewController {
         NetworkManager.shared.getPlaylistDetails(for: playlist) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
+                    ///
                     /// the model we get from the api is the playlist details
                     /// we want to extract the tracks out of it
+                    ///
                     case .success(let model):
+                        ///
+                        /// get the tracks so we can pass each one of them to the player
+                        /// inside the didSelectRowAt() function
+                        ///
+                        self?.tracks = model.tracks.items.compactMap({ $0.track })
+                        
                         /**
                          * we converts the response model we get from the api to a viewmodel
                            to fill the viewmodel property of this controller with it
                            so we can use it to fill the collection view with data
                          */
                         self?.viewModels = model.tracks.items.compactMap({
+                            ///
                             /// get the items array from the api model response
                             /// then convert it into a view model one
+                            ///
                             return RecommendedTracksCellViewModel(
                                 name: $0.track.name,
                                 artistName: $0.track.artists.first?.name ?? "-",
@@ -242,7 +254,11 @@ extension PlaylistController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        // Play song
+        ///
+        /// pass the track to the player 
+        ///
+        let track = tracks[indexPath.row]
+        PlaybackPresenter.startPlyback(from: self, track: track)
     }
     
 }
@@ -251,10 +267,14 @@ extension PlaylistController: UICollectionViewDelegate {
 
 extension PlaylistController: PlaylistHeaderDelegate {
     
+    ///
     /// implement the protocol delegate function that's gonna be called from the PlaylistHeader
+    ///
     func playlistHeaderDidTapPlayAll(_ header: PlaylistHeader) {
-        // start playling the tracks list in queue
-        print("Playing All")
+        ///
+        /// start playling the whole list of tracks
+        ///
+        PlaybackPresenter.startPlyback(from: self, tracks: tracks)
     }
     
 }
