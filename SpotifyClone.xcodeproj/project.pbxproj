@@ -49,6 +49,7 @@
 		2EBBD70526347BF300812376 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EBBD70326347BF300812376 /* LaunchScreen.storyboard */; };
 		2EBBD70E2635D2DB00812376 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBBD70D2635D2DB00812376 /* Config.swift */; };
 		2EBF6A53267289E400962E62 /* PlaybackPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */; };
+		2EBF6A93267391B900962E62 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBF6A92267391B900962E62 /* PlayerControlsView.swift */; };
 		2EF3D0AD264D98690012EB32 /* FeaturedPlaylistsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0AC264D98690012EB32 /* FeaturedPlaylistsResponse.swift */; };
 		2EF3D0AF264EF0AC0012EB32 /* RecommendedGenresResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0AE264EF0AC0012EB32 /* RecommendedGenresResponse.swift */; };
 		2EF3D0B1264EF7EE0012EB32 /* RecommendationsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF3D0B0264EF7EE0012EB32 /* RecommendationsResponse.swift */; };
@@ -118,6 +119,7 @@
 		2EBBD70626347BF300812376 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EBBD70D2635D2DB00812376 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackPresenter.swift; sourceTree = "<group>"; };
+		2EBF6A92267391B900962E62 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
 		2EF3D0AC264D98690012EB32 /* FeaturedPlaylistsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsResponse.swift; sourceTree = "<group>"; };
 		2EF3D0AE264EF0AC0012EB32 /* RecommendedGenresResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedGenresResponse.swift; sourceTree = "<group>"; };
 		2EF3D0B0264EF7EE0012EB32 /* RecommendationsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsResponse.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 		2E6A565D26375342008BDE9A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2EBF6A912673917800962E62 /* Player */,
 				2E75D05326504C2500F87444 /* Browse */,
 				2E90EA682664000800D5E038 /* Search */,
 				2EBBD70326347BF300812376 /* LaunchScreen.storyboard */,
@@ -413,6 +416,14 @@
 				2EBF6A52267289E400962E62 /* PlaybackPresenter.swift */,
 			);
 			path = Presenter;
+			sourceTree = "<group>";
+		};
+		2EBF6A912673917800962E62 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				2EBF6A92267391B900962E62 /* PlayerControlsView.swift */,
+			);
+			path = Player;
 			sourceTree = "<group>";
 		};
 		2EFB54FC263756AC00D9745F /* Core */ = {
@@ -605,6 +616,7 @@
 				2E75D05D26518A4200F87444 /* FeaturedPlaylistsCellViewModel.swift in Sources */,
 				2EFB55072637573600D9745F /* PlayerController.swift in Sources */,
 				2EFB5501263756EA00D9745F /* WelcomeController.swift in Sources */,
+				2EBF6A93267391B900962E62 /* PlayerControlsView.swift in Sources */,
 				2EFB550D263757AB00D9745F /* AuthManager.swift in Sources */,
 				2E4F64EE265990BA002C4F8C /* PlaylistHeader.swift in Sources */,
 				2E4F650E2659A4A3002C4F8C /* UIViewExtensions.swift in Sources */,

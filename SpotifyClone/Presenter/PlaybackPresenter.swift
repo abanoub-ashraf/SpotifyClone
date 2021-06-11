@@ -11,7 +11,8 @@ final class PlaybackPresenter {
     ///
     static func startPlyback(from viewController: UIViewController, track: AudioTrackModel) {
         let vc = PlayerController()
-        viewController.present(vc, animated: true, completion: nil)
+        vc.title = track.name
+        viewController.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
     }
     
     ///
@@ -19,7 +20,7 @@ final class PlaybackPresenter {
     ///
     static func startPlyback(from viewController: UIViewController, tracks: [AudioTrackModel]) {
         let vc = PlayerController()
-        viewController.present(vc, animated: true, completion: nil)
+        viewController.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
     }
     
 }
