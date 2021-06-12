@@ -258,7 +258,7 @@ extension PlaylistController: UICollectionViewDelegate {
         /// pass the track to the player 
         ///
         let track = tracks[indexPath.row]
-        PlaybackPresenter.startPlyback(from: self, track: track)
+        PlaybackPresenter.shared.startPlyback(from: self, track: track)
     }
     
 }
@@ -274,7 +274,7 @@ extension PlaylistController: PlaylistHeaderDelegate {
         ///
         /// start playling the whole list of tracks
         ///
-        PlaybackPresenter.startPlyback(from: self, tracks: tracks)
+        PlaybackPresenter.shared.startPlyback(from: self, tracks: tracks)
     }
     
 }

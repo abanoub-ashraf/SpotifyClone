@@ -30,7 +30,7 @@ final class PlayerControlsView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "This is My Song"
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         label.textColor = .label
         return label
@@ -39,7 +39,7 @@ final class PlayerControlsView: UIView {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Drake (feat. Some Other Artist)"
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textColor = .secondaryLabel
         return label
@@ -166,6 +166,13 @@ final class PlayerControlsView: UIView {
     
     @objc func didTapPlayPause() {
         delegate?.playerControlsViewDidTapPlayPauseButton(self)
+    }
+    
+    // MARK: - Helper Functions -
+    
+    func configure(with viewModel: PlayerControlsViewViewModel) {
+        nameLabel.text = viewModel.title
+        subtitleLabel.text = viewModel.subtitle
     }
     
 }

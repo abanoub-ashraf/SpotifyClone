@@ -531,7 +531,7 @@ extension HomeController: UICollectionViewDelegate {
                 /// present the playler controller when a track is tapped
                 ///
                 let track = tracks[indexPath.row]
-                PlaybackPresenter.startPlyback(from: self, track: track)
+                PlaybackPresenter.shared.startPlyback(from: self, track: track)
                 break
         }
     }

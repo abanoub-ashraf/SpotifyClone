@@ -1,11 +1,20 @@
 import UIKit
+import SDWebImage
 
 class PlayerController: UIViewController {
+    
+    // MARK: - Properties -
+
+    ///
+    /// the property of the data source protocol
+    ///
+    weak var dataSource: PlayerDataSource?
 
     // MARK: - UI -
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = Constants.albumCoverPlaceholder
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .systemBlue
         return imageView
@@ -25,6 +34,8 @@ class PlayerController: UIViewController {
         controlsView.delegate = self
         
         configureBarButtons()
+        
+        configure()
     }
     
     override func viewDidLayoutSubviews() {
@@ -58,6 +69,21 @@ class PlayerController: UIViewController {
             barButtonSystemItem: .action,
             target: self,
             action: #selector(didTapAction)
+        )
+    }
+    
+    ///
+    /// configure the player controller
+    /// with the data that the data source sent from the presenter
+    /// to this player
+    ///
+    private func configure() {
+        imageView.sd_setImage(with: dataSource?.imageURL, completed: nil)
+        
+        controlsView.configure(
+            with: PlayerControlsViewViewModel(
+                title: dataSource?.songName, subtitle: dataSource?.subtitle
+            )
         )
     }
     

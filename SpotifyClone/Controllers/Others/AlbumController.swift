@@ -212,7 +212,7 @@ extension AlbumController: UICollectionViewDelegate {
         /// same as in the playlist controller file
         ///
         let track = tracks[indexPath.row]
-        PlaybackPresenter.startPlyback(from: self, track: track)
+        PlaybackPresenter.shared.startPlyback(from: self, track: track)
     }
     
 }
@@ -231,7 +231,7 @@ extension AlbumController: PlaylistHeaderDelegate {
         ///
         /// same as in the playlist controller file
         ///
-        PlaybackPresenter.startPlyback(from: self, tracks: tracks)
+        PlaybackPresenter.shared.startPlyback(from: self, tracks: tracks)
     }
     
 }
