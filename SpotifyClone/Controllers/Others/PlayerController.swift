@@ -1,6 +1,23 @@
 import UIKit
 import SDWebImage
 
+///
+/// - first delegate between the controls view and the player
+///   so when any button is tapped inside the controls
+///   the player do something (play pause/forward/backward)
+///
+/// - but in order for that to happen the player controller ceed a way to communicate with the presenter who
+///   actually play the track in order to tell it to play pause/forward/backward
+///
+/// - and this player controller delegate does that
+///
+protocol PlayerControllerDelegate: AnyObject {
+    func didTapPlayPause()
+    func didTapForward()
+    func didTapBackward()
+    func didSlideSlider(_ value: Float)
+}
+
 class PlayerController: UIViewController {
     
     // MARK: - Properties -
@@ -9,6 +26,12 @@ class PlayerController: UIViewController {
     /// the property of the data source protocol
     ///
     weak var dataSource: PlayerDataSource?
+    
+    ///
+    /// so the player can commit changes on the audio track
+    /// that is inside the presenter
+    ///
+    weak var playerControllerDelegate: PlayerControllerDelegate?
 
     // MARK: - UI -
 
@@ -31,7 +54,7 @@ class PlayerController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(controlsView)
         
-        controlsView.delegate = self
+        controlsView.controlsDelegate = self
         
         configureBarButtons()
         
@@ -108,15 +131,19 @@ class PlayerController: UIViewController {
 extension PlayerController: PlayerControlsViewDelegate {
     
     func playerControlsViewDidTapPlayPauseButton(_ playControlsView: PlayerControlsView) {
-        // play a song
+        playerControllerDelegate?.didTapPlayPause()
     }
     
     func playerControlsViewDidTapForwardButton(_ playControlsView: PlayerControlsView) {
-        // forward
+        playerControllerDelegate?.didTapForward()
     }
     
     func playerControlsViewDidTapBackwardButton(_ playControlsView: PlayerControlsView) {
-        // backward
+        playerControllerDelegate?.didTapBackward()
+    }
+    
+    func playerControlsViewVolumeSlider(_ playControlsView: PlayerControlsView, didSlideSlider value: Float) {
+        playerControllerDelegate?.didSlideSlider(value)
     }
     
 }

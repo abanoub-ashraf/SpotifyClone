@@ -5,19 +5,23 @@ import UIKit
 ///
 /// - to let this view communicate with the player controller when any of its buttons
 ///   is tapped from inside this view
+///
 /// - we wanna the player controller to do something based on each tap
 ///
 protocol PlayerControlsViewDelegate: AnyObject {
     func playerControlsViewDidTapPlayPauseButton(_ playControlsView: PlayerControlsView)
     func playerControlsViewDidTapForwardButton(_ playControlsView: PlayerControlsView)
     func playerControlsViewDidTapBackwardButton(_ playControlsView: PlayerControlsView)
+    func playerControlsViewVolumeSlider(_ playControlsView: PlayerControlsView, didSlideSlider value: Float)
 }
 
 final class PlayerControlsView: UIView {
     
     // MARK: - Properties -
 
-    weak var delegate: PlayerControlsViewDelegate?
+    weak var controlsDelegate: PlayerControlsViewDelegate?
+    
+    private var isPlaying = true
     
     // MARK: - UI -
 
@@ -95,6 +99,7 @@ final class PlayerControlsView: UIView {
         backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(didTapNext), for: .touchUpInside)
         playPauseButton.addTarget(self, action: #selector(didTapPlayPause), for: .touchUpInside)
+        volumeSlider.addTarget(self, action: #selector(didSlideSLider(_:)), for: .valueChanged)
         
         clipsToBounds = true
     }
@@ -157,15 +162,41 @@ final class PlayerControlsView: UIView {
     // MARK: - Selectors -
     
     @objc func didTapBack() {
-        delegate?.playerControlsViewDidTapBackwardButton(self)
+        controlsDelegate?.playerControlsViewDidTapBackwardButton(self)
     }
     
     @objc func didTapNext() {
-        delegate?.playerControlsViewDidTapForwardButton(self)
+        controlsDelegate?.playerControlsViewDidTapForwardButton(self)
     }
     
     @objc func didTapPlayPause() {
-        delegate?.playerControlsViewDidTapPlayPauseButton(self)
+        self.isPlaying = !isPlaying
+        
+        controlsDelegate?.playerControlsViewDidTapPlayPauseButton(self)
+        
+        let pauseImage = UIImage(
+            systemName: "pause",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        )
+        
+        let playImage = UIImage(
+            systemName: "play.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        )
+        
+        ///
+        /// update the play pause button whenever it's clicked
+        ///
+        playPauseButton.setImage(isPlaying ? pauseImage : playImage, for: .normal)
+    }
+    
+    ///
+    /// grab the value of the slider that changing as we slide it
+    /// and pass it to the delegate method
+    ///
+    @objc func didSlideSLider(_ slider: UISlider) {
+        let value = slider.value
+        controlsDelegate?.playerControlsViewVolumeSlider(self, didSlideSlider: value)
     }
     
     // MARK: - Helper Functions -

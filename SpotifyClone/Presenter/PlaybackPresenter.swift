@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 
 ///
 /// the data source that will pass the track/tracks data
@@ -13,6 +14,8 @@ protocol PlayerDataSource: AnyObject {
 ///
 /// to present the player controller every time a song is tapped
 /// or a playlist/album as well
+///
+/// also responsible for playing the audio track after presenting the player
 ///
 final class PlaybackPresenter {
     
@@ -45,9 +48,23 @@ final class PlaybackPresenter {
     }
     
     ///
+    /// to be able to play the audio track
+    ///
+    var player: AVPlayer?
+    
+    ///
     /// for the single track
     ///
     func startPlyback(from viewController: UIViewController, track: AudioTrackModel) {
+        ///
+        /// unwrap the preview url of the audio file we gonna play
+        ///
+        /// set the volume for the player
+        ///
+        guard let url = URL(string: track.preview_url ?? "") else { return }
+        player = AVPlayer(url: url)
+        player?.volume = 0.5
+        
         ///
         /// hold the given track when its' passed to this file
         ///
@@ -62,7 +79,18 @@ final class PlaybackPresenter {
         ///
         vc.dataSource = self
         
-        viewController.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+        ///
+        /// so the player can commit changes on the audio track
+        /// that is inside the presenter
+        ///
+        vc.playerControllerDelegate = self
+        
+        ///
+        /// start playing after presenting the player on the screen
+        ///
+        viewController.present(UINavigationController(rootViewController: vc), animated: true) { [weak self] in
+            self?.player?.play()
+        }
     }
     
     ///
@@ -105,4 +133,66 @@ extension PlaybackPresenter: PlayerDataSource {
         return URL(string: currentTrack?.album?.images.first?.url ?? "")
     }
     
+}
+
+// MARK: - PlayerControllerDelegate -
+
+///
+/// this delegate responsible for playing the tracks
+/// when the controls inside the controls view are clicked
+/// they fire the controls delegate methods inside the player controller
+/// which also fires the player controller delgate methods to handle the playing of the tracks
+///
+extension PlaybackPresenter: PlayerControllerDelegate {
+    
+    ///
+    /// pause the player if it was playing
+    /// and play it if it was paused
+    ///
+    func didTapPlayPause() {
+        if let player = player {
+            if player.timeControlStatus == .playing {
+                player.pause()
+            } else if player.timeControlStatus == .paused {
+                player.play()
+            }
+        }
+    }
+    
+    ///
+    /// if there's no tracks then this is not a playlist or an album
+    /// just pause the current playing track
+    ///
+    /// if there's tracks then go to the next track
+    ///
+    func didTapForward() {
+        if tracks.isEmpty {
+            player?.pause()
+        } else {
+            //
+        }
+    }
+    
+    ///
+    /// if there's no tracks then this is not a playlist or an album
+    /// just pause the current playing track then play it again
+    ///
+    /// if there's tracks then go to the previous track
+    ///
+    func didTapBackward() {
+        if tracks.isEmpty {
+            player?.pause()
+            player?.play()
+        } else {
+            //
+        }
+    }
+    
+    ///
+    /// update the volume of the player with the value of the slider
+    ///
+    func didSlideSlider(_ value: Float) {
+        player?.volume = value
+    }
+
 }
