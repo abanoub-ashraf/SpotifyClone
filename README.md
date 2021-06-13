@@ -1,4 +1,6 @@
-<img alt="Spotify" src="https://user-images.githubusercontent.com/10991489/120122574-df01c100-c1a9-11eb-8416-1058ae282772.png"/>
+<!--<img alt="Spotify" src="https://user-images.githubusercontent.com/10991489/120122574-df01c100-c1a9-11eb-8416-1058ae282772.png"/>-->
+
+![spotify-logo](https://user-images.githubusercontent.com/10991489/121804468-dc41aa00-cc46-11eb-878d-c996ac6e3490.png)
 
 ### Hi there, This is ***Spotify Clone*** - iOS Native App Written in [Swift 5][Swift 5] and based on [Spotify REST API][website] 👋
 
@@ -33,7 +35,7 @@
 ## App Technologies:
  
 * App Current Version: V1.0
-* Supported IOS : IOS 14 or above
+* Supported IOS : IOS 14.0 or above
 * Swift Frameworks : UIKit - WebKit 
 * DataStorage : 
 * Third party Libraries : SDWebImage
