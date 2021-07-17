@@ -1,28 +1,29 @@
+import Foundation
 import UIKit
 
 // MARK: - PlayerControlsViewDelegate -
 
 ///
-/// - to let this view communicate with the player controller when any of its buttons
-///   is tapped from inside this view
-///
-/// - we wanna the player controller to do something based on each tap
+/// when i click on any of the controls buttons inside the player controls view
+/// i want that click to do something inside the player controller
 ///
 protocol PlayerControlsViewDelegate: AnyObject {
-    func playerControlsViewDidTapPlayPauseButton(_ playControlsView: PlayerControlsView)
-    func playerControlsViewDidTapForwardButton(_ playControlsView: PlayerControlsView)
-    func playerControlsViewDidTapBackwardButton(_ playControlsView: PlayerControlsView)
-    func playerControlsViewVolumeSlider(_ playControlsView: PlayerControlsView, didSlideSlider value: Float)
+    func playerControlsViewDelegateDidTapPlayPauseButton(_ playerControlsView: PlayerControlsView)
+    func playerControlsViewDelegateDidTapForwardButton(_ playerControlsView: PlayerControlsView)
+    func playerControlsViewDelegateDidTapBackwardButton(_ playerControlsView: PlayerControlsView)
+    func playerControlsViewDelegateDidSlideVolume(_ playerControlsView: PlayerControlsView, value: Float)
 }
+
+// MARK: - PlayerControlsView -
 
 final class PlayerControlsView: UIView {
     
     // MARK: - Properties -
 
-    weak var controlsDelegate: PlayerControlsViewDelegate?
+    weak var controlsViewDelegate: PlayerControlsViewDelegate?
     
-    private var isPlaying = true
-    
+    var isPlaying = true
+        
     // MARK: - UI -
 
     private let volumeSlider: UISlider = {
@@ -33,17 +34,16 @@ final class PlayerControlsView: UIView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "This is My Song"
-        label.numberOfLines = 0
+        label.text = "This Is My Song"
+        label.numberOfLines = 1
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.textColor = .label
         return label
     }()
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Drake (feat. Some Other Artist)"
-        label.numberOfLines = 0
+        label.numberOfLines = 1
         label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textColor = .secondaryLabel
         return label
@@ -54,7 +54,7 @@ final class PlayerControlsView: UIView {
         button.tintColor = .label
         let image = UIImage(
             systemName: "backward.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .regular)
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
         button.setImage(image, for: .normal)
         return button
@@ -65,13 +65,13 @@ final class PlayerControlsView: UIView {
         button.tintColor = .label
         let image = UIImage(
             systemName: "forward.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .regular)
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
         button.setImage(image, for: .normal)
         return button
     }()
     
-    private let playPauseButton: UIButton = {
+    var playPauseButton: UIButton = {
         let button = UIButton()
         button.tintColor = .label
         let image = UIImage(
@@ -86,7 +86,7 @@ final class PlayerControlsView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+                
         backgroundColor = .clear
         
         addSubview(nameLabel)
@@ -99,7 +99,7 @@ final class PlayerControlsView: UIView {
         backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(didTapNext), for: .touchUpInside)
         playPauseButton.addTarget(self, action: #selector(didTapPlayPause), for: .touchUpInside)
-        volumeSlider.addTarget(self, action: #selector(didSlideSLider(_:)), for: .valueChanged)
+        volumeSlider.addTarget(self, action: #selector(didSlideSlider), for: .valueChanged)
         
         clipsToBounds = true
     }
@@ -112,8 +112,6 @@ final class PlayerControlsView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        let buttonSize: CGFloat = 60
         
         nameLabel.frame = CGRect(
             x: 0,
@@ -136,6 +134,8 @@ final class PlayerControlsView: UIView {
             height: 44
         )
         
+        let buttonSize: CGFloat = 60
+        
         playPauseButton.frame = CGRect(
             x: (width - buttonSize) / 2,
             y: volumeSlider.bottom + 30,
@@ -156,54 +156,61 @@ final class PlayerControlsView: UIView {
             width: buttonSize,
             height: buttonSize
         )
-        
-    }
-    
-    // MARK: - Selectors -
-    
-    @objc func didTapBack() {
-        controlsDelegate?.playerControlsViewDidTapBackwardButton(self)
-    }
-    
-    @objc func didTapNext() {
-        controlsDelegate?.playerControlsViewDidTapForwardButton(self)
-    }
-    
-    @objc func didTapPlayPause() {
-        self.isPlaying = !isPlaying
-        
-        controlsDelegate?.playerControlsViewDidTapPlayPauseButton(self)
-        
-        let pauseImage = UIImage(
-            systemName: "pause",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        )
-        
-        let playImage = UIImage(
-            systemName: "play.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        )
-        
-        ///
-        /// update the play pause button whenever it's clicked
-        ///
-        playPauseButton.setImage(isPlaying ? pauseImage : playImage, for: .normal)
-    }
-    
-    ///
-    /// grab the value of the slider that changing as we slide it
-    /// and pass it to the delegate method
-    ///
-    @objc func didSlideSLider(_ slider: UISlider) {
-        let value = slider.value
-        controlsDelegate?.playerControlsViewVolumeSlider(self, didSlideSlider: value)
     }
     
     // MARK: - Helper Functions -
-    
+
+    ///
+    /// configure the ui of this controls view with the view model
+    /// that is given to it from the player controller
+    ///
     func configure(with viewModel: PlayerControlsViewViewModel) {
         nameLabel.text = viewModel.title
         subtitleLabel.text = viewModel.subtitle
+    }
+        
+    // MARK: - Selectors -
+    
+    @objc private func didSlideSlider(_ slider: UISlider) {
+        controlsViewDelegate?.playerControlsViewDelegateDidSlideVolume(self, value: slider.value)
+    }
+
+    @objc private func didTapBack() {
+        ///
+        /// - this is one of the PlayerControlsViewDelegate Protocol functions
+        ///
+        /// - when this selector function is tapped, we want the player controller
+        ///   to go to the previous track
+        ///
+        controlsViewDelegate?.playerControlsViewDelegateDidTapBackwardButton(self)
+    }
+    
+    @objc private func didTapNext() {
+        ///
+        /// - this is one of the PlayerControlsViewDelegate Protocol functions
+        ///
+        /// - when this selector function is tapped, we want the player controller
+        ///   to go to the next track
+        ///
+        controlsViewDelegate?.playerControlsViewDelegateDidTapForwardButton(self)
+    }
+    
+    @objc private func didTapPlayPause() {
+        ///
+        /// this variable for togling the image of the play button every time it's tapped
+        ///
+        self.isPlaying = !isPlaying
+        ///
+        /// - this is one of the PlayerControlsViewDelegate Protocol functions
+        ///
+        /// - when this selector function is tapped, we want the player controller
+        ///   to go to the play/pause the current track that's being played
+        ///
+        controlsViewDelegate?.playerControlsViewDelegateDidTapPlayPauseButton(self)
+        ///
+        /// update the image of this button every time it's tapped
+        ///
+        playPauseButton.setImage(isPlaying ? Constants.pauseImage : Constants.playImage, for: .normal)
     }
     
 }

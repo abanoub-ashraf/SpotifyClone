@@ -510,7 +510,6 @@ extension HomeController: UICollectionViewDelegate {
                 vc.navigationItem.largeTitleDisplayMode = .never
                 
                 navigationController?.pushViewController(vc, animated: true)
-                break
                 
             case .newReleases:
                 let album = newAlbums[indexPath.row]
@@ -524,15 +523,13 @@ extension HomeController: UICollectionViewDelegate {
                 vc.navigationItem.largeTitleDisplayMode = .never
                 
                 navigationController?.pushViewController(vc, animated: true)
-                break
                 
             case .recommendedTracks:
                 ///
-                /// present the playler controller when a track is tapped
+                /// present the player controller when a track is tapped
                 ///
                 let track = tracks[indexPath.row]
-                PlaybackPresenter.shared.startPlyback(from: self, track: track)
-                break
+                PlaybackPresenter.shared.startPlayback(from: self, track: track)
         }
     }
     

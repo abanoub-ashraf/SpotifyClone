@@ -104,6 +104,7 @@ class SearchController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                     case .success(let categories):
+                        ///
                         /// to fill the collection view with data using this categories array
                         ///
                         self?.categories = categories
@@ -114,6 +115,13 @@ class SearchController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func resetSearchResultsController() {
+        guard let resultsController = searchController.searchResultsController as? SearchResultsController else {
+            return
+        }
+        resultsController.reset()
     }
 
 }
@@ -168,6 +176,14 @@ extension SearchController: UICollectionViewDelegate {
 // MARK: - UISearchBarDelegate -
 
 extension SearchController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        resetSearchResultsController()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        resetSearchResultsController()
+    }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard
@@ -251,7 +267,7 @@ extension SearchController: SearchResultsControllerDelegate {
                 ///
                 /// when a single track is tapped, present the player controller
                 ///
-                PlaybackPresenter.shared.startPlyback(from: self, track: model)
+                PlaybackPresenter.shared.startPlayback(from: self, track: model)
     
             case .playlist(model: let model):
                 let vc = PlaylistController(playlist: model)

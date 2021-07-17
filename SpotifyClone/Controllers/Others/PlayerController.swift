@@ -2,15 +2,18 @@ import UIKit
 import SDWebImage
 
 ///
-/// - first delegate between the controls view and the player
-///   so when any button is tapped inside the controls
-///   the player do something (play pause/forward/backward)
+/// - this controll is gonna have a PlayerControllerDelegate, a PlayerDataSource, and a PlayerControlsViewDelegate
 ///
-/// - but in order for that to happen the player controller ceed a way to communicate with the presenter who
-///   actually play the track in order to tell it to play pause/forward/backward
+/// - the PlayerDataSource is between the player controller and the presenter
+///   to send the data of the current playing track from the presenter to the player
 ///
-/// - and this player controller delegate does that
+/// - the PlayerControlsViewDelegate is between the controls view and this player controller
+///   so when any button in the controls view is tapped, this player gets affected
 ///
+/// - the PlayerControllerDelegate is between the player controller and the presenter
+///   to control the playing music in the presenter through the player
+///
+
 protocol PlayerControllerDelegate: AnyObject {
     func didTapPlayPause()
     func didTapForward()
@@ -23,27 +26,25 @@ class PlayerController: UIViewController {
     // MARK: - Properties -
 
     ///
-    /// the property of the data source protocol
+    /// for the PlayerDataSource that will pass data from the presenter to this controller
     ///
-    weak var dataSource: PlayerDataSource?
-    
+    weak var playerDataSource: PlayerDataSource?
     ///
-    /// so the player can commit changes on the audio track
-    /// that is inside the presenter
+    /// for the PlayerControllerDelegate that will control the playing music
+    /// in the presenter through the player
     ///
     weak var playerControllerDelegate: PlayerControllerDelegate?
-
+    
     // MARK: - UI -
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Constants.albumCoverPlaceholder
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .systemBlue
+        imageView.image = Constants.albumCoverPlaceholder
         return imageView
     }()
     
-    private let controlsView = PlayerControlsView()
+     var controlsView = PlayerControlsView()
     
     // MARK: - LifeCycle -
     
@@ -54,11 +55,25 @@ class PlayerController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(controlsView)
         
-        controlsView.controlsDelegate = self
+        ///
+        /// this is for the PlayerControlsViewDelegate Protocol which is responsible for
+        /// connect the clicks on the controls buttons in the controls view
+        /// and apply the effects of the clicks here inside this player controller
+        ///
+        controlsView.controlsViewDelegate = self
         
         configureBarButtons()
         
+        ///
+        /// configure the ui of this player with the track info
+        /// we got from the presenter through the player data source
+        ///
         configure()
+        
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
+        imageView.layer.cornerRadius = 25
+        imageView.layer.masksToBounds = true
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -80,7 +95,7 @@ class PlayerController: UIViewController {
     }
     
     // MARK: - Helper Functions -
-    
+
     private func configureBarButtons() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close,
@@ -96,53 +111,74 @@ class PlayerController: UIViewController {
     }
     
     ///
-    /// configure the player controller
-    /// with the data that the data source sent from the presenter
-    /// to this player
+    /// configure the ui of this player controller with the track info
+    /// we got from the presenter through the player data source
     ///
     private func configure() {
-        imageView.sd_setImage(with: dataSource?.imageURL, completed: nil)
-        
+        ///
+        /// set the iamge of this player to be the one of the current playing track
+        /// that the presenter is playing and sent to this controller through the data source
+        ///
+        imageView.sd_setImage(with: playerDataSource?.imageURL, completed: nil)
+        ///
+        /// set the ui of the controls view with the current track data
+        ///
         controlsView.configure(
             with: PlayerControlsViewViewModel(
-                title: dataSource?.songName, subtitle: dataSource?.subtitle
+                title: playerDataSource?.songName,
+                subtitle: playerDataSource?.subtitle
             )
         )
     }
     
-    // MARK: - Selectors -
+    ///
+    /// call this function from inside the presenter to refresh the player controller
+    /// with the new audio track
+    ///
+    func refreshUI() {
+        configure()
+    }
     
+    // MARK: - Selectors -
+
     @objc private func didTapClose() {
         dismiss(animated: true, completion: nil)
     }
     
     @objc private func didTapAction() {
-        // TODO: - Actions -
+        // Actions
     }
-
+    
 }
 
 // MARK: - PlayerControlsViewDelegate -
 
 ///
-/// this is gonna have the action the player controller will do
-/// when each button in the controls view is tapped
+/// - this is for the PlayerControlsViewDelegate Protocol which is responsible for
+///   connect the clicks on the controls buttons in the controls view
+///   and apply the effects of the clicks here inside this player controller
+///
+/// - implement the effects of the clicks on the controls inside the controls view
 ///
 extension PlayerController: PlayerControlsViewDelegate {
     
-    func playerControlsViewDidTapPlayPauseButton(_ playControlsView: PlayerControlsView) {
+    func playerControlsViewDelegateDidTapPlayPauseButton(_ playerControlsView: PlayerControlsView) {
         playerControllerDelegate?.didTapPlayPause()
     }
     
-    func playerControlsViewDidTapForwardButton(_ playControlsView: PlayerControlsView) {
+    func playerControlsViewDelegateDidTapForwardButton(_ playerControlsView: PlayerControlsView) {
         playerControllerDelegate?.didTapForward()
     }
     
-    func playerControlsViewDidTapBackwardButton(_ playControlsView: PlayerControlsView) {
+    func playerControlsViewDelegateDidTapBackwardButton(_ playerControlsView: PlayerControlsView) {
         playerControllerDelegate?.didTapBackward()
     }
     
-    func playerControlsViewVolumeSlider(_ playControlsView: PlayerControlsView, didSlideSlider value: Float) {
+    ///
+    /// this function will take the slider value from the controls view file to this player in here
+    /// then send it to the presenter cause the volume control is in the presenter file
+    ///
+    func playerControlsViewDelegateDidSlideVolume(_ playerControlsView: PlayerControlsView, value: Float) {
         playerControllerDelegate?.didSlideSlider(value)
     }
     

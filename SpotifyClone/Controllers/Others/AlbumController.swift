@@ -211,8 +211,13 @@ extension AlbumController: UICollectionViewDelegate {
         ///
         /// same as in the playlist controller file
         ///
-        let track = tracks[indexPath.row]
-        PlaybackPresenter.shared.startPlyback(from: self, track: track)
+        var track = tracks[indexPath.row]
+        ///
+        /// give the current alum to each track the user tap on so we can display the image of the album
+        /// when any track is played
+        ///
+        track.album = self.album
+        PlaybackPresenter.shared.startPlayback(from: self, track: track)
     }
     
 }
@@ -229,9 +234,23 @@ extension AlbumController: PlaylistHeaderDelegate {
     /// implement the protocol delegate function that's gonna be called from the PlaylistHeader
     func playlistHeaderDidTapPlayAll(_ header: PlaylistHeader) {
         ///
+        /// - create a copy of the tracks to give the current album to each one of those tracks
+        ///   cause the single track model doesn't have its album property in the api response
+        ///   so we give it here manually so we can get the images of that album when we play a single track in the
+        ///   player controller
+        ///
+        /// - then pass the new copy of tracks to the presenter so we can display the image of each track inside
+        ///   the player, the images that comes from that album property that we gave manually
+        ///
+        let tracksWithAlbum: [AudioTrackModel] = tracks.compactMap({
+            var track = $0
+            track.album = self.album
+            return track
+        })
+        ///
         /// same as in the playlist controller file
         ///
-        PlaybackPresenter.shared.startPlyback(from: self, tracks: tracks)
+        PlaybackPresenter.shared.startPlayback(from: self, tracks: tracksWithAlbum)
     }
     
 }

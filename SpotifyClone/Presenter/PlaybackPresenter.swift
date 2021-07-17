@@ -1,9 +1,54 @@
+import Foundation
 import UIKit
 import AVFoundation
 
 ///
-/// the data source that will pass the track/tracks data
-/// from the presenter player to the player controller
+/// Summary of playing and controlling the music:
+/// ===============================================
+///
+///     1- when i click on a single track or an array of tracks
+///
+///     2- the presenter will call the startPlayback() functions with the track/tracks array i clicked on
+///
+///     3- now the track/tracks are stored inside the track/tracks variables inside the presenter
+///
+///     4- the currentItem variable inside the presenter will have the data of the single track or the first track
+///        of the tracks array and send the data to the player controller through the PlayerDataSource
+///
+///     5- if i clicked on any controls button like the forward one, it will trigger the delegate function inside
+///        the controls view file to go to the enxt track inside the player but that happens in the presenter
+///        so another delegate function will get triggered from the player controller to do something in the
+///        presenter which is going to the next track because the presenter holds the tracks and plays them,
+///        not the player controller
+///
+
+
+///
+/// 1- a delegate between the controls view and the player controller
+///
+///     - to make changes inside the player controller when the buttons in the controls view are tapped
+///       like tapping on the play buton in the controls view to change its image inside the player
+///       controller into pause image and also to pause the music itself but this needs another delegate between
+///       the player controller and the presenter who actually playing the audio
+///
+/// 2- a delegate between the player controller and the presenter
+///
+///     - to control the playing music inside the presenter but from within the player controller
+///       like pause the playing audio by clicking on the button from the controls view of the player
+///       and pause the music from the presenter cause it's the one who plays the audio
+///
+/// 3- a data source between the presenter and the player controller
+///
+///     - to pass the current playing track's data from the presenter to the player controller
+///       cause the player will display those data like the name of the song etc
+///
+
+// MARK: - PlayerDataSource -
+
+///
+/// - this datasource will send the tracks info from the presenter to the player controller
+///
+/// - the datasource proeprty is gonna be in the player controller
 ///
 protocol PlayerDataSource: AnyObject {
     var songName: String? { get }
@@ -11,100 +56,170 @@ protocol PlayerDataSource: AnyObject {
     var imageURL: URL? { get }
 }
 
-///
-/// to present the player controller every time a song is tapped
-/// or a playlist/album as well
-///
-/// also responsible for playing the audio track after presenting the player
-///
 final class PlaybackPresenter {
     
     // MARK: - Properties -
-
-    static let shared = PlaybackPresenter()
     
+    static let shared = PlaybackPresenter()
     ///
-    /// to keep track of the current track that's given to this file
+    /// to hold the track when it's given to this presenter
     ///
     private var track: AudioTrackModel?
-    
     ///
-    /// to keep[ track of the tracks that're given to this file
+    /// to hold the tracks after they're given to this presenter
     ///
     private var tracks = [AudioTrackModel]()
-    
     ///
-    /// the current track that this file is holding
-    /// it's gonna be the track if there's a given one
-    /// or the first track of the given ones if there were given ones
+    /// - keeps track of the current playing audio track
+    ///
+    /// - gives the current track data to the data source
+    ///   which will pass it to the player controller
     ///
     var currentTrack: AudioTrackModel? {
+        ///
+        /// - if there's a single and the tracks list is empty
+        ///   return that single track
+        ///
+        /// - if the tracks list is not empty
+        ///   return its first one
+        ///
         if let track = track, tracks.isEmpty {
             return track
-        } else if !tracks.isEmpty {
-            return tracks.first
+        } else if let _ = self.playerQueue, !tracks.isEmpty {
+            return tracks[index]
         }
+        
         return nil
     }
     
-    ///
-    /// to be able to play the audio track
-    ///
     var player: AVPlayer?
     
+    var playerQueue: AVQueuePlayer?
+    
     ///
-    /// for the single track
+    /// to call its refreshUI method to configure the UI of it with the new song
     ///
-    func startPlyback(from viewController: UIViewController, track: AudioTrackModel) {
-        ///
-        /// unwrap the preview url of the audio file we gonna play
-        ///
-        /// set the volume for the player
-        ///
-        guard let url = URL(string: track.preview_url ?? "") else { return }
-        player = AVPlayer(url: url)
-        player?.volume = 0.5
-        
-        ///
-        /// hold the given track when its' passed to this file
-        ///
-        self.track = track
-        self.tracks = []
-        
+    var playerVC: PlayerController?
+    
+    ///
+    /// track thr current song in the array of tracks
+    ///
+    var index = 0
+    
+    // MARK: - Helper Functions -
+    
+    ///
+    /// this functions gets called from the places where a single track is tapped
+    /// in order for it to be presented in a player controller
+    ///
+    func startPlayback(from viewController: UIViewController, track: AudioTrackModel) {
         let vc = PlayerController()
         vc.title = track.name
         
-        ///
-        /// to be the source of the datasource protocol
-        ///
-        vc.dataSource = self
+        guard let url = URL(string: track.preview_url ?? "") else { return }
+        
+        player = AVPlayer(url: url)
+        player?.volume = 0.5
+        
+        self.track = track
+        self.tracks = []
         
         ///
-        /// so the player can commit changes on the audio track
-        /// that is inside the presenter
+        /// assign this file to be the data source for the player controller
+        /// this file will give the track info to the player controller
+        ///
+        vc.playerDataSource = self
+        ///
+        /// this delegate will take the actions from the player and apply them on the presenter
+        /// like control the music
         ///
         vc.playerControllerDelegate = self
         
         ///
-        /// start playing after presenting the player on the screen
+        /// - the view controller that will be given to this function
+        ///   will present the player in a navigation controller
+        ///
+        /// - start playing once the player controller is presented on the screen
         ///
         viewController.present(UINavigationController(rootViewController: vc), animated: true) { [weak self] in
+            if self?.playerQueue?.timeControlStatus == .playing {
+                self?.playerQueue?.pause()
+                self?.playerQueue = nil
+            }
+            if self?.player?.timeControlStatus == .playing {
+                self?.player?.pause()
+            }
+            self?.player?.automaticallyWaitsToMinimizeStalling = false
             self?.player?.play()
         }
+        
+        ///
+        /// so we can use the refreshUI functions of it and its controls button as well
+        ///
+        self.playerVC = vc
     }
     
     ///
-    /// for an array of tracks (playlist/album)
+    /// this function get called from the places where the play button is tapped
+    /// to present a player with an array of tracks (playlist/album)
     ///
-    func startPlyback(from viewController: UIViewController, tracks: [AudioTrackModel]) {
-        ///
-        /// hold the given tracks when they are passed to this file
-        ///
+    func startPlayback(from viewController: UIViewController, tracks: [AudioTrackModel]) {
+        self.index = 0
+        
+        let vc = PlayerController()
+        
         self.tracks = tracks
         self.track = nil
         
-        let vc = PlayerController()
-        viewController.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+        let items: [AVPlayerItem] = tracks.compactMap({
+            guard let url = URL(string: $0.preview_url ?? "") else { return nil }
+            return AVPlayerItem(url: url)
+        })
+        
+//        self.playerQueue = nil
+        self.playerQueue = AVQueuePlayer(items: items)
+        self.player?.pause()
+        self.player = nil
+        
+        self.playerQueue?.volume = 0.5
+        
+        vc.playerDataSource = self
+        vc.playerControllerDelegate = self
+        
+        ///
+        /// the view controller that will be given to this function
+        /// will present the player in a navigation controller
+        ///
+        viewController.present(UINavigationController(rootViewController: vc), animated: true) { [weak self] in
+            if self?.player?.timeControlStatus == .playing {
+                self?.player?.pause()
+                self?.player = nil
+            }
+            if self?.playerQueue?.timeControlStatus == .playing {
+                self?.playerQueue?.pause()
+            }
+            self?.playerQueue?.automaticallyWaitsToMinimizeStalling = false
+            self?.playerQueue?.play()
+        }
+        
+        ///
+        /// so we can use the refreshUI functions of it and its controls button as well
+        ///
+        self.playerVC = vc
+    }
+    
+    func playTrack(player: AVQueuePlayer) {
+        if player.items().count > 0 {
+            guard let trackURL = URL(string: tracks[index].preview_url ?? "") else { return }
+            
+            player.replaceCurrentItem(with: AVPlayerItem(url: trackURL))
+            player.automaticallyWaitsToMinimizeStalling = false
+            
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.pauseImage, for: .normal)
+            self.playerVC?.controlsView.isPlaying = true
+            
+            player.play()
+        }
     }
     
 }
@@ -112,25 +227,33 @@ final class PlaybackPresenter {
 // MARK: - PlayerDataSource -
 
 ///
-/// implement the properties of the data source protocol
-/// to send their data to the player controller
+/// fill the properties of the data source protocol with the current track data
+/// to give them to the player controller
 ///
 extension PlaybackPresenter: PlayerDataSource {
     
-    ///
-    /// the data of the current track that's being played
-    /// in the player controller
-    ///
     var songName: String? {
-        return currentTrack?.name
+        if currentTrack == nil {
+            return "Not Available"
+        } else {
+            return currentTrack?.name
+        }
     }
     
     var subtitle: String? {
-        return currentTrack?.artists.first?.name
+        if currentTrack == nil {
+            return "Not Available"
+        } else {
+            return currentTrack?.artists.first?.name
+        }
     }
     
     var imageURL: URL? {
-        return URL(string: currentTrack?.album?.images.first?.url ?? "")
+        if currentTrack == nil {
+            return URL(string: "https://user-images.githubusercontent.com/10991489/125995103-048f855f-a37b-4836-895e-06eba8493083.png")
+        } else {
+            return URL(string: currentTrack?.album?.images.first?.url ?? "")
+        }
     }
     
 }
@@ -138,19 +261,19 @@ extension PlaybackPresenter: PlayerDataSource {
 // MARK: - PlayerControllerDelegate -
 
 ///
-/// this delegate responsible for playing the tracks
-/// when the controls inside the controls view are clicked
-/// they fire the controls delegate methods inside the player controller
-/// which also fires the player controller delgate methods to handle the playing of the tracks
+/// this delegate make actions in the player and apply them in the presenter
+/// like control the music
 ///
 extension PlaybackPresenter: PlayerControllerDelegate {
     
-    ///
-    /// pause the player if it was playing
-    /// and play it if it was paused
-    ///
     func didTapPlayPause() {
         if let player = player {
+            if player.timeControlStatus == .playing {
+                player.pause()
+            } else if player.timeControlStatus == .paused {
+                player.play()
+            }
+        } else if let player = playerQueue {
             if player.timeControlStatus == .playing {
                 player.pause()
             } else if player.timeControlStatus == .paused {
@@ -159,40 +282,52 @@ extension PlaybackPresenter: PlayerControllerDelegate {
         }
     }
     
-    ///
-    /// if there's no tracks then this is not a playlist or an album
-    /// just pause the current playing track
-    ///
-    /// if there's tracks then go to the next track
-    ///
     func didTapForward() {
         if tracks.isEmpty {
             player?.pause()
-        } else {
-            //
+            
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.playImage, for: .normal)
+            self.playerVC?.controlsView.isPlaying = false
+        } else if let player = playerQueue {
+            if index + 1 > tracks.count - 1 {
+                index = 0
+            } else {
+                index += 1
+            }
+            ///
+            /// refresh the ui of the player with the new audio track
+            ///
+            playerVC?.refreshUI()
+            
+            playTrack(player: player)
         }
     }
     
-    ///
-    /// if there's no tracks then this is not a playlist or an album
-    /// just pause the current playing track then play it again
-    ///
-    /// if there's tracks then go to the previous track
-    ///
     func didTapBackward() {
         if tracks.isEmpty {
             player?.pause()
-            player?.play()
-        } else {
-            //
+            
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.playImage, for: .normal)
+            self.playerVC?.controlsView.isPlaying = false
+        } else if let player = playerQueue {
+            if index - 1 < 0 {
+                index = tracks.count - 1
+            } else {
+                index -= 1
+            }
+            
+            playerVC?.refreshUI()
+            
+            playTrack(player: player)
         }
     }
     
-    ///
-    /// update the volume of the player with the value of the slider
-    ///
     func didSlideSlider(_ value: Float) {
-        player?.volume = value
+        if player != nil {
+            player?.volume = value
+        } else if playerQueue != nil {
+            playerQueue?.volume = value
+        }
     }
-
+    
 }

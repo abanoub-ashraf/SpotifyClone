@@ -84,6 +84,16 @@ struct Constants {
     static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
     static let albumCoverPlaceholder       = UIImage(named: "albumCoverPlaceholder")
     
+     static let pauseImage = UIImage(
+        systemName: "pause",
+        withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+    )
+    
+    static let playImage = UIImage(
+        systemName: "play",
+        withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+    )
+    
     // MARK: - Colors -
     
     static let mainColor = UIColor(named: "mainColor")

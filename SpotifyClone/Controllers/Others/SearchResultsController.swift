@@ -119,6 +119,11 @@ class SearchResultsController: UIViewController {
         //
         tableView.isHidden = results.isEmpty
     }
+    
+    func reset() {
+        sections = []
+        tableView.reloadData()
+    }
 
 }
 
