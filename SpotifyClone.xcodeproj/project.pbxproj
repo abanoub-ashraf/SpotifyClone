@@ -286,16 +286,6 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		2E6A56612637536B008BDE9A /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				2EBBD6F826347BE500812376 /* AppDelegate.swift */,
-				2EBBD6FA26347BE500812376 /* SceneDelegate.swift */,
-				2EBBD70126347BF300812376 /* Assets.xcassets */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		2E75D05326504C2500F87444 /* Browse */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,16 +380,15 @@
 		2EBBD6F726347BE500812376 /* SpotifyClone */ = {
 			isa = PBXGroup;
 			children = (
+				2EE9AE0026A39082002A6E37 /* AppFiles */,
 				2EBF6A51267289A300962E62 /* Presenter */,
 				2E4F650C2659A485002C4F8C /* Extensions */,
-				2E6A56612637536B008BDE9A /* Resources */,
 				2E6A566026375360008BDE9A /* Managers */,
 				2E6A565F26375352008BDE9A /* ViewModels */,
 				2E6A565E2637534B008BDE9A /* Models */,
 				2E6A565D26375342008BDE9A /* Views */,
 				2E6A565C2637533B008BDE9A /* Controllers */,
 				2EBBD70C2635D2A200812376 /* Utilities */,
-				2EBBD70626347BF300812376 /* Info.plist */,
 			);
 			path = SpotifyClone;
 			sourceTree = "<group>";
@@ -435,6 +424,17 @@
 				2EBF6A982675486500962E62 /* PlayerControlsViewViewModel.swift */,
 			);
 			path = Player;
+			sourceTree = "<group>";
+		};
+		2EE9AE0026A39082002A6E37 /* AppFiles */ = {
+			isa = PBXGroup;
+			children = (
+				2EBBD6F826347BE500812376 /* AppDelegate.swift */,
+				2EBBD6FA26347BE500812376 /* SceneDelegate.swift */,
+				2EBBD70126347BF300812376 /* Assets.xcassets */,
+				2EBBD70626347BF300812376 /* Info.plist */,
+			);
+			name = AppFiles;
 			sourceTree = "<group>";
 		};
 		2EFB54FC263756AC00D9745F /* Core */ = {
