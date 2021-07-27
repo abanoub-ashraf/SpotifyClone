@@ -10,7 +10,7 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
     
     private let albumCoverImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = Constants.newReleasesPlaceholderImage
+        imageView.image = Constants.Images.newReleasesPlaceholderImage
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -96,7 +96,7 @@ class RecommendedTracksCollectionViewCell: UICollectionViewCell {
         
         albumCoverImageView.sd_setImage(
             with: viewModel.artworkURL,
-            placeholderImage: Constants.newReleasesPlaceholderImage,
+            placeholderImage: Constants.Images.newReleasesPlaceholderImage,
             completed: nil
         )
     }

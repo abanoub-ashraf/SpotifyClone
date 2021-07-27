@@ -123,7 +123,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         
         albumCoverImageView.sd_setImage(
             with: viewModel.artWorkURL,
-            placeholderImage: Constants.albumCoverPlaceholder,
+            placeholderImage: Constants.Images.albumCoverPlaceholder,
             completed: nil
         )
     }

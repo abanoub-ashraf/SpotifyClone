@@ -67,7 +67,7 @@ class SearchResultDefaultTableCell: UITableViewCell {
         label.text = viewModel.title
         iconImageView.sd_setImage(
             with: viewModel.imageUrl,
-            placeholderImage: Constants.personPlaceholderImage,
+            placeholderImage: Constants.Images.personPlaceholderImage,
             completed: nil
         )
     }

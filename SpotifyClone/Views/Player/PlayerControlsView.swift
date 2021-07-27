@@ -210,7 +210,7 @@ final class PlayerControlsView: UIView {
         ///
         /// update the image of this button every time it's tapped
         ///
-        playPauseButton.setImage(isPlaying ? Constants.pauseImage : Constants.playImage, for: .normal)
+        playPauseButton.setImage(isPlaying ? Constants.Images.pauseImage : Constants.Images.playImage, for: .normal)
     }
     
 }

@@ -40,7 +40,7 @@ class PlayerController: UIViewController {
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = Constants.albumCoverPlaceholder
+        imageView.image = Constants.Images.albumCoverPlaceholder
         return imageView
     }()
     

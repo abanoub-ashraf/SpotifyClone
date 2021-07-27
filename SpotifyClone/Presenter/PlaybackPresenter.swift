@@ -215,7 +215,7 @@ final class PlaybackPresenter {
             player.replaceCurrentItem(with: AVPlayerItem(url: trackURL))
             player.automaticallyWaitsToMinimizeStalling = false
             
-            self.playerVC?.controlsView.playPauseButton.setImage(Constants.pauseImage, for: .normal)
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.Images.pauseImage, for: .normal)
             self.playerVC?.controlsView.isPlaying = true
             
             player.play()
@@ -286,7 +286,7 @@ extension PlaybackPresenter: PlayerControllerDelegate {
         if tracks.isEmpty {
             player?.pause()
             
-            self.playerVC?.controlsView.playPauseButton.setImage(Constants.playImage, for: .normal)
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.Images.playImage, for: .normal)
             self.playerVC?.controlsView.isPlaying = false
         } else if let player = playerQueue {
             if index + 1 > tracks.count - 1 {
@@ -307,7 +307,7 @@ extension PlaybackPresenter: PlayerControllerDelegate {
         if tracks.isEmpty {
             player?.pause()
             
-            self.playerVC?.controlsView.playPauseButton.setImage(Constants.playImage, for: .normal)
+            self.playerVC?.controlsView.playPauseButton.setImage(Constants.Images.playImage, for: .normal)
             self.playerVC?.controlsView.isPlaying = false
         } else if let player = playerQueue {
             if index - 1 < 0 {

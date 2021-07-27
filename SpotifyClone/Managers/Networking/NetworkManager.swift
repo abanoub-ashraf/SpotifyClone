@@ -10,23 +10,12 @@ final class NetworkManager {
     
     private init() {}
     
-    // MARK: - Enums
-    
-    private enum HTTPMethod: String {
-        // String means each case will have a string value of its own name
-        case GET
-        case POST
-    }
-    
-    private enum APIError: Error {
-        case failedToGetData
-    }
-    
     // MARK: - Helper Functions
     
-    // a generic request that every api call will be building on top of it
-    // instead of repeating those lines inside of many times
-    //
+    ///
+    /// a generic request that every api call will be building on top of it
+    /// instead of repeating those lines inside of many times
+    ///
     private func createRequest(with url: URL?, type: HTTPMethod, completion: @escaping (URLRequest) -> Void) {
         AuthManager.shared.withValidToken { token in
             guard let apiURL = url else { return }
@@ -42,8 +31,9 @@ final class NetworkManager {
     
     // MARK: - Users
     
-    // get the current logged in user
-    //
+    ///
+    /// get the current logged in user
+    ///
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfileModel, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getCurrentUser),
@@ -69,8 +59,9 @@ final class NetworkManager {
     
     // MARK: - Browse
     
-    // get a list of the recommended genres
-    //
+    ///
+    /// get a list of the recommended genres
+    ///
     public func getRecommendedGenres(completion: @escaping (Result<RecommendedGenresResponse, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getRecommendedGenres),
@@ -93,8 +84,9 @@ final class NetworkManager {
         }
     }
     
-    // get recommendations based on given genres
-    //
+    ///
+    /// get recommendations based on given genres
+    ///
     public func getRecommendations(
         genres: Set<String>,
         completion: @escaping (Result<RecommendationsResponse, Error>) -> Void
@@ -126,8 +118,9 @@ final class NetworkManager {
     
     // MARK: - Playlists
     
-    // get a list of spotify featured playlists
-    //
+    ///
+    /// get a list of spotify featured playlists
+    ///
     public func getFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getFeaturedPlaylists),
@@ -150,8 +143,9 @@ final class NetworkManager {
         }
     }
     
-    // get a single playlist of the feature dplaylists
-    //
+    ///
+    /// get a single playlist of the feature dplaylists
+    ///
     public func getPlaylistDetails(
         for playlist: PlaylistModel,
         completion: @escaping (Result<PlaylistDetailsResponse, Error>) -> Void
@@ -179,8 +173,9 @@ final class NetworkManager {
     
     // MARK: - Albums
     
-    // get a list of new album releases featured in spotify
-    //
+    ///
+    /// get a list of new album releases featured in spotify
+    ///
     public func getNewAlbumsReleases(completion: @escaping (Result<NewReleasesResponse, Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getNewReleases),
@@ -203,8 +198,9 @@ final class NetworkManager {
         }
     }
     
-    // get a single album of the new released albums
-    //
+    ///
+    /// get a single album of the new released albums
+    ///
     public func getAlbumDetails(
         for album: AlbumModel,
         completion: @escaping (Result<AlbumDetailsResponse, Error>) -> Void
@@ -232,8 +228,9 @@ final class NetworkManager {
     
     // MARK: - Categories
     
-    // get all categories to display them in the SearchController
-    //
+    ///
+    /// get all categories to display them in the SearchController
+    ///
     public func getCategories(completion: @escaping (Result<[CategoryModel], Error>) -> Void) {
         createRequest(
             with: URL(string: Constants.EndPoints.getCategories),
@@ -257,8 +254,9 @@ final class NetworkManager {
         }
     }
     
-    // get the playlists of a single category
-    //
+    ///
+    /// get the playlists of a single category
+    ///
     public func getCategoryPlaylists(
         category: CategoryModel,
         completion: @escaping (Result<[PlaylistModel], Error>) -> Void
@@ -288,8 +286,9 @@ final class NetworkManager {
     
     // MARK: - Search
     
-    // search for tracks, artists, albums, and playlists
-    //
+    ///
+    /// search for tracks, artists, albums, and playlists
+    ///
     public func search(with query: String, completion: @escaping (Result<[SearchResult], Error>) -> Void) {
         // encode the url so if the suer enter a space it turns into a %20
         //
@@ -331,6 +330,55 @@ final class NetworkManager {
             
             task.resume()
         }
+    }
+    
+    // MARK: - Library
+    
+    ///
+    /// get the current user's playlists from the api
+    ///
+    public func getCurrentUserPlaylists(completion: @escaping (Result<[PlaylistModel], Error>) -> Void) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getCurrentUserPlaylists),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(LibraryPlaylistsResponse.self, from: data)
+                    completion(.success(results.items))
+                } catch {
+                    print(error)
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    }
+    
+    public func createNewPlaylist(with name: String, completion: @escaping (Bool) -> Void) {
+        
+    }
+    
+    public func addTrackToPlaylist(
+        track: AudioTrackModel,
+        playlist: PlaylistModel,
+        completion: @escaping (Bool) -> Void
+    ) {
+        
+    }
+    
+    public func removeTrackFromPlaylist(
+        track: AudioTrackModel,
+        playlist: PlaylistModel,
+        completion: @escaping (Bool) -> Void
+    ) {
+        
     }
     
 }

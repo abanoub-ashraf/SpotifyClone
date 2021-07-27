@@ -47,7 +47,7 @@ final class PlaylistHeader: UICollectionReusableView {
         let imageView = UIImageView()
         imageView.alpha = 0
         imageView.contentMode = .scaleAspectFill
-        imageView.image = Constants.personPlaceholderImage
+        imageView.image = Constants.Images.personPlaceholderImage
         return imageView
     }()
     
@@ -151,7 +151,7 @@ final class PlaylistHeader: UICollectionReusableView {
         
         imageView.sd_setImage(
             with: viewModel.artworkURL,
-            placeholderImage: Constants.personPlaceholderImage
+            placeholderImage: Constants.Images.personPlaceholderImage
         )
     }
     

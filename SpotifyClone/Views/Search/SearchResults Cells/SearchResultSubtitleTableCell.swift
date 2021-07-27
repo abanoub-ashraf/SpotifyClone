@@ -92,7 +92,7 @@ class SearchResultSubtitleTableCell: UITableViewCell {
         subtitleLabel.text = viewModel.subtitle
         iconImageView.sd_setImage(
             with: viewModel.imageUrl,
-            placeholderImage: Constants.albumCoverPlaceholder,
+            placeholderImage: Constants.Images.albumCoverPlaceholder,
             completed: nil
         )
     }

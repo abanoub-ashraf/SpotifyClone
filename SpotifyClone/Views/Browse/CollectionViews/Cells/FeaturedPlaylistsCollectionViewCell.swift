@@ -102,7 +102,7 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
         
         playlistCoverImageView.sd_setImage(
             with: viewModel.artworkURL,
-            placeholderImage: Constants.playlistsPlaceholderImage,
+            placeholderImage: Constants.Images.playlistsPlaceholderImage,
             completed: nil
         )
     }
