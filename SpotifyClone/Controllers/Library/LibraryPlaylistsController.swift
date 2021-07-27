@@ -31,7 +31,7 @@ class LibraryPlaylistsController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
     
-        noPlaylistsView.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
+        noPlaylistsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         noPlaylistsView.center = view.center
     }
     
@@ -47,8 +47,8 @@ class LibraryPlaylistsController: UIViewController {
         ///
         noPlaylistsView.configure(
             with: ActionLabelViewModel(
-                text: "You don't have Any Playlists yet.",
-                actionTitle: "Create"
+                text: "You don't have any Playlists yet",
+                actionTitle: "Create a Playlist"
             )
         )
         
@@ -92,12 +92,49 @@ class LibraryPlaylistsController: UIViewController {
 // MARK: - ActionLabelViewDelegate
 
 ///
-/// <# Comment #>
+/// implement create new playlist inside this controller whenever the create playlist button inside
+/// the action label view is clicked
 ///
 extension LibraryPlaylistsController: ActionLabelViewDelegate {
     
+    ///
+    /// this is the delegate function that will create a new playlist and add it to the playlists
+    /// table view inside this controller
+    ///
     func actionLabelViewDidTapButton(_ actionView: ActionLabelView) {
+        let alert = UIAlertController(
+            title: "New Playlist",
+            message: "Enter the Playlist's Name",
+            preferredStyle: .alert
+        )
         
+        alert.view.tintColor = Constants.mainColor
+        
+        alert.addTextField { textField in
+            textField.placeholder = "Playlist Name..."
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { _ in
+            guard
+                let field = alert.textFields?.first,
+                let text = field.text,
+                !text.trimmingCharacters(in: .whitespaces).isEmpty
+            else {
+                return
+            }
+            
+            NetworkManager.shared.createNewPlaylist(with: text) { success in
+                if success {
+                    // refresh list of playlists
+                } else {
+                    print("Failed to create Playlist")
+                }
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
     
 }

@@ -1,8 +1,9 @@
 import UIKit
 
 ///
-/// this is for when we click on the button inside the action label view we wanna create a new playlist,
-/// it will get created inside the child playlists controller in the library controller and also added there
+/// this is for when we click on the create playlist button inside the action label view
+/// we wanna create a new playlist, it will get created inside the child playlists controller
+/// in the library controller and also will be added in there
 ///
 protocol ActionLabelViewDelegate: AnyObject {
     func actionLabelViewDidTapButton(_ actionView: ActionLabelView)
@@ -28,6 +29,7 @@ class ActionLabelView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 22)
         return label
     }()
     
@@ -60,10 +62,9 @@ class ActionLabelView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        button.frame = CGRect(x: 0, y: height - 40, width: width, height: 40)
-        
         label.frame = CGRect(x: 0, y: 0, width: width, height: height - 45)
+        
+        button.frame = CGRect(x: 0, y: height - 60, width: width, height: 45)
     }
     
     // MARK: - Helper Functions

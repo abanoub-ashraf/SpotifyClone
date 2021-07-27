@@ -13,6 +13,7 @@ class LibraryController: UIViewController {
 
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.isPagingEnabled = true
         return scrollView
     }()

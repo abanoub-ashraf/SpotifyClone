@@ -361,8 +361,56 @@ final class NetworkManager {
         }
     }
     
+    ///
+    /// <# Comment #>
+    ///
     public func createNewPlaylist(with name: String, completion: @escaping (Bool) -> Void) {
-        
+        ///
+        /// <# Comment #>
+        ///
+        getCurrentUserProfile { [weak self] result in
+            switch result {
+                case .success(let profile):
+                    ///
+                    /// <# Comment #>
+                    ///
+                    let urlString = Constants.EndPoints.createNewPlaylist + "\(profile.id)/playlists"
+                    
+                    self?.createRequest(
+                        with: URL(string: urlString),
+                        type: .POST
+                    ) { baseRequest in
+                        var request = baseRequest
+                        
+                        let jsonBody = ["name": name]
+                        
+                        request.httpBody = try? JSONSerialization.data(
+                            withJSONObject: jsonBody,
+                            options: .fragmentsAllowed
+                        )
+                        
+                        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                            guard let data = data, error == nil else {
+                                completion(false)
+                                return
+                            }
+                            
+                            do {
+                                let result = try JSONDecoder().decode(PlaylistModel.self, from: data)
+                                print(result)
+                                completion(true)
+                            } catch {
+                                print(error.localizedDescription)
+                                completion(false)
+                            }
+                        }
+                        
+                        task.resume()
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
+            }
+        }
     }
     
     public func addTrackToPlaylist(
