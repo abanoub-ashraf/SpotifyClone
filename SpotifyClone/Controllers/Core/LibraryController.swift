@@ -47,6 +47,11 @@ class LibraryController: UIViewController {
         /// add children controllers to this controller
         ///
         addChildren()
+        
+        ///
+        /// <# Comment #>
+        ///
+        updateBarButtons()
     }
     
     override func viewDidLayoutSubviews() {
@@ -87,6 +92,38 @@ class LibraryController: UIViewController {
         albumsVC.view.frame = CGRect(x: view.width, y: 0, width: scrollView.width, height: scrollView.height)
         albumsVC.didMove(toParent: self)
     }
+    
+    ///
+    /// - if we are in the playlists child controller we wanna show a right bar button item to create new playlist
+    ///   whenever we want to even if we have playlists and we wanna create more
+    ///
+    /// - if we are in the albums child controller we wanna get rid of the right bar button item
+    ///
+    private func updateBarButtons() {
+        switch toggleView.state {
+            case .playlists:
+                navigationItem.rightBarButtonItem = UIBarButtonItem(
+                    image: UIImage(systemName: "text.badge.plus"),
+                    style: .done,
+                    target: self,
+                    action: #selector(didTapAdd)
+                )
+            case .albums:
+                navigationItem.rightBarButtonItem = nil
+        }
+    }
+    
+    // MARK: - Selectors
+
+    ///
+    /// - this selector is for the right bar button item that will be visible when we're in the
+    ///   child playlists controller
+    ///
+    /// - we will create a new playlist inside the child playlists cotroller
+    ///
+    @objc private func didTapAdd() {
+        playlistsVC.showCreateNewPlaylistAlert()
+    }
 
 }
 
@@ -101,8 +138,10 @@ extension LibraryController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x >= (view.width - 100) {
             toggleView.update(for: .albums)
+            updateBarButtons()
         } else {
             toggleView.update(for: .playlists)
+            updateBarButtons()
         }
     }
     
@@ -119,6 +158,7 @@ extension LibraryController: LibraryToggleViewDelegate {
     func libraryToggleViewDidTapPlaylists(_ toggleView: LibraryToggleView) {
         UIView.animate(withDuration: 0.2) {
             self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            self.updateBarButtons()
         }
     }
     
@@ -131,6 +171,7 @@ extension LibraryController: LibraryToggleViewDelegate {
     func libraryToggleViewDidTapAlbums(_ toggleView: LibraryToggleView) {
         UIView.animate(withDuration: 0.2) {
             self.scrollView.setContentOffset(CGPoint(x: self.view.width, y: 0), animated: true)
+            self.updateBarButtons()
         }
     }
     

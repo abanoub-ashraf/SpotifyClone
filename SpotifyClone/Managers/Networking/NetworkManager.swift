@@ -362,17 +362,17 @@ final class NetworkManager {
     }
     
     ///
-    /// <# Comment #>
+    /// create a new playlist by the current user
     ///
     public func createNewPlaylist(with name: String, completion: @escaping (Bool) -> Void) {
         ///
-        /// <# Comment #>
+        /// get the current user data first cause we need the current user's id
         ///
         getCurrentUserProfile { [weak self] result in
             switch result {
                 case .success(let profile):
                     ///
-                    /// <# Comment #>
+                    /// pass the id of the current user to our actual api call to create a new playlist
                     ///
                     let urlString = Constants.EndPoints.createNewPlaylist + "\(profile.id)/playlists"
                     
@@ -382,8 +382,15 @@ final class NetworkManager {
                     ) { baseRequest in
                         var request = baseRequest
                         
+                        ///
+                        /// this api call is a post request so we need a body which is the name
+                        /// of the playlist we wanna create
+                        ///
                         let jsonBody = ["name": name]
                         
+                        ///
+                        /// set the body of the api call with the name of the playlist we wanna create
+                        ///
                         request.httpBody = try? JSONSerialization.data(
                             withJSONObject: jsonBody,
                             options: .fragmentsAllowed
@@ -396,9 +403,17 @@ final class NetworkManager {
                             }
                             
                             do {
-                                let result = try JSONDecoder().decode(PlaylistModel.self, from: data)
-                                print(result)
-                                completion(true)
+                                ///
+                                /// this api call returns true if the new playlist is created and false
+                                /// if it isn't so we converted the json into a dictionary and checked on the id
+                                /// field of it, if it's not nil then we created a playlist
+                                ///
+                                let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                                if let response = result as? [String: Any], response["id"] as? String != nil {
+                                    completion(true)
+                                } else {
+                                    completion(false)
+                                }
                             } catch {
                                 print(error.localizedDescription)
                                 completion(false)

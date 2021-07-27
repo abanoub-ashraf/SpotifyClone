@@ -114,6 +114,8 @@ struct Constants {
             systemName: "play",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
+        
+        static let playlistPlaceHolder = "https://user-images.githubusercontent.com/10991489/127215328-74c04f2f-ed2a-4995-af18-83d3964deb1b.png"
     }
     
     // MARK: - Colors
