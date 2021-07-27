@@ -2,11 +2,11 @@ import UIKit
 
 class AlbumTracksCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Variables -
+    // MARK: - Variables
 
     static let identifier = Constants.albumTracksCollectionViewCellIdentifier
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let trackNameLabel: UILabel = {
         let label = UILabel()
@@ -22,7 +22,7 @@ class AlbumTracksCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,7 +39,7 @@ class AlbumTracksCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -66,7 +66,7 @@ class AlbumTracksCollectionViewCell: UICollectionViewCell {
         artistNameLabel.text      = nil
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: AlbumTracksCellViewModel) {
         trackNameLabel.text = viewModel.name

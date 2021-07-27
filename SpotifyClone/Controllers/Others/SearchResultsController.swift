@@ -11,7 +11,7 @@ protocol SearchResultsControllerDelegate: AnyObject {
 ///
 class SearchResultsController: UIViewController {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     /// for the protocol we created above
     ///
@@ -21,7 +21,7 @@ class SearchResultsController: UIViewController {
     ///
     private var sections: [SearchSection] = []
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)

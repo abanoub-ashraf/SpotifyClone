@@ -2,7 +2,7 @@ import UIKit
 
 class PlaylistController: UIViewController {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     private let playlist: PlaylistModel
     
@@ -11,7 +11,7 @@ class PlaylistController: UIViewController {
     // this is the model.tracks.items that's coming from the api
     private var viewModels = [RecommendedTracksCellViewModel]()
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let collectionView = UICollectionView(
         frame: .zero,
@@ -23,7 +23,7 @@ class PlaylistController: UIViewController {
         )
     )
     
-    // MARK: - Init -
+    // MARK: - Init
     
     init(playlist: PlaylistModel) {
         self.playlist = playlist
@@ -34,7 +34,7 @@ class PlaylistController: UIViewController {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,7 +60,7 @@ class PlaylistController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     private func configureCollectionView() {
         view.addSubview(collectionView)
@@ -162,7 +162,7 @@ class PlaylistController: UIViewController {
         }
     }
     
-    // MARK: - Selectors -
+    // MARK: - Selectors
     
     /// share the playlist link with other apps
     @objc private func didTapShare() {
@@ -188,7 +188,7 @@ class PlaylistController: UIViewController {
 
 }
 
-// MARK: - UICollectionViewDataSource -
+// MARK: - UICollectionViewDataSource
 
 extension PlaylistController: UICollectionViewDataSource {
     
@@ -248,7 +248,7 @@ extension PlaylistController: UICollectionViewDataSource {
     
 }
 
-// MARK: - UICollectionViewDelegate -
+// MARK: - UICollectionViewDelegate
 
 extension PlaylistController: UICollectionViewDelegate {
     
@@ -263,7 +263,7 @@ extension PlaylistController: UICollectionViewDelegate {
     
 }
 
-// MARK: - PlaylistHeaderDelegate -
+// MARK: - PlaylistHeaderDelegate
 
 extension PlaylistController: PlaylistHeaderDelegate {
     

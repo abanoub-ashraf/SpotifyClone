@@ -2,11 +2,11 @@ import UIKit
 
 class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let identifier = Constants.featuredPlaylistsCollectionViewCellIdentifier
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let playlistCoverImageView: UIImageView = {
         let imageView = UIImageView()
@@ -33,7 +33,7 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,7 +51,7 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -94,7 +94,7 @@ class FeaturedPlaylistsCollectionViewCell: UICollectionViewCell {
         playlistCoverImageView.image = nil
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: FeaturedPlaylistsCellViewModel) {
         playlistNameLabel.text = viewModel.name

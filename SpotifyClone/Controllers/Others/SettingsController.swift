@@ -2,12 +2,12 @@ import UIKit
 
 class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     // array of the Section Models for each section in the table view
     private var sections = [Section]()
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let tableView: UITableView = {
         let tableview = UITableView(frame: .zero, style: .grouped)
@@ -15,7 +15,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         return tableview
     }()
 
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +38,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.frame = view.bounds
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     // array of the Section Models for each section in the table view
     private func configureModels() {
@@ -82,7 +82,7 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    // MARK: - TableView Methods -
+    // MARK: - TableView Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
         // the number of the sections array elements

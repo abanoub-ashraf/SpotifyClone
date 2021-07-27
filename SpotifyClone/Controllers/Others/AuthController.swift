@@ -2,9 +2,9 @@ import UIKit
 import WebKit
 
 /// this controller will load the authentication web page inside a webview
-class AuthController: UIViewController, WKNavigationDelegate {
+class AuthController: UIViewController {
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let webView: WKWebView = {
         let prefs = WKWebpagePreferences()
@@ -15,7 +15,7 @@ class AuthController: UIViewController, WKNavigationDelegate {
         return webView
     }()
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     /**
      * tells the welcome controller wether the user has successfully signed in or not
@@ -24,7 +24,7 @@ class AuthController: UIViewController, WKNavigationDelegate {
      */
     public var completionHandler: ((Bool) -> Void)?
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,8 +53,12 @@ class AuthController: UIViewController, WKNavigationDelegate {
         
         webView.frame = view.bounds
     }
-    
-    // MARK: - WKNavigationDelegate -
+
+}
+
+// MARK: - WKNavigationDelegate
+
+extension AuthController: WKNavigationDelegate {
     
     /**
      * inside this function, we load the authentication web page
@@ -66,7 +70,8 @@ class AuthController: UIViewController, WKNavigationDelegate {
         guard let url = webView.url else { return }
         
         // extract the code attached to the url above, it's a query parameter
-        guard let code = URLComponents(string: url.absoluteString)?
+        guard
+            let code = URLComponents(string: url.absoluteString)?
                 .queryItems?
                 .first(where: { $0.name == "code" })?
                 .value
@@ -85,5 +90,15 @@ class AuthController: UIViewController, WKNavigationDelegate {
             }
         }
     }
+    
+//    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+//        if navigationAction.navigationType == .backForward {
+//            decisionHandler(.cancel)
+//        }
+//    }
+//
+//    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+//        decisionHandler(.cancel)
+//    }
     
 }

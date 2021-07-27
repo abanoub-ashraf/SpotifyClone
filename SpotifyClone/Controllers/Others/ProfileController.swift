@@ -3,11 +3,11 @@ import SDWebImage
 
 class ProfileController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     private var models = [String]()
     
-    // MARK: - UI -
+    // MARK: - UI
     
     // tableview to display the user data
     private let tableView: UITableView = {
@@ -17,7 +17,7 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         return tableview
     }()
 
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +39,7 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.frame = view.bounds
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     // fetch the current logged in user profile
     private func fetchProfile() {
@@ -104,7 +104,7 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         label.center = view.center
     }
     
-    // MARK: - TableView Methods -
+    // MARK: - TableView Methods
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models.count

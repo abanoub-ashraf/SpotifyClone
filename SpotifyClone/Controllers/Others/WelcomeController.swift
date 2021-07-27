@@ -2,7 +2,7 @@ import UIKit
 
 class WelcomeController: UIViewController {
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let signInButton: UIButton = {
         let button = UIButton()
@@ -16,7 +16,7 @@ class WelcomeController: UIViewController {
         return button
     }()
 
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +40,7 @@ class WelcomeController: UIViewController {
         )
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     // if we are signed in go to the tab bar controller, if not, show an alert
     private func handleSignIn(success: Bool) {
@@ -61,7 +61,7 @@ class WelcomeController: UIViewController {
         present(mainAppTabBarVC, animated: true)
     }
     
-    // MARK: - Selectors -
+    // MARK: - Selectors
     
     /// go to the auth controller that represents the web view authentication page
     @objc func didTapSignIn() {

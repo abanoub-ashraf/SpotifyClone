@@ -3,11 +3,11 @@ import SDWebImage
 
 class SearchResultDefaultTableCell: UITableViewCell {
     
-    // MARK: - Variables -
+    // MARK: - Variables
 
     static let identifier = Constants.searchResultDefaultTableCell
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let label: UILabel = {
         let label = UILabel()
@@ -21,7 +21,7 @@ class SearchResultDefaultTableCell: UITableViewCell {
         return imageView
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -37,7 +37,7 @@ class SearchResultDefaultTableCell: UITableViewCell {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -61,7 +61,7 @@ class SearchResultDefaultTableCell: UITableViewCell {
         label.text = nil
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: SearchResultDefaultTableCellViewModel) {
         label.text = viewModel.title

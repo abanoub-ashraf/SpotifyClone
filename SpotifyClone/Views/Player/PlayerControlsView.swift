@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-// MARK: - PlayerControlsViewDelegate -
+// MARK: - PlayerControlsViewDelegate
 
 ///
 /// when i click on any of the controls buttons inside the player controls view
@@ -14,17 +14,17 @@ protocol PlayerControlsViewDelegate: AnyObject {
     func playerControlsViewDelegateDidSlideVolume(_ playerControlsView: PlayerControlsView, value: Float)
 }
 
-// MARK: - PlayerControlsView -
+// MARK: - PlayerControlsView
 
 final class PlayerControlsView: UIView {
     
-    // MARK: - Properties -
+    // MARK: - Properties
 
     weak var controlsViewDelegate: PlayerControlsViewDelegate?
     
     var isPlaying = true
         
-    // MARK: - UI -
+    // MARK: - UI
 
     private let volumeSlider: UISlider = {
         let slider = UISlider()
@@ -82,7 +82,7 @@ final class PlayerControlsView: UIView {
         return button
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -108,7 +108,7 @@ final class PlayerControlsView: UIView {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -158,7 +158,7 @@ final class PlayerControlsView: UIView {
         )
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
 
     ///
     /// configure the ui of this controls view with the view model
@@ -169,7 +169,7 @@ final class PlayerControlsView: UIView {
         subtitleLabel.text = viewModel.subtitle
     }
         
-    // MARK: - Selectors -
+    // MARK: - Selectors
     
     @objc private func didSlideSlider(_ slider: UISlider) {
         controlsViewDelegate?.playerControlsViewDelegateDidSlideVolume(self, value: slider.value)

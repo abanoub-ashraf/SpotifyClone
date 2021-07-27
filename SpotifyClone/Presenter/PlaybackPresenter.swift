@@ -43,7 +43,7 @@ import AVFoundation
 ///       cause the player will display those data like the name of the song etc
 ///
 
-// MARK: - PlayerDataSource -
+// MARK: - PlayerDataSource
 
 ///
 /// - this datasource will send the tracks info from the presenter to the player controller
@@ -58,7 +58,7 @@ protocol PlayerDataSource: AnyObject {
 
 final class PlaybackPresenter {
     
-    // MARK: - Properties -
+    // MARK: - Properties
     
     static let shared = PlaybackPresenter()
     ///
@@ -106,7 +106,7 @@ final class PlaybackPresenter {
     ///
     var index = 0
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     ///
     /// this functions gets called from the places where a single track is tapped
@@ -224,7 +224,7 @@ final class PlaybackPresenter {
     
 }
 
-// MARK: - PlayerDataSource -
+// MARK: - PlayerDataSource
 
 ///
 /// fill the properties of the data source protocol with the current track data
@@ -258,7 +258,7 @@ extension PlaybackPresenter: PlayerDataSource {
     
 }
 
-// MARK: - PlayerControllerDelegate -
+// MARK: - PlayerControllerDelegate
 
 ///
 /// this delegate make actions in the player and apply them in the presenter

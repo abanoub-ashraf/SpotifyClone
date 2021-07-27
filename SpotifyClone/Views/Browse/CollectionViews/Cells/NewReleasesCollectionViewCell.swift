@@ -3,11 +3,11 @@ import SDWebImage
 
 class NewReleasesCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let identifier = Constants.newReleasesCollectionViewCellIdentifier
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let albumCoverImageView: UIImageView = {
         let imageView = UIImageView()
@@ -39,7 +39,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -58,7 +58,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -114,7 +114,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         albumCoverImageView.image = nil
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: NewReleasesCellViewModel) {
         albumNameLabel.text      = viewModel.name

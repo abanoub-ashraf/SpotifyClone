@@ -2,11 +2,11 @@ import Foundation
 
 final class AuthManager {
     
-    // MARK: - Init -
+    // MARK: - Init
     
     private init() {}
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let shared = AuthManager()
     
@@ -57,7 +57,7 @@ final class AuthManager {
         return currentDate.addingTimeInterval(fiveMinutes) >= expirationDate
     }
     
-    // MARK: - Methods -
+    // MARK: - Methods
     
     // an api call for requesting access token from the api using a code we got from the authentication page
     public func exchangeCodeForToken(code: String, completion: @escaping (Bool) -> Void) {

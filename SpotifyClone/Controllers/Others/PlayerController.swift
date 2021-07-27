@@ -23,7 +23,7 @@ protocol PlayerControllerDelegate: AnyObject {
 
 class PlayerController: UIViewController {
     
-    // MARK: - Properties -
+    // MARK: - Properties
 
     ///
     /// for the PlayerDataSource that will pass data from the presenter to this controller
@@ -35,7 +35,7 @@ class PlayerController: UIViewController {
     ///
     weak var playerControllerDelegate: PlayerControllerDelegate?
     
-    // MARK: - UI -
+    // MARK: - UI
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -46,7 +46,7 @@ class PlayerController: UIViewController {
     
      var controlsView = PlayerControlsView()
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +94,7 @@ class PlayerController: UIViewController {
         )
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
 
     private func configureBarButtons() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -139,7 +139,7 @@ class PlayerController: UIViewController {
         configure()
     }
     
-    // MARK: - Selectors -
+    // MARK: - Selectors
 
     @objc private func didTapClose() {
         dismiss(animated: true, completion: nil)
@@ -151,7 +151,7 @@ class PlayerController: UIViewController {
     
 }
 
-// MARK: - PlayerControlsViewDelegate -
+// MARK: - PlayerControlsViewDelegate
 
 ///
 /// - this is for the PlayerControlsViewDelegate Protocol which is responsible for

@@ -2,15 +2,15 @@ import Foundation
 
 final class NetworkManager {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let shared  = NetworkManager()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     private init() {}
     
-    // MARK: - Enums -
+    // MARK: - Enums
     
     private enum HTTPMethod: String {
         // String means each case will have a string value of its own name
@@ -22,7 +22,7 @@ final class NetworkManager {
         case failedToGetData
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     // a generic request that every api call will be building on top of it
     // instead of repeating those lines inside of many times
@@ -40,7 +40,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Users -
+    // MARK: - Users
     
     // get the current logged in user
     //
@@ -67,7 +67,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Browse -
+    // MARK: - Browse
     
     // get a list of the recommended genres
     //
@@ -124,7 +124,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Playlists -
+    // MARK: - Playlists
     
     // get a list of spotify featured playlists
     //
@@ -177,7 +177,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Albums -
+    // MARK: - Albums
     
     // get a list of new album releases featured in spotify
     //
@@ -230,7 +230,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Categories -
+    // MARK: - Categories
     
     // get all categories to display them in the SearchController
     //
@@ -286,7 +286,7 @@ final class NetworkManager {
         }
     }
     
-    // MARK: - Search -
+    // MARK: - Search
     
     // search for tracks, artists, albums, and playlists
     //

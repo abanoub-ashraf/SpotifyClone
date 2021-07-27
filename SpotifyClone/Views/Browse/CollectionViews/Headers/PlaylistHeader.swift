@@ -9,13 +9,13 @@ protocol PlaylistHeaderDelegate: AnyObject {
 
 final class PlaylistHeader: UICollectionReusableView {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     weak var delegate: PlaylistHeaderDelegate?
     
     static let identifier = Constants.playlistCollectionViewHeaderIdentifier
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -69,7 +69,7 @@ final class PlaylistHeader: UICollectionReusableView {
         return button
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,7 +92,7 @@ final class PlaylistHeader: UICollectionReusableView {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -142,7 +142,7 @@ final class PlaylistHeader: UICollectionReusableView {
         
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: PlaylistHeaderViewModel) {
         nameLabel.text        = viewModel.name
@@ -165,7 +165,7 @@ final class PlaylistHeader: UICollectionReusableView {
         }
     }
     
-    // MARK: - Selectors -
+    // MARK: - Selectors
     
     @objc private func didTapPlayAll() {
         /// call the protocol delegate function to play the list in queue

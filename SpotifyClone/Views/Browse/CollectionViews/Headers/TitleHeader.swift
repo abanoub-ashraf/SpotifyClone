@@ -2,11 +2,11 @@ import UIKit
 
 class TitleHeader: UICollectionReusableView {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let identifier = Constants.titleCollectionViewHeaderIdentifier
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -16,7 +16,7 @@ class TitleHeader: UICollectionReusableView {
         return label
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,7 +29,7 @@ class TitleHeader: UICollectionReusableView {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -37,7 +37,7 @@ class TitleHeader: UICollectionReusableView {
         titleLabel.frame = CGRect(x: 15, y: 0, width: width - 30, height: height)
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with title: String) {
         titleLabel.text = title

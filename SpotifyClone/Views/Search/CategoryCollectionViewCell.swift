@@ -3,7 +3,7 @@ import SDWebImage
 
 class CategoryCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     static let identifier = Constants.CategoryCollectionViewCellIdentifier
     
@@ -19,7 +19,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         .systemTeal
     ]
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -39,7 +39,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    // MARK: - Init -
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,7 +55,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -93,7 +93,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         )
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     func configure(with viewModel: CategoryCollectionViewCellViewModel) {
         label.text = viewModel.title
