@@ -156,7 +156,6 @@ class PlaylistController: UIViewController {
                         self?.collectionView.reloadData()
                     case .failure(let error):
                         print(error.localizedDescription)
-                        break
                 }
             }
         }

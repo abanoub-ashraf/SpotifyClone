@@ -40,6 +40,16 @@ class CategoryController: UIViewController {
         )
     )
     
+    private let noDataLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "Oops! There's nothing in here :("
+        label.textColor = Constants.mainColor
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 25)
+        return label
+    }()
+    
     // MARK: - Init -
     
     init(category: CategoryModel) {
@@ -59,6 +69,7 @@ class CategoryController: UIViewController {
         title = category.name
         
         view.addSubview(collectionView)
+        view.addSubview(noDataLabel)
         view.backgroundColor = .systemBackground
         
         configureColletionView()
@@ -70,6 +81,12 @@ class CategoryController: UIViewController {
         super.viewDidLayoutSubviews()
         
         collectionView.frame = view.bounds
+        
+        ///
+        /// to center a view we need to give it a frame first
+        ///
+        noDataLabel.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+        noDataLabel.center = view.center
     }
     
     // MARK: - Helper Functions -
@@ -95,6 +112,8 @@ class CategoryController: UIViewController {
                         self?.collectionView.reloadData()
                     case .failure(let error):
                         print(error.localizedDescription)
+                        self?.collectionView.isHidden = true
+                        self?.noDataLabel.isHidden = false
                 }
             }
         }
@@ -139,6 +158,7 @@ extension CategoryController: UICollectionViewDelegate {
         
         let vc = PlaylistController(playlist: playlists[indexPath.row])
         vc.navigationItem.largeTitleDisplayMode = .never
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     

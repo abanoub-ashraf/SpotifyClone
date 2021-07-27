@@ -151,7 +151,7 @@ final class PlaylistHeader: UICollectionReusableView {
         
         imageView.sd_setImage(
             with: viewModel.artworkURL,
-            placeholderImage: Constants.Images.personPlaceholderImage
+            placeholderImage: Constants.Images.playlistsPlaceholderImage
         )
     }
     
