@@ -69,6 +69,7 @@ struct Constants {
         ///
         static let getCurrentUserPlaylists = "\(Constants.baseAPIURL)/me/playlists?limit=50"
         static let createNewPlaylist       = "\(Constants.baseAPIURL)/users/"
+        static let addTrackToPlaylist      = "\(Constants.baseAPIURL)/playlists/"
         
     }
     

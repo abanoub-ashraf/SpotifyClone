@@ -21,6 +21,8 @@ class SearchResultsController: UIViewController {
     ///
     private var sections: [SearchSection] = []
     
+    var resultsTrack: AudioTrackModel?
+    
     // MARK: - UI
     
     private let tableView: UITableView = {
@@ -47,6 +49,8 @@ class SearchResultsController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -123,6 +127,86 @@ class SearchResultsController: UIViewController {
     func reset() {
         sections = []
         tableView.reloadData()
+    }
+    
+    ///
+    /// add a long tap gesture to the colletion view in the section that have the single tracks
+    /// to add any one of them to a playlist after it gets long tapped
+    ///
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        tableView.addGestureRecognizer(gesture)
+    }
+    
+    // MARK: - Selectors
+
+    ///
+    /// - long tap on any single track in the third section of the collection view to add that track
+    ///   to any playlist we want
+    ///
+    /// - once the gesture began, get the row we long tap on in the collection view then create an index path
+    ///   with it to get the track that we currenty long tap on, and make sure we're in the third section
+    ///   that contain the single tracks as well
+    ///
+    /// - the action sheet will have the add button that will add the track to any playlist
+    ///
+    /// - once we choose the playlist we wanna add the track to, make the api call to add the track
+    ///   to that playlist we selected from the child playlists controller
+    ///
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let touchPoint = gesture.location(in: tableView)
+        
+        guard
+            let indexPath = tableView.indexPathForRow(at: touchPoint),
+            indexPath.section == 0
+        else {
+            return
+        }
+        
+        let result = sections[indexPath.section].results[indexPath.row]
+        switch result {
+            case .track(model: let track):
+                resultsTrack = track
+            case .artist(model: _):
+                break
+            case .album(model: _):
+                break
+            case .playlist(model: _):
+                break
+        }
+        
+        let actionSheet = UIAlertController(
+            title: resultsTrack?.name,
+            message: "Would you like to add this Song to a Playlist?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.view.tintColor = Constants.mainColor
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
+            DispatchQueue.main.async {
+                let vc = LibraryPlaylistsController()
+                
+                vc.selectionHandler = { playlist in
+                    guard let track = self?.resultsTrack else { return }
+                    
+                    NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in
+                        createAlert(viewController: self ?? UIViewController())
+                    }
+                }
+                
+                vc.title = "Select Playlist"
+                
+                self?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            }
+        })
+                        
+        present(actionSheet, animated: true, completion: nil)
     }
 
 }

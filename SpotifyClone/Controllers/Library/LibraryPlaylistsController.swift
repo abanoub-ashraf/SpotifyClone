@@ -9,12 +9,23 @@ class LibraryPlaylistsController: UIViewController {
 
     var playlists = [PlaylistModel]()
     
+    ///
+    /// - this closure is for selecting the playlist we wanna add a specific track to it
+    ///
+    /// - this whole controller will be used inside from inside the home controller when we long press
+    ///   on any single track and an action sheet shows up with an add button to add that track to
+    ///   one of the playlists in this controller
+    ///
+    var selectionHandler: ((PlaylistModel) -> Void)?
+    
     // MARK: - UI
 
     ///
     /// this view will be shown only if there's no playlists to display inside this controller
     ///
     private let noPlaylistsView = ActionLabelView()
+    
+    private let refreshControl = UIRefreshControl()
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -35,12 +46,27 @@ class LibraryPlaylistsController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
         
         view.addSubview(tableView)
         
         setupNoPlaylistsView()
         
         fetchCurrentUserPlaylistsFromAPI()
+        
+        ///
+        /// if there's a playlist that's selected after a long press on a single track to add that track to it
+        /// then show a close left bar button item
+        ///
+        if selectionHandler != nil {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .close,
+                target: self,
+                action: #selector(didTapClose)
+            )
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -85,6 +111,7 @@ class LibraryPlaylistsController: UIViewController {
                         /// if we don't have playlists
                         ///
                         self?.updateUI()
+                        self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
                 }
@@ -146,6 +173,16 @@ class LibraryPlaylistsController: UIViewController {
             noPlaylistsView.isHidden = true
             tableView.isHidden = false
         }
+    }
+    
+    // MARK: - Selectors
+
+    @objc func didTapClose() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func refresh(_ sender: Any) {
+        fetchCurrentUserPlaylistsFromAPI()
     }
     
 }
@@ -213,6 +250,19 @@ extension LibraryPlaylistsController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let playlist = playlists[indexPath.row]
+        
+        ///
+        /// - if the selection handler is nil then we wanna open the selected playlist in its controller
+        ///   to view its songs and play them all or single ones of them
+        ///
+        /// - if not nill then we long pressed on a single track and the selected playlist is gonna have
+        ///   this single track we wanna add to it
+        ///
+        guard selectionHandler == nil else {
+            selectionHandler?(playlist)
+            dismiss(animated: true, completion: nil)
+            return
+        }
         
         let vc = PlaylistController(playlist: playlist)
         vc.navigationItem.largeTitleDisplayMode = .never

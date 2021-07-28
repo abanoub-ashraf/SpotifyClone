@@ -428,12 +428,52 @@ final class NetworkManager {
         }
     }
     
+    ///
+    /// add a track to a playlist
+    ///
     public func addTrackToPlaylist(
         track: AudioTrackModel,
         playlist: PlaylistModel,
         completion: @escaping (Bool) -> Void
     ) {
-        
+        createRequest(
+            with: URL(string: Constants.EndPoints.addTrackToPlaylist + "\(playlist.id)/tracks"),
+            type: .POST
+        ) { baseRequest in
+            var request = baseRequest
+            
+            let jsonBody = [
+                "uris": [
+                    "spotify:track:\(track.id)"
+                ]
+            ]
+            
+            request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody, options: .fragmentsAllowed)
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                
+                do {
+                    let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    
+                    if let response = result as? [String: Any], response["snapshot_id"] as? String != nil {
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
+                } catch {
+                    completion(false)
+                    print(error.localizedDescription)
+                }
+            }
+            
+            task.resume()
+        }
     }
     
     public func removeTrackFromPlaylist(

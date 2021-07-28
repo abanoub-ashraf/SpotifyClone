@@ -23,6 +23,18 @@ class PlaylistController: UIViewController {
         )
     )
     
+    private let refreshControl = UIRefreshControl()
+    
+    private let noDataLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = "Oops! There's nothing in here :("
+        label.textColor = Constants.mainColor
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 25)
+        return label
+    }()
+    
     // MARK: - Init
     
     init(playlist: PlaylistModel) {
@@ -42,6 +54,8 @@ class PlaylistController: UIViewController {
         title = playlist.name
         view.backgroundColor = .systemBackground
         
+        view.addSubview(noDataLabel)
+        
         configureCollectionView()
         
         fetchPlaylistDetails()
@@ -52,12 +66,17 @@ class PlaylistController: UIViewController {
             target: self,
             action: #selector(didTapShare)
         )
+        
+        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         collectionView.frame = view.bounds
+        
+        noDataLabel.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+        noDataLabel.center = view.center
     }
     
     // MARK: - Helper Functions
@@ -82,6 +101,10 @@ class PlaylistController: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        collectionView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
     }
     
     private static func createSectionLayout() -> NSCollectionLayoutSection {
@@ -154,11 +177,27 @@ class PlaylistController: UIViewController {
                         })
                         
                         self?.collectionView.reloadData()
+                        self?.collectionView.isHidden = false
+                        self?.noDataLabel.isHidden = true
+                        self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
+                        self?.noDataLabel.isHidden = false
+                        self?.collectionView.isHidden = true
+                        self?.refreshControl.endRefreshing()
                 }
             }
         }
+    }
+    
+    ///
+    /// add a long tap gesture to the colletion view in the section that have the single tracks
+    /// to add any one of them to a playlist after it gets long tapped
+    ///
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        collectionView.addGestureRecognizer(gesture)
     }
     
     // MARK: - Selectors
@@ -183,6 +222,62 @@ class PlaylistController: UIViewController {
         present(vc, animated: true) {
             UINavigationBar.appearance().tintColor = Constants.mainColor
         }
+    }
+    
+    ///
+    /// - long tap on any single track in the third section of the collection view to add that track
+    ///   to any playlist we want
+    ///
+    /// - once the gesture began, get the row we long tap on in the collection view then create an index path
+    ///   with it to get the track that we currenty long tap on, and make sure we're in the third section
+    ///   that contain the single tracks as well
+    ///
+    /// - the action sheet will have the add button that will add the track to any playlist
+    ///
+    /// - once we choose the playlist we wanna add the track to, make the api call to add the track
+    ///   to that playlist we selected from the child playlists controller
+    ///
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let touchPoint = gesture.location(in: collectionView)
+        
+        guard let indexPath = collectionView.indexPathForItem(at: touchPoint) else { return }
+        
+        let model = tracks[indexPath.row]
+        
+        let actionSheet = UIAlertController(
+            title: model.name,
+            message: "Would you like to add this Song to a Playlist?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.view.tintColor = Constants.mainColor
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
+            DispatchQueue.main.async {
+                let vc = LibraryPlaylistsController()
+                
+                vc.selectionHandler = { playlist in
+                    NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                        self?.fetchPlaylistDetails()
+                        createAlert(viewController: self ?? UIViewController())
+                    }
+                }
+                
+                vc.title = "Select Playlist"
+                
+                self?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            }
+        })
+                        
+        present(actionSheet, animated: true, completion: nil)
+    }
+    
+    @objc private func refresh(_ sender: Any) {
+        fetchPlaylistDetails()
     }
 
 }

@@ -48,9 +48,6 @@ class LibraryController: UIViewController {
         ///
         addChildren()
         
-        ///
-        /// <# Comment #>
-        ///
         updateBarButtons()
     }
     

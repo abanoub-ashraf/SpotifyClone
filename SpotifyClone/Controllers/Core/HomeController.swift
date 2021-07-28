@@ -2,17 +2,17 @@ import UIKit
 
 class HomeController: UIViewController {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     // array of sections for the collection view sections
     private var sections = [BrowseSectionType]()
     
     /// to use the models we get from the api calls
-    private var newAlbums: [AlbumModel] = []
+    private var newAlbums: [AlbumModel]    = []
     private var playlists: [PlaylistModel] = []
-    private var tracks: [AudioTrackModel] = []
+    private var tracks: [AudioTrackModel]  = []
     
-    // MARK: - UI -
+    // MARK: - UI
     
     private var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -28,7 +28,7 @@ class HomeController: UIViewController {
         return spinner
     }()
     
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +48,8 @@ class HomeController: UIViewController {
         view.addSubview(spinner)
         
         fetchData()
+        
+        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -56,7 +58,7 @@ class HomeController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     private func configureCollectionView() {
         view.addSubview(collectionView)
@@ -382,7 +384,17 @@ class HomeController: UIViewController {
         }
     }
     
-    // MARK: - Selectors -
+    ///
+    /// add a long tap gesture to the colletion view in the section that have the single tracks
+    /// to add any one of them to a playlist after it gets long tapped
+    ///
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    // MARK: - Selectors
     
     @objc func didTapSettings() {
         let vc = SettingsController()
@@ -390,10 +402,66 @@ class HomeController: UIViewController {
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    ///
+    /// - long tap on any single track in the third section of the collection view to add that track
+    ///   to any playlist we want
+    ///
+    /// - once the gesture began, get the row we long tap on in the collection view then create an index path
+    ///   with it to get the track that we currenty long tap on, and make sure we're in the third section
+    ///   that contain the single tracks as well
+    ///
+    /// - the action sheet will have the add button that will add the track to any playlist
+    ///
+    /// - once we choose the playlist we wanna add the track to, make the api call to add the track
+    ///   to that playlist we selected from the child playlists controller
+    ///
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let touchPoint = gesture.location(in: collectionView)
+        
+        guard
+            let indexPath = collectionView.indexPathForItem(at: touchPoint),
+            indexPath.section == 2
+        else {
+            return
+        }
+        
+        let model = tracks[indexPath.row]
+        
+        let actionSheet = UIAlertController(
+            title: model.name,
+            message: "Would you like to add this Song to a Playlist?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.view.tintColor = Constants.mainColor
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
+            DispatchQueue.main.async {
+                let vc = LibraryPlaylistsController()
+                
+                vc.selectionHandler = { playlist in
+                    NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                        createAlert(viewController: self ?? UIViewController())
+                    }
+                }
+                
+                vc.title = "Select Playlist"
+                
+                self?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            }
+        })
+                        
+        present(actionSheet, animated: true, completion: nil)
+    }
 
 }
 
-// MARK: - UICollectionViewDataSource -
+// MARK: - UICollectionViewDataSource
 
 extension HomeController: UICollectionViewDataSource {
     
@@ -462,7 +530,6 @@ extension HomeController: UICollectionViewDataSource {
         }
     }
     
-    ///
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard
@@ -484,7 +551,7 @@ extension HomeController: UICollectionViewDataSource {
     
 }
 
-// MARK: - UICollectionViewDelegate -
+// MARK: - UICollectionViewDelegate
 
 extension HomeController: UICollectionViewDelegate {
     

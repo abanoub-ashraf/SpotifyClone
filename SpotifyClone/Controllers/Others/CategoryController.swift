@@ -40,6 +40,8 @@ class CategoryController: UIViewController {
         )
     )
     
+    private let refreshControl = UIRefreshControl()
+    
     private let noDataLabel: UILabel = {
         let label = UILabel()
         label.isHidden = true
@@ -97,6 +99,10 @@ class CategoryController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        collectionView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
+        
         collectionView.register(
             FeaturedPlaylistsCollectionViewCell.self,
             forCellWithReuseIdentifier: FeaturedPlaylistsCollectionViewCell.identifier
@@ -110,13 +116,24 @@ class CategoryController: UIViewController {
                     case .success(let playlists):
                         self?.playlists = playlists
                         self?.collectionView.reloadData()
+                        self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
-                        self?.collectionView.isHidden = true
+                        self?.perform(#selector(self?.stopRefresh))
                         self?.noDataLabel.isHidden = false
                 }
             }
         }
+    }
+    
+    // MARK: - Selectors
+    
+    @objc private func refresh(_ sender: Any) {
+        fetchPlaylists()
+    }
+    
+    @objc private func stopRefresh() {
+        self.refreshControl.endRefreshing()
     }
     
 }
