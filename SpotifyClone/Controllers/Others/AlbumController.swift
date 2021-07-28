@@ -189,7 +189,7 @@ class AlbumController: UIViewController {
                 
                 vc.selectionHandler = { playlist in
                     NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
-                        createAlert(viewController: self ?? UIViewController())
+                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
                 

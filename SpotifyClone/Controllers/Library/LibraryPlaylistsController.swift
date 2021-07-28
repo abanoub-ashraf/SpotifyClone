@@ -267,6 +267,8 @@ extension LibraryPlaylistsController: UITableViewDelegate {
         let vc = PlaylistController(playlist: playlist)
         vc.navigationItem.largeTitleDisplayMode = .never
         
+        vc.isOwner = true
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     

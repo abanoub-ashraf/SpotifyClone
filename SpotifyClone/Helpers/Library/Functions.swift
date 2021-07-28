@@ -1,9 +1,9 @@
 import Foundation
 import UIKit
 
-func createAlert(viewController: UIViewController) {
+func createAlert(title: String, message: String, viewController: UIViewController) {
     DispatchQueue.main.async {
-        let alert = UIAlertController(title: "Done!", message: "The song is added Successfully", preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = Constants.mainColor
         
         alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))

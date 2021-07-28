@@ -11,6 +11,8 @@ class PlaylistController: UIViewController {
     // this is the model.tracks.items that's coming from the api
     private var viewModels = [RecommendedTracksCellViewModel]()
     
+    public var isOwner = false
+    
     // MARK: - UI
     
     private let collectionView = UICollectionView(
@@ -22,9 +24,7 @@ class PlaylistController: UIViewController {
             }
         )
     )
-    
-    private let refreshControl = UIRefreshControl()
-    
+        
     private let noDataLabel: UILabel = {
         let label = UILabel()
         label.isHidden = true
@@ -67,7 +67,10 @@ class PlaylistController: UIViewController {
             action: #selector(didTapShare)
         )
         
-        addLongTapGesture()
+        ///
+        /// <# Comment #>
+        ///
+        addLongPressGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -101,10 +104,6 @@ class PlaylistController: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        
-        collectionView.addSubview(refreshControl)
-        
-        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
     }
     
     private static func createSectionLayout() -> NSCollectionLayoutSection {
@@ -179,22 +178,19 @@ class PlaylistController: UIViewController {
                         self?.collectionView.reloadData()
                         self?.collectionView.isHidden = false
                         self?.noDataLabel.isHidden = true
-                        self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
                         self?.noDataLabel.isHidden = false
                         self?.collectionView.isHidden = true
-                        self?.refreshControl.endRefreshing()
                 }
             }
         }
     }
     
     ///
-    /// add a long tap gesture to the colletion view in the section that have the single tracks
-    /// to add any one of them to a playlist after it gets long tapped
+    /// <# comment #>
     ///
-    private func addLongTapGesture() {
+    private func addLongPressGesture() {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
         
         collectionView.addGestureRecognizer(gesture)
@@ -225,17 +221,7 @@ class PlaylistController: UIViewController {
     }
     
     ///
-    /// - long tap on any single track in the third section of the collection view to add that track
-    ///   to any playlist we want
-    ///
-    /// - once the gesture began, get the row we long tap on in the collection view then create an index path
-    ///   with it to get the track that we currenty long tap on, and make sure we're in the third section
-    ///   that contain the single tracks as well
-    ///
-    /// - the action sheet will have the add button that will add the track to any playlist
-    ///
-    /// - once we choose the playlist we wanna add the track to, make the api call to add the track
-    ///   to that playlist we selected from the child playlists controller
+    /// <# comment #>
     ///
     @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
@@ -244,11 +230,11 @@ class PlaylistController: UIViewController {
         
         guard let indexPath = collectionView.indexPathForItem(at: touchPoint) else { return }
         
-        let model = tracks[indexPath.row]
+        let track = tracks[indexPath.row]
         
         let actionSheet = UIAlertController(
-            title: model.name,
-            message: "Would you like to add this Song to a Playlist?",
+            title: track.name,
+            message: track.artists.first?.name,
             preferredStyle: .actionSheet
         )
         
@@ -261,9 +247,10 @@ class PlaylistController: UIViewController {
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
-                    NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                    NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in
                         self?.fetchPlaylistDetails()
-                        createAlert(viewController: self ?? UIViewController())
+                        
+                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
                 
@@ -272,12 +259,26 @@ class PlaylistController: UIViewController {
                 self?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
             }
         })
+        
+        actionSheet.addAction(UIAlertAction(title: "Remove from the Playlist", style: .destructive) { [weak self] _ in
+            guard let strongSelf = self else { return }
+            
+            NetworkManager.shared.removeTrackFromPlaylist(track: track, playlist: strongSelf.playlist) { success in
+                DispatchQueue.main.async {
+                    if success {
+                        strongSelf.tracks.remove(at: indexPath.row)
+                        strongSelf.viewModels.remove(at: indexPath.row)
+                        strongSelf.collectionView.reloadData()
+                        
+                        createAlert(title: "Done!", message: "The song is deleted Successfully", viewController: strongSelf)
+                    } else {
+                        createAlert(title: "Opps!", message: "Failed to delete the Song, Please try again", viewController: strongSelf)
+                    }
+                }
+            }
+        })
                         
         present(actionSheet, animated: true, completion: nil)
-    }
-    
-    @objc private func refresh(_ sender: Any) {
-        fetchPlaylistDetails()
     }
 
 }

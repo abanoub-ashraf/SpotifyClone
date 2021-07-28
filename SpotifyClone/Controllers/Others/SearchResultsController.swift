@@ -196,7 +196,7 @@ class SearchResultsController: UIViewController {
                     guard let track = self?.resultsTrack else { return }
                     
                     NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in
-                        createAlert(viewController: self ?? UIViewController())
+                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
                 
