@@ -68,9 +68,16 @@ class PlaylistController: UIViewController {
         )
         
         ///
-        /// <# Comment #>
+        /// add a long gesture for the tracks rows in this controller to show an action sheet that asks to
+        /// add the long tapped track to a playlist
         ///
         addLongPressGesture()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.fetchPlaylistDetails()
     }
     
     override func viewDidLayoutSubviews() {
@@ -143,6 +150,8 @@ class PlaylistController: UIViewController {
     }
     
     private func fetchPlaylistDetails() {
+        tracks.removeAll()
+        
         // pass the playlist that's passed to this controller to get its full details from the api
         NetworkManager.shared.getPlaylistDetails(for: playlist) { [weak self] result in
             DispatchQueue.main.async {
@@ -188,7 +197,8 @@ class PlaylistController: UIViewController {
     }
     
     ///
-    /// <# comment #>
+    /// add a long gesture for the tracks rows in this controller to show an action sheet that asks to
+    /// add the long tapped track to a playlist
     ///
     private func addLongPressGesture() {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
@@ -221,7 +231,7 @@ class PlaylistController: UIViewController {
     }
     
     ///
-    /// <# comment #>
+    /// long tap on any single track in the collection view to add it to a playlist
     ///
     @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
@@ -250,6 +260,14 @@ class PlaylistController: UIViewController {
                     NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in
                         self?.fetchPlaylistDetails()
                         
+                        ///
+                        /// post a notification that a track has been added to a playlist
+                        ///
+                        if success {
+                            NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
+                            self?.fetchPlaylistDetails()
+                        }
+                        
                         createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
@@ -269,6 +287,13 @@ class PlaylistController: UIViewController {
                         strongSelf.tracks.remove(at: indexPath.row)
                         strongSelf.viewModels.remove(at: indexPath.row)
                         strongSelf.collectionView.reloadData()
+                        
+                        ///
+                        /// post a notification that a track has been deleted from a playlist
+                        ///
+                        if success {
+                            NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
+                        }
                         
                         createAlert(title: "Done!", message: "The song is deleted Successfully", viewController: strongSelf)
                     } else {

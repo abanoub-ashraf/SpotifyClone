@@ -18,6 +18,18 @@ class LibraryPlaylistsController: UIViewController {
     ///
     var selectionHandler: ((PlaylistModel) -> Void)?
     
+    ///
+    /// this observer is for the notification of the add or remove from a playlist and all it does is that
+    /// it refetch the current user's playlists from the server again
+    ///
+    private var observer: NSObjectProtocol?
+    
+    // MARK: - Init
+
+    deinit {
+        observer = nil
+    }
+    
     // MARK: - UI
 
     ///
@@ -67,6 +79,14 @@ class LibraryPlaylistsController: UIViewController {
                 action: #selector(didTapClose)
             )
         }
+        
+        addObservers()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        addObservers()
     }
     
     override func viewDidLayoutSubviews() {
@@ -80,6 +100,17 @@ class LibraryPlaylistsController: UIViewController {
     
     // MARK: - Helper Functions
     
+    private func addObservers() {
+        observer = NotificationCenter.default.addObserver(
+            forName: .trackAddedToOrDeletedFromPlaylistNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                self?.fetchCurrentUserPlaylistsFromAPI()
+            }
+        )
+    }
+    
     private func setupNoPlaylistsView() {
         view.addSubview(noPlaylistsView)
         
@@ -90,7 +121,7 @@ class LibraryPlaylistsController: UIViewController {
         ///
         noPlaylistsView.configure(
             with: ActionLabelViewModel(
-                text: "You don't have any Playlists yet",
+                text: "You don't have any Playlists yet, pull to Refresh or create a New One",
                 actionTitle: "Create a Playlist"
             )
         )
@@ -101,19 +132,26 @@ class LibraryPlaylistsController: UIViewController {
     /// fetch the current user's playlists from the api
     ///
     private func fetchCurrentUserPlaylistsFromAPI() {
+        playlists.removeAll()
+        
         NetworkManager.shared.getCurrentUserPlaylists { [weak self] result in
+            guard let strongSelf = self else { return }
+            
             DispatchQueue.main.async {
                 switch result {
                     case .success(let playlists):
-                        self?.playlists = playlists
+                        strongSelf.playlists = playlists
                         ///
                         /// to update the ui with the playists if we have or with an action label view
                         /// if we don't have playlists
                         ///
-                        self?.updateUI()
-                        self?.refreshControl.endRefreshing()
+                        strongSelf.updateUI()
+                        
+                        strongSelf.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
+                        strongSelf.refreshControl.endRefreshing()
+                        self?.noPlaylistsView.isHidden = false
                 }
             }
         }
@@ -124,8 +162,8 @@ class LibraryPlaylistsController: UIViewController {
     ///
     func showCreateNewPlaylistAlert() {
         let alert = UIAlertController(
-            title: "New Playlist",
-            message: "Enter the Playlist's Name",
+            title: "Create New Playlist",
+            message: "",
             preferredStyle: .alert
         )
         
@@ -166,8 +204,9 @@ class LibraryPlaylistsController: UIViewController {
     ///
     private func updateUI() {
         if playlists.isEmpty {
+            tableView.reloadData()
             noPlaylistsView.isHidden = false
-            tableView.isHidden = true
+            tableView.isHidden = false
         } else {
             tableView.reloadData()
             noPlaylistsView.isHidden = true
@@ -182,6 +221,7 @@ class LibraryPlaylistsController: UIViewController {
     }
     
     @objc private func refresh(_ sender: Any) {
+        playlists = []
         fetchCurrentUserPlaylistsFromAPI()
     }
     

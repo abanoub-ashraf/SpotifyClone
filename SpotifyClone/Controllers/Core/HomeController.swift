@@ -21,13 +21,6 @@ class HomeController: UIViewController {
             return HomeController.createSectionsLayout(section: sectionIndex)
     })
     
-    private let spinner: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView()
-        spinner.tintColor = .label
-        spinner.hidesWhenStopped = true
-        return spinner
-    }()
-    
     // MARK: - LifeCycle
 
     override func viewDidLoad() {
@@ -44,8 +37,6 @@ class HomeController: UIViewController {
         )
         
         configureCollectionView()
-        
-        view.addSubview(spinner)
         
         fetchData()
         
@@ -90,6 +81,7 @@ class HomeController: UIViewController {
         collectionView.delegate = self
         
         collectionView.backgroundColor = .systemBackground
+        
     }
     
     // fetch the New Releases, Featured Playlists, Recommended Tracks data from their 3 api calls
@@ -446,6 +438,13 @@ class HomeController: UIViewController {
                 
                 vc.selectionHandler = { playlist in
                     NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                        ///
+                        /// post a notification that a track has been added to a playlist
+                        ///
+                        if success {
+                            NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
+                        }
+                        
                         createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }

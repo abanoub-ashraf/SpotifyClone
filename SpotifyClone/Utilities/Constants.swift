@@ -30,47 +30,50 @@ struct Constants {
     
     struct EndPoints {
         
+        // MARK: - Browse
+        
+        static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
+        static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
+        
+        // MARK: - Albums
+        
+        static let getNewReleases  = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
+        static let getAlbumDetails = "\(Constants.baseAPIURL)/albums/"
+        
+        // MARK: - Playlists
+        
+        static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
+        static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
+        
+        // MARK: - Categories
+        
+        static let getCategories        = "\(Constants.baseAPIURL)/browse/categories?limit=50"
+        static let getCategoryPlaylists = "\(Constants.baseAPIURL)/browse/categories/"
+        
+        // MARK: - Search
+        
+        static let search = "\(Constants.baseAPIURL)/search?limit=20&type=album,artist,playlist,track"
+        
+        // MARK: - Library
+        
         ///
-        /// Users
+        /// Current User
         ///
         static let getCurrentUser = "\(Constants.baseAPIURL)/me"
         
         ///
-        /// Browse
-        ///
-        static let getRecommendedGenres = "\(Constants.baseAPIURL)/recommendations/available-genre-seeds"
-        static let getRecommendations   = "\(Constants.baseAPIURL)/recommendations?limit=40"
-        
-        ///
-        /// Albums
-        ///
-        static let getNewReleases  = "\(Constants.baseAPIURL)/browse/new-releases?limit=50"
-        static let getAlbumDetails = "\(Constants.baseAPIURL)/albums/"
-        
-        ///
-        /// Playlists
-        ///
-        static let getFeaturedPlaylists = "\(Constants.baseAPIURL)/browse/featured-playlists?limit=50"
-        static let getPlaylistDetails   = "\(Constants.baseAPIURL)/playlists/"
-        
-        ///
-        /// Categories
-        ///
-        static let getCategories        = "\(Constants.baseAPIURL)/browse/categories?limit=50"
-        static let getCategoryPlaylists = "\(Constants.baseAPIURL)/browse/categories/"
-        
-        ///
-        /// Search
-        ///
-        static let search = "\(Constants.baseAPIURL)/search?limit=20&type=album,artist,playlist,track"
-        
-        ///
-        /// Library
+        /// Current User's Playlists
         ///
         static let getCurrentUserPlaylists = "\(Constants.baseAPIURL)/me/playlists?limit=50"
         static let createNewPlaylist       = "\(Constants.baseAPIURL)/users/"
         static let addTrackToPlaylist      = "\(Constants.baseAPIURL)/playlists/"
         static let removeTrackFromPlaylist = "\(Constants.baseAPIURL)/playlists/"
+        
+        ///
+        /// Current User's saved Albums
+        ///
+        static let getCurrentUserSavedAlbums = "\(Constants.baseAPIURL)/me/albums"
+        static let saveAlbumToLibrary        = "\(Constants.baseAPIURL)/me/albums"
         
     }
     
@@ -106,6 +109,10 @@ struct Constants {
         static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
         static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
         static let albumCoverPlaceholder       = UIImage(named: "albumCoverPlaceholder")
+        
+        static let playlistPlaceHolder = "https://user-images.githubusercontent.com/10991489/127215328-74c04f2f-ed2a-4995-af18-83d3964deb1b.png"
+        
+        static let albumsPlaceHolder = "https://user-images.githubusercontent.com/10991489/127388351-2641b655-e236-4c3e-ac4b-1d229a6d4c75.png"
 
          static let pauseImage = UIImage(
             systemName: "pause",
@@ -116,12 +123,20 @@ struct Constants {
             systemName: "play",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
-        
-        static let playlistPlaceHolder = "https://user-images.githubusercontent.com/10991489/127215328-74c04f2f-ed2a-4995-af18-83d3964deb1b.png"
+    
     }
     
     // MARK: - Colors
     
     static let mainColor = UIColor(named: "mainColor")
+    
+    // MARK: - Notifications
+    
+    static let albumSavedNotification                        = "albumSavedNotification"
+    static let trackAddedToOrDeletedFromPlaylistNotification = "trackAddedToOrDeletedFromPlaylistNotification"
+    
+    // MARK: - UserDefaults
+    
+    static let savedAlbumToPlaylistUserDefaults = "saved"
 
 }

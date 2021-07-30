@@ -28,13 +28,15 @@ class ActionLabelView: UIView {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 22)
+        label.textColor = .label
+        label.font = .systemFont(ofSize: 20)
         return label
     }()
     
     private let button: UIButton = {
         let button = UIButton()
+        button.layer.cornerRadius = 20
+        button.backgroundColor = .secondaryLabel
         button.setTitleColor(Constants.mainColor, for: .normal)
         return button
     }()

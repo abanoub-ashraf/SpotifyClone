@@ -38,14 +38,9 @@ class AlbumController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = album.name
-        view.backgroundColor = .systemBackground
-        
-        configureCollectionView()
+        setupUI()
         
         fetchAlbumDetails()
-        
-        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -55,6 +50,22 @@ class AlbumController: UIViewController {
     }
     
     // MARK: - Helper Functions
+    
+    private func setupUI() {
+        title = album.name
+        view.backgroundColor = .systemBackground
+        
+        configureCollectionView()
+        
+        addLongTapGesture()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "square.and.arrow.down.fill"),
+            style: .done,
+            target: self,
+            action: #selector(didTapActions)
+        )
+    }
     
     private func configureCollectionView() {
         view.addSubview(collectionView)
@@ -189,6 +200,16 @@ class AlbumController: UIViewController {
                 
                 vc.selectionHandler = { playlist in
                     NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                        ///
+                        /// post a notification that a track has been added to a playlist
+                        ///
+                        if success {
+                            NotificationCenter.default.post(
+                                name: .trackAddedToOrDeletedFromPlaylistNotification,
+                                object: nil
+                            )
+                        }
+                        
                         createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
@@ -199,6 +220,43 @@ class AlbumController: UIViewController {
             }
         })
                         
+        present(actionSheet, animated: true, completion: nil)
+    }
+    
+    ///
+    /// to save the album to the user's library
+    ///
+    @objc func didTapActions() {
+        let actionSheet = UIAlertController(
+            title: album.name,
+            message: "Would you like to save the Album?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Save Album", style: .default, handler: { [weak self] _ in
+            guard let strongSelf = self else { return }
+            
+            NetworkManager.shared.saveAlbumToLibrary(album: strongSelf.album) { success in
+                ///
+                /// post a notification that an album has been saved to the library
+                ///
+                if success {
+                    NotificationCenter.default.post(name: .albumSavedNotification, object: nil)
+                }
+                
+                createAlert(
+                    title: "Done!",
+                    message: "The album is saved Successfully",
+                    viewController: self ?? UIViewController()
+                )
+            }
+            
+        }))
+
+        actionSheet.view.tintColor = Constants.mainColor
+        
         present(actionSheet, animated: true, completion: nil)
     }
     

@@ -40,18 +40,10 @@ class CategoryController: UIViewController {
         )
     )
     
+    private let noPlaylistsView = ActionLabelView()
+    
     private let refreshControl = UIRefreshControl()
-    
-    private let noDataLabel: UILabel = {
-        let label = UILabel()
-        label.isHidden = true
-        label.text = "Oops! There's nothing in here :("
-        label.textColor = Constants.mainColor
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 25)
-        return label
-    }()
-    
+        
     // MARK: - Init -
     
     init(category: CategoryModel) {
@@ -71,10 +63,11 @@ class CategoryController: UIViewController {
         title = category.name
         
         view.addSubview(collectionView)
-        view.addSubview(noDataLabel)
         view.backgroundColor = .systemBackground
         
-        configureColletionView()
+        configureCollectionView()
+        
+        setupNoPlaylistsView()
         
         fetchPlaylists()
     }
@@ -87,13 +80,30 @@ class CategoryController: UIViewController {
         ///
         /// to center a view we need to give it a frame first
         ///
-        noDataLabel.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-        noDataLabel.center = view.center
+        noPlaylistsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        noPlaylistsView.center = view.center
     }
     
     // MARK: - Helper Functions -
     
-    private func configureColletionView() {
+    private func setupNoPlaylistsView() {
+        view.addSubview(noPlaylistsView)
+        
+        noPlaylistsView.actionLabelViewDelegate = self
+        
+        ///
+        /// this will start off hidden and configured with a view model data
+        ///
+        noPlaylistsView.configure(
+            with: ActionLabelViewModel(
+                text: "There's Nothing in here, Pull to Refresh or go Back",
+                actionTitle: "Go Back"
+            )
+        )
+        
+    }
+    
+    private func configureCollectionView() {
         collectionView.backgroundColor = .systemBackground
         
         collectionView.delegate = self
@@ -107,6 +117,7 @@ class CategoryController: UIViewController {
             FeaturedPlaylistsCollectionViewCell.self,
             forCellWithReuseIdentifier: FeaturedPlaylistsCollectionViewCell.identifier
         )
+        
     }
     
     private func fetchPlaylists() {
@@ -115,25 +126,38 @@ class CategoryController: UIViewController {
                 switch result {
                     case .success(let playlists):
                         self?.playlists = playlists
-                        self?.collectionView.reloadData()
+                        self?.updateUI()
                         self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         print(error.localizedDescription)
-                        self?.perform(#selector(self?.stopRefresh))
-                        self?.noDataLabel.isHidden = false
+                        self?.refreshControl.endRefreshing()
+                        self?.noPlaylistsView.isHidden = false
                 }
             }
+        }
+    }
+    
+    ///
+    /// to update the ui with the playists in a table view if we have or with an action label view
+    /// if we don't have playlists
+    ///
+    private func updateUI() {
+        if playlists.isEmpty {
+            collectionView.reloadData()
+            noPlaylistsView.isHidden = false
+            collectionView.isHidden = false
+        } else {
+            collectionView.reloadData()
+            noPlaylistsView.isHidden = true
+            collectionView.isHidden = false
         }
     }
     
     // MARK: - Selectors
     
     @objc private func refresh(_ sender: Any) {
+        playlists = []
         fetchPlaylists()
-    }
-    
-    @objc private func stopRefresh() {
-        self.refreshControl.endRefreshing()
     }
     
 }
@@ -177,6 +201,14 @@ extension CategoryController: UICollectionViewDelegate {
         vc.navigationItem.largeTitleDisplayMode = .never
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
+
+extension CategoryController: ActionLabelViewDelegate {
+    
+    func actionLabelViewDidTapButton(_ actionView: ActionLabelView) {
+        navigationController?.popViewController(animated: true)
     }
     
 }
