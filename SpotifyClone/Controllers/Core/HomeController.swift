@@ -442,10 +442,15 @@ class HomeController: UIViewController {
                         /// post a notification that a track has been added to a playlist
                         ///
                         if success {
+                            HapticsManager.shared.vibrate(for: .success)
+                            
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
+                            
+                            createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
+                        } else {
+                            HapticsManager.shared.vibrate(for: .error)
                         }
-                        
-                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
+                    
                     }
                 }
                 
@@ -556,6 +561,7 @@ extension HomeController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        HapticsManager.shared.vibrateForSelection()
         
         let section = sections[indexPath.section]
         

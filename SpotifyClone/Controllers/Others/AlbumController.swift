@@ -204,13 +204,18 @@ class AlbumController: UIViewController {
                         /// post a notification that a track has been added to a playlist
                         ///
                         if success {
+                            HapticsManager.shared.vibrate(for: .success)
+                            
                             NotificationCenter.default.post(
                                 name: .trackAddedToOrDeletedFromPlaylistNotification,
                                 object: nil
                             )
+                            
+                            createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
+                        } else {
+                            HapticsManager.shared.vibrate(for: .error)
                         }
                         
-                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
                 
@@ -243,7 +248,11 @@ class AlbumController: UIViewController {
                 /// post a notification that an album has been saved to the library
                 ///
                 if success {
+                    HapticsManager.shared.vibrate(for: .success)
+                    
                     NotificationCenter.default.post(name: .albumSavedNotification, object: nil)
+                } else {
+                    HapticsManager.shared.vibrate(for: .error)
                 }
                 
                 createAlert(

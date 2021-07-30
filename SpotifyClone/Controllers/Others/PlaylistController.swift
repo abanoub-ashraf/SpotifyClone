@@ -257,18 +257,22 @@ class PlaylistController: UIViewController {
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
-                    NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in
-                        self?.fetchPlaylistDetails()
-                        
+                    NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { [weak self] success in                        
                         ///
                         /// post a notification that a track has been added to a playlist
                         ///
                         if success {
+                            HapticsManager.shared.vibrate(for: .success)
+                            
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
+                            
                             self?.fetchPlaylistDetails()
+                            
+                            createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
+                        } else {
+                            HapticsManager.shared.vibrate(for: .error)
                         }
                         
-                        createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                     }
                 }
                 
@@ -292,11 +296,15 @@ class PlaylistController: UIViewController {
                         /// post a notification that a track has been deleted from a playlist
                         ///
                         if success {
+                            HapticsManager.shared.vibrate(for: .success)
+                            
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                         }
                         
                         createAlert(title: "Done!", message: "The song is deleted Successfully", viewController: strongSelf)
                     } else {
+                        HapticsManager.shared.vibrate(for: .error)
+
                         createAlert(title: "Opps!", message: "Failed to delete the Song, Please try again", viewController: strongSelf)
                     }
                 }

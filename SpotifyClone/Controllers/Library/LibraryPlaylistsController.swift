@@ -188,8 +188,11 @@ class LibraryPlaylistsController: UIViewController {
             
             NetworkManager.shared.createNewPlaylist(with: text) { [weak self] success in
                 if success {
+                    HapticsManager.shared.vibrate(for: .success)
+                    
                     self?.fetchCurrentUserPlaylistsFromAPI()
                 } else {
+                    HapticsManager.shared.vibrate(for: .error)
                     print("Failed to create Playlist")
                 }
             }
@@ -288,6 +291,7 @@ extension LibraryPlaylistsController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        HapticsManager.shared.vibrateForSelection()
         
         let playlist = playlists[indexPath.row]
         
