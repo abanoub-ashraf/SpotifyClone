@@ -18,8 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window.rootViewController = TabBarController()
         } else {
             let navVC = UINavigationController(rootViewController: WelcomeController())
+            
             navVC.navigationBar.prefersLargeTitles = true
             navVC.viewControllers.first?.navigationItem.largeTitleDisplayMode = .always
+            
             window.rootViewController = navVC
         }
         

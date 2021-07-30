@@ -1,6 +1,6 @@
 import UIKit
 
-class SettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SettingsController: UIViewController {
     
     // MARK: - Variables
     
@@ -79,10 +79,41 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
     
     // sign the current logged in user out
     private func signOutTapped() {
+        let alert = UIAlertController(title: "You're about to sign out..", message: "Are you sure?", preferredStyle: .alert)
         
+        alert.view.tintColor = Constants.mainColor
+        
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+            ///
+            /// <# Comment #>
+            ///
+            AuthManager.shared.signOut { [weak self] signedOut in
+                if signedOut {
+                    DispatchQueue.main.async {
+                        let navVC = UINavigationController(rootViewController: WelcomeController())
+                        
+                        navVC.navigationBar.prefersLargeTitles = true
+                        navVC.viewControllers.first?.navigationItem.largeTitleDisplayMode = .always
+                        navVC.modalPresentationStyle = .fullScreen
+                        
+                        self?.present(navVC, animated: true, completion: {
+                            self?.navigationController?.popToRootViewController(animated: true)
+                        })
+                    }
+                }
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
     
-    // MARK: - TableView Methods
+}
+
+// MARK: - UITableViewDataSource
+
+extension SettingsController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         // the number of the sections array elements
@@ -103,6 +134,12 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
     
+}
+
+// MARK: - UITableViewDelegate
+
+extension SettingsController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -116,5 +153,5 @@ class SettingsController: UIViewController, UITableViewDelegate, UITableViewData
         let model = sections[section]
         return model.title
     }
- 
+    
 }

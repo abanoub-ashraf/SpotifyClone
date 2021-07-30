@@ -140,7 +140,7 @@ final class AuthManager {
     }
     
     /**
-     * make an api call to reqeust a refresh token
+     * make an api call to request a refresh token
      * the completion handler is optional cause when we check for the isSignedIn variable
        inside the AppDelegate, if the user is signed in we wanna refresh the token
        without needing the completion handler there
@@ -248,6 +248,17 @@ final class AuthManager {
             // the current time the user logs in + the number of seconds it expires in
             Date().addingTimeInterval(TimeInterval(result.expires_in)), forKey: "expirationDate"
         )
+    }
+    
+    ///
+    /// to sign out we need to clear out all the user defaults data we saved when we logged in
+    ///
+    public func signOut(completion: (Bool) -> Void) {
+        UserDefaults.standard.setValue(nil, forKey: "access_token")
+        UserDefaults.standard.setValue(nil, forKey: "refresh_token")
+        UserDefaults.standard.setValue(nil, forKey: "expirationDate")
+        
+        completion(true)
     }
     
 }
