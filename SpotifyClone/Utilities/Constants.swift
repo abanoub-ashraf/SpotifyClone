@@ -108,7 +108,7 @@ struct Constants {
         static let newReleasesPlaceholderImage = UIImage(named: "newReleasesPlaceholder")
         static let playlistsPlaceholderImage   = UIImage(named: "playlistsPlaceholder")
         static let personPlaceholderImage      = UIImage(named: "personPlaceholder")
-        static let albumCoverPlaceholder       = UIImage(named: "albumCoverPlaceholder")
+        static let albumCoverPlaceholderImage  = UIImage(named: "albumCoverPlaceholder")
         
         static let playlistPlaceHolder = "https://user-images.githubusercontent.com/10991489/127215328-74c04f2f-ed2a-4995-af18-83d3964deb1b.png"
         
@@ -123,20 +123,20 @@ struct Constants {
             systemName: "play",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
+        
+        static let welcomeScreenBackgroundImage = UIImage(named: "welcomeScreen")
     
     }
     
     // MARK: - Colors
     
-    static let mainColor = UIColor(named: "mainColor")
+    static let mainColor     = UIColor(named: "mainColor")
+    static let gradientStart = UIColor(named: "gradientStart")
+    static let gradientEnd   = UIColor(named: "gradientEnd")
     
     // MARK: - Notifications
     
     static let albumSavedNotification                        = "albumSavedNotification"
     static let trackAddedToOrDeletedFromPlaylistNotification = "trackAddedToOrDeletedFromPlaylistNotification"
-    
-    // MARK: - UserDefaults
-    
-    static let savedAlbumToPlaylistUserDefaults = "saved"
 
 }

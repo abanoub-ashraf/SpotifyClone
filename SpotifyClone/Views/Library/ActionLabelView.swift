@@ -28,7 +28,7 @@ class ActionLabelView: UIView {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.textColor = .label
+        label.textColor = .systemGray
         label.font = .systemFont(ofSize: 20)
         return label
     }()
@@ -36,7 +36,7 @@ class ActionLabelView: UIView {
     private let button: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 20
-        button.backgroundColor = .secondaryLabel
+        button.backgroundColor = .systemGray
         button.setTitleColor(Constants.mainColor, for: .normal)
         return button
     }()

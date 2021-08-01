@@ -7,13 +7,44 @@ class WelcomeController: UIViewController {
     private let signInButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .secondarySystemFill
-        button.setTitle("Sign In with Spotify", for: .normal)
-        button.setTitleColor(.label, for: .normal)
+        button.setTitle("Log In with Spotify", for: .normal)
+        button.setTitleColor(.systemGray, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 20
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemGray.cgColor
+        button.layer.borderWidth = 1.5
+        button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
+        button.layer.borderColor = Constants.mainColor?.cgColor
         return button
+    }()
+    
+    private var gradientLayer: CAGradientLayer = {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            Constants.mainColor?.cgColor ?? UIColor(),
+            UIColor.black.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = .zero
+       return gradientLayer
+    }()
+    
+    private let logo: UIImageView = {
+        let config = UIImage.SymbolConfiguration(pointSize: 38)
+        let image = UIImageView(image: UIImage(systemName: "music.quarternote.3", withConfiguration: config))
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .label
+        return image
+    }()
+    
+    private let label: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = .label
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 30, weight: .semibold)
+        label.text = "Listen to Millions\nof Songs on\nthe go"
+        return label
     }()
 
     // MARK: - LifeCycle
@@ -22,14 +53,23 @@ class WelcomeController: UIViewController {
         super.viewDidLoad()
         
         title = "Spotify"
-        view.tintColor = .secondarySystemFill
-        view.backgroundColor = Constants.mainColor
+        
+        view.backgroundColor = .systemBackground
+        
+        view.layer.addSublayer(gradientLayer)
+        
         view.addSubview(signInButton)
+        
         signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
+        
+        view.addSubview(label)
+        view.addSubview(logo)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        gradientLayer.frame = view.bounds
         
         // layout the sign in button
         signInButton.frame = CGRect(
@@ -37,6 +77,20 @@ class WelcomeController: UIViewController {
             y: view.height - 50 - view.safeAreaInsets.bottom,
             width: view.width - 40,
             height: 50
+        )
+        
+        logo.frame = CGRect(
+            x: (view.width - 120) / 2,
+            y: (view.height - 350) / 2,
+            width: 120,
+            height: 120
+        )
+        
+        label.frame = CGRect(
+            x: 30,
+            y: logo.bottom + 30,
+            width: view.width - 60,
+            height: 150
         )
     }
     
