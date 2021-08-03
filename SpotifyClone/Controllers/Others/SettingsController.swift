@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 class SettingsController: UIViewController {
     
@@ -86,12 +87,11 @@ class SettingsController: UIViewController {
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-            ///
-            /// <# Comment #>
-            ///
             AuthManager.shared.signOut { [weak self] signedOut in
                 if signedOut {
                     DispatchQueue.main.async {
+                        MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+                        
                         let navVC = UINavigationController(rootViewController: WelcomeController())
                         
                         navVC.navigationBar.prefersLargeTitles = true
@@ -99,6 +99,8 @@ class SettingsController: UIViewController {
                         navVC.modalPresentationStyle = .fullScreen
                         
                         self?.present(navVC, animated: true, completion: {
+                            MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            
                             self?.navigationController?.popToRootViewController(animated: true)
                         })
                     }

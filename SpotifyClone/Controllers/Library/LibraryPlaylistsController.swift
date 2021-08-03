@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 ///
 /// contains the playlists that the current user's created/saved
@@ -132,7 +133,12 @@ class LibraryPlaylistsController: UIViewController {
     /// fetch the current user's playlists from the api
     ///
     private func fetchCurrentUserPlaylistsFromAPI() {
+        DispatchQueue.main.async {
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+        }
+        
         playlists.removeAll()
+        tableView.reloadData()
         
         NetworkManager.shared.getCurrentUserPlaylists { [weak self] result in
             guard let strongSelf = self else { return }
@@ -141,6 +147,9 @@ class LibraryPlaylistsController: UIViewController {
                 switch result {
                     case .success(let playlists):
                         strongSelf.playlists = playlists
+                        
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         ///
                         /// to update the ui with the playists if we have or with an action label view
                         /// if we don't have playlists
@@ -149,8 +158,12 @@ class LibraryPlaylistsController: UIViewController {
                         
                         strongSelf.refreshControl.endRefreshing()
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         print(error.localizedDescription)
+                        
                         strongSelf.refreshControl.endRefreshing()
+                        
                         self?.noPlaylistsView.isHidden = false
                 }
             }
@@ -186,14 +199,31 @@ class LibraryPlaylistsController: UIViewController {
             
             guard !text.isEmpty else { return }
             
+            DispatchQueue.main.async {
+                MBProgressHUD.showAdded(to: self.view ?? UIView(), animated: true)
+            }
+            
             NetworkManager.shared.createNewPlaylist(with: text) { [weak self] success in
                 if success {
+                    DispatchQueue.main.async {
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                    }
+                    
                     HapticsManager.shared.vibrate(for: .success)
                     
                     self?.fetchCurrentUserPlaylistsFromAPI()
                 } else {
+                    DispatchQueue.main.async {
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                    }
+                    
                     HapticsManager.shared.vibrate(for: .error)
+                    
                     print("Failed to create Playlist")
+                
+                    guard let unwrappedSelf = self else { return }
+                    
+                    createAlert(title: "Oops!", message: "Failed to create Playlist", viewController: unwrappedSelf)
                 }
             }
         }))

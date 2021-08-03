@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 ///
 /// contains the albums that the current user's created/saved
@@ -114,13 +115,19 @@ class LibraryAlbumsController: UIViewController {
     /// fetch the current user's saved albums from the api
     ///
     private func fetchCurrentUserSavedAlbumsFromAPI() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+        
         albums.removeAll()
+        self.tableView.reloadData()
         
         NetworkManager.shared.getCurrentUserSavedAlbums { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                     case .success(let albums):
                         self?.albums = albums
+                        
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         ///
                         /// to update the ui with the albums if we have or with an action label view
                         /// if we don't have albums
@@ -129,6 +136,8 @@ class LibraryAlbumsController: UIViewController {
                         
                         self?.refreshControl.endRefreshing()
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         print(error.localizedDescription)
                 }
             }

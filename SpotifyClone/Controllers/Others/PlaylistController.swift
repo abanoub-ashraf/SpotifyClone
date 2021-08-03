@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 class PlaylistController: UIViewController {
     
@@ -150,6 +151,8 @@ class PlaylistController: UIViewController {
     }
     
     private func fetchPlaylistDetails() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+
         tracks.removeAll()
         
         // pass the playlist that's passed to this controller to get its full details from the api
@@ -184,10 +187,14 @@ class PlaylistController: UIViewController {
                             )
                         })
                         
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         self?.collectionView.reloadData()
                         self?.collectionView.isHidden = false
                         self?.noDataLabel.isHidden = true
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         print(error.localizedDescription)
                         self?.noDataLabel.isHidden = false
                         self?.collectionView.isHidden = true
@@ -266,7 +273,9 @@ class PlaylistController: UIViewController {
                             
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                             
-                            self?.fetchPlaylistDetails()
+                            DispatchQueue.main.async {
+                                self?.fetchPlaylistDetails()
+                            }
                             
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
@@ -287,6 +296,8 @@ class PlaylistController: UIViewController {
             
             NetworkManager.shared.removeTrackFromPlaylist(track: track, playlist: strongSelf.playlist) { success in
                 DispatchQueue.main.async {
+                    MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+
                     if success {
                         strongSelf.tracks.remove(at: indexPath.row)
                         strongSelf.viewModels.remove(at: indexPath.row)
@@ -301,8 +312,12 @@ class PlaylistController: UIViewController {
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                         }
                         
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         createAlert(title: "Done!", message: "The song is deleted Successfully", viewController: strongSelf)
                     } else {
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         HapticsManager.shared.vibrate(for: .error)
 
                         createAlert(title: "Opps!", message: "Failed to delete the Song, Please try again", viewController: strongSelf)

@@ -4,7 +4,6 @@ target 'SpotifyClone' do
   use_frameworks!
 
   pod 'SDWebImage'
-  pod 'Appirater'
-  pod 'Firebase/Analytics'
+  pod 'MBProgressHUD'
 
 end

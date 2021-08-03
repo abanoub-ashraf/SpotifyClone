@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 /// a protocol that will make the search controller push a new controller
 /// based on the result that gets tapped on in the search results controller
@@ -61,7 +62,7 @@ class SearchResultsController: UIViewController {
     
     // MARK: - Helper Functions -
     
-    /// this function will have the search results we get from the apin from the SearchController
+    /// this function will have the search results we get from the api from the SearchController
     ///
     func update(with results: [SearchResult]) {
         /// grab each array element this results enum array (array of 4 elements, each element is ana rray)
@@ -129,6 +130,14 @@ class SearchResultsController: UIViewController {
         tableView.reloadData()
     }
     
+    func startProgressHud(isLoading: Bool) {
+        if isLoading {
+            MBProgressHUD.showAdded(to: view, animated: true)
+        } else {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+    }
+        
     ///
     /// add a long tap gesture to the colletion view in the section that have the single tracks
     /// to add any one of them to a playlist after it gets long tapped
@@ -190,6 +199,8 @@ class SearchResultsController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
             DispatchQueue.main.async {
+                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
@@ -204,8 +215,16 @@ class SearchResultsController: UIViewController {
                             
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                             
+                            DispatchQueue.main.async {
+                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                            
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
+                            DispatchQueue.main.async {
+                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                            
                             HapticsManager.shared.vibrate(for: .error)
                         }
                         

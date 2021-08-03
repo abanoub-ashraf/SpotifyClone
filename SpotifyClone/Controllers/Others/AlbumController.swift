@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 class AlbumController: UIViewController {
     
@@ -126,6 +127,8 @@ class AlbumController: UIViewController {
     }
     
     private func fetchAlbumDetails() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+
         NetworkManager.shared.getAlbumDetails(for: album) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -142,8 +145,12 @@ class AlbumController: UIViewController {
                             )
                         })
                         
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         self?.collectionView.reloadData()
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         print(error.localizedDescription)
                 }
             }
@@ -196,6 +203,8 @@ class AlbumController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
             DispatchQueue.main.async {
+                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
@@ -211,8 +220,16 @@ class AlbumController: UIViewController {
                                 object: nil
                             )
                             
+                            DispatchQueue.main.async {
+                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                            
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
+                            DispatchQueue.main.async {
+                               MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                        
                             HapticsManager.shared.vibrate(for: .error)
                         }
                         
@@ -241,6 +258,10 @@ class AlbumController: UIViewController {
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         actionSheet.addAction(UIAlertAction(title: "Save Album", style: .default, handler: { [weak self] _ in
+            DispatchQueue.main.async {
+                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+            }
+            
             guard let strongSelf = self else { return }
             
             NetworkManager.shared.saveAlbumToLibrary(album: strongSelf.album) { success in
@@ -248,10 +269,18 @@ class AlbumController: UIViewController {
                 /// post a notification that an album has been saved to the library
                 ///
                 if success {
+                    DispatchQueue.main.async {
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                    }
+                    
                     HapticsManager.shared.vibrate(for: .success)
                     
                     NotificationCenter.default.post(name: .albumSavedNotification, object: nil)
                 } else {
+                    DispatchQueue.main.async {
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                    }
+                    
                     HapticsManager.shared.vibrate(for: .error)
                 }
                 

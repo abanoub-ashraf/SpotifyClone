@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 class CategoryController: UIViewController {
     
@@ -121,16 +122,26 @@ class CategoryController: UIViewController {
     }
     
     private func fetchPlaylists() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+
         NetworkManager.shared.getCategoryPlaylists(category: category) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                     case .success(let playlists):
                         self?.playlists = playlists
+                        
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         self?.updateUI()
+                        
                         self?.refreshControl.endRefreshing()
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         print(error.localizedDescription)
+                        
                         self?.refreshControl.endRefreshing()
+                        
                         self?.noPlaylistsView.isHidden = false
                 }
             }

@@ -1,5 +1,6 @@
 import UIKit
 import SDWebImage
+import MBProgressHUD
 
 class ProfileController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -43,13 +44,23 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
     
     // fetch the current logged in user profile
     private func fetchProfile() {
+        models.removeAll()
+        tableView.reloadData()
+        
+        MBProgressHUD.showAdded(to: self.view ?? UIView(), animated: true)
+
         NetworkManager.shared.getCurrentUserProfile { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                     case .success(let model):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         self?.updateUI(with: model)
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
                         print("Profile Error: \(error.localizedDescription)")
+                        
                         self?.failedToGetProfile()
                 }
             }
@@ -84,11 +95,11 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         
         imageView.center = headerView.center
         imageView.contentMode = .scaleAspectFill
-        imageView.sd_setImage(with: url, completed: nil)
+        imageView.sd_setImage(with: url, placeholderImage: Constants.Images.personPlaceholderImage)
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = imageSize / 2
         imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.systemGray.cgColor
+        imageView.layer.borderColor = Constants.mainColor?.cgColor
         
         tableView.tableHeaderView = headerView
     }

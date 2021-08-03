@@ -1,4 +1,5 @@
 import UIKit
+import MBProgressHUD
 
 class HomeController: UIViewController {
     
@@ -86,6 +87,8 @@ class HomeController: UIViewController {
     
     // fetch the New Releases, Featured Playlists, Recommended Tracks data from their 3 api calls
     func fetchData() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+        
         // enter the execution of the nubmer of the api calls we wanna execute
         let group = DispatchGroup()
         group.enter()
@@ -176,6 +179,8 @@ class HomeController: UIViewController {
             else {
                 return
             }
+            
+            MBProgressHUD.hide(for: self.view, animated: true)
             
             // pass the data we extracted to this function to convert them into 3 viewmodels
             self.configureModels(newAlbums: newAlbums, playlists: playlists, tracks: tracks)
@@ -434,6 +439,8 @@ class HomeController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
             DispatchQueue.main.async {
+                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
+
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
@@ -446,8 +453,16 @@ class HomeController: UIViewController {
                             
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                             
+                            DispatchQueue.main.async {
+                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                            
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
+                            DispatchQueue.main.async {
+                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                            }
+                            
                             HapticsManager.shared.vibrate(for: .error)
                         }
                     

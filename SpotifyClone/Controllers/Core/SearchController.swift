@@ -1,13 +1,14 @@
 import UIKit
 import SafariServices
+import MBProgressHUD
 
 class SearchController: UIViewController {
     
-    // MARK: - Variables -
+    // MARK: - Variables
     
     private var categories = [CategoryModel]()
     
-    // MARK: - UI -
+    // MARK: - UI
     
     let searchController: UISearchController = {
         /// vc is the search controller that will be the navigationItem's SearchController
@@ -50,7 +51,7 @@ class SearchController: UIViewController {
         )
     )
 
-    // MARK: - LifeCycle -
+    // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +67,7 @@ class SearchController: UIViewController {
         collectionView.frame = view.bounds
     }
         
-    // MARK: - Helper Functions -
+    // MARK: - Helper Functions
     
     private func configureUI() {
         view.backgroundColor = .systemBackground
@@ -100,6 +101,8 @@ class SearchController: UIViewController {
     }
     
     private func fetchCategories() {
+        MBProgressHUD.showAdded(to: view, animated: true)
+
         NetworkManager.shared.getCategories { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -108,8 +111,13 @@ class SearchController: UIViewController {
                         /// to fill the collection view with data using this categories array
                         ///
                         self?.categories = categories
+                        
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         self?.collectionView.reloadData()
                     case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
                         print(error.localizedDescription)
                         break
                 }
@@ -126,7 +134,7 @@ class SearchController: UIViewController {
 
 }
 
-// MARK: - UICollectionViewDataSource -
+// MARK: - UICollectionViewDataSource
 
 extension SearchController: UICollectionViewDataSource {
     
@@ -157,7 +165,7 @@ extension SearchController: UICollectionViewDataSource {
     
 }
 
-// MARK: - UICollectionViewDelegate -
+// MARK: - UICollectionViewDelegate
 
 extension SearchController: UICollectionViewDelegate {
     
@@ -174,7 +182,7 @@ extension SearchController: UICollectionViewDelegate {
     
 }
 
-// MARK: - UISearchBarDelegate -
+// MARK: - UISearchBarDelegate
 
 extension SearchController: UISearchBarDelegate {
     
@@ -185,8 +193,8 @@ extension SearchController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         resetSearchResultsController()
     }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         guard
             /**
              * get the searchResultsController of the searchController ui we created above
@@ -211,16 +219,22 @@ extension SearchController: UISearchBarDelegate {
         ///
         resultsController.delegate = self
         
+        resultsController.startProgressHud(isLoading: true)
+        
         // perform the search api call
         //
-        NetworkManager.shared.search(with: query) { result in
+        NetworkManager.shared.search(with: query) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                     case .success(let results):
                         /// update the searchBar's resultsController with the results we got from the api
                         ///
                         resultsController.update(with: results)
+                        
+                        resultsController.startProgressHud(isLoading: false)
                     case .failure(let error):
+                        resultsController.startProgressHud(isLoading: false)
+
                         print(error.localizedDescription)
                 }
             }
@@ -229,7 +243,7 @@ extension SearchController: UISearchBarDelegate {
     
 }
 
-// MARK: - UISearchResultsUpdating -
+// MARK: - UISearchResultsUpdating
 
 /// to update the SearchResultsController with the results of the search we do in here
 ///
@@ -242,7 +256,7 @@ extension SearchController: UISearchResultsUpdating {
     
 }
 
-// MARK: - SearchResultsControllerDelegate -
+// MARK: - SearchResultsControllerDelegate
 
 extension SearchController: SearchResultsControllerDelegate {
     
@@ -255,8 +269,11 @@ extension SearchController: SearchResultsControllerDelegate {
                 /// display the artist page in a safari controller
                 ///
                 guard let url = URL(string: model.external_urls["spotify"] ?? "") else { return }
+                
                 let vc = SFSafariViewController(url: url)
                 vc.modalPresentationStyle = .fullScreen
+                vc.preferredControlTintColor = Constants.mainColor
+                
                 present(vc, animated: true, completion: nil)
                 
             case .album(model: let model):
