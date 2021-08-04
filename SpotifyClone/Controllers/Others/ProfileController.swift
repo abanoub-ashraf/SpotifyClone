@@ -25,7 +25,7 @@ class ProfileController: UIViewController {
     
     private let profileName: UILabel = {
         let label = UILabel()
-        label.text = "User Name"
+        label.text = "Your Name"
         label.textColor = Constants.mainColor
         label.font = .systemFont(ofSize: 26)
         label.sizeToFit()
@@ -35,7 +35,7 @@ class ProfileController: UIViewController {
     
     private let profileEmail: UILabel = {
         let label = UILabel()
-        label.text = "User Email"
+        label.text = "Your Email"
         label.font = .systemFont(ofSize: 24)
         label.textColor = Constants.mainColor
         label.sizeToFit()
@@ -55,21 +55,44 @@ class ProfileController: UIViewController {
     
     private let profileCountry: UILabel = {
         let label = UILabel()
-        label.text = "Country:"
+        label.text = "Your Country"
         label.font = .systemFont(ofSize: 22)
         label.textColor = Constants.mainColor
         label.sizeToFit()
         label.textAlignment = .center
         return label
     }()
+    
+    private let errorLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.text = "Failed to load your Profile! \nPlease check your Internet Connection"
+        label.sizeToFit()
+        label.isHidden = true
+        label.numberOfLines = 0
+        label.textColor = Constants.mainColor
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let errorButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle("Click to Refresh", for: .normal)
+        button.isHidden = true
+        button.setTitleColor(Constants.mainColor, for: .normal)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 10
+        button.layer.masksToBounds = true
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = Constants.mainColor?.cgColor
+        button.addTarget(self, action: #selector(clickRefresh), for: .touchUpInside)
+        return button
+    }()
 
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = "Profile"
-        
+                
         fetchProfile()
         
         setupUI()
@@ -84,7 +107,15 @@ class ProfileController: UIViewController {
             action: #selector(didTapShare)
         )
         
-        [profileImage, profileName, profileEmail, profileFollowers, profileCountry].forEach { subView in
+        [
+            profileImage,
+            profileName,
+            profileEmail,
+            profileFollowers,
+            profileCountry,
+            errorLabel,
+            errorButton
+        ].forEach { subView in
             subView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(subView)
         }
@@ -126,6 +157,19 @@ class ProfileController: UIViewController {
             profileCountry.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             profileCountry.heightAnchor.constraint(equalToConstant: 44)
         ])
+        
+        NSLayoutConstraint.activate([
+            errorLabel.widthAnchor.constraint(equalToConstant: 300),
+            errorLabel.heightAnchor.constraint(equalToConstant: 300),
+            errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        ])
+    
+        NSLayoutConstraint.activate([
+            errorButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            errorButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            errorButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
     }
     
     // fetch the current logged in user profile
@@ -162,6 +206,17 @@ class ProfileController: UIViewController {
         profileFollowers.isHidden = false
         profileCountry.isHidden   = false
         
+        view.addSubview(profileImage)
+        view.addSubview(profileName)
+        view.addSubview(profileEmail)
+        view.addSubview(profileFollowers)
+        view.addSubview(profileCountry)
+        
+        setupConstraints()
+        
+        errorLabel.isHidden = true
+        errorButton.isHidden = true
+        
         profileImage.sd_setImage(
             with: URL(string: model.images.first?.url ?? ""),
             placeholderImage: Constants.Images.personPlaceholderImage
@@ -186,18 +241,15 @@ class ProfileController: UIViewController {
         profileFollowers.isHidden = true
         profileCountry.isHidden   = true
         
-        let label = UILabel(frame: .zero)
-        
-        label.text = "Failed to load your Profile! \nPlease check your Internet Connection"
-        label.sizeToFit()
-        label.numberOfLines = 0
-        label.textColor = Constants.mainColor
-        label.textAlignment = .center
-        
-        view.addSubview(label)
-        
-        label.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-        label.center = view.center
+        profileImage.removeFromSuperview()
+        profileName.removeFromSuperview()
+        profileEmail.removeFromSuperview()
+        profileFollowers.removeFromSuperview()
+        profileCountry.removeFromSuperview()
+
+    
+        errorLabel.isHidden = false
+        errorButton.isHidden = false
     }
     
     // MARK: - Selectors
@@ -217,6 +269,13 @@ class ProfileController: UIViewController {
         present(vc, animated: true) {
             UINavigationBar.appearance().tintColor = Constants.mainColor
         }
+    }
+    
+    @objc private func clickRefresh() {
+        self.errorLabel.isHidden = true
+        self.errorButton.isHidden = true
+        
+        fetchProfile()
     }
     
 }

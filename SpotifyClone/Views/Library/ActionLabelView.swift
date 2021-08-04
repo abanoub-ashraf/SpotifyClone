@@ -36,7 +36,9 @@ class ActionLabelView: UIView {
     let button: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 20
-        button.backgroundColor = .systemGray
+        button.backgroundColor = .clear
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = Constants.mainColor?.cgColor
         button.setTitleColor(Constants.mainColor, for: .normal)
         return button
     }()
