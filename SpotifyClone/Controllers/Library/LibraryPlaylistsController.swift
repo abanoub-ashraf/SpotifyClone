@@ -165,6 +165,8 @@ class LibraryPlaylistsController: UIViewController {
                         strongSelf.refreshControl.endRefreshing()
                         
                         self?.noPlaylistsView.isHidden = false
+                        
+                        self?.tableView.isHidden = false
                 }
             }
         }

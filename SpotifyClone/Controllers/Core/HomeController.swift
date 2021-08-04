@@ -22,6 +22,10 @@ class HomeController: UIViewController {
             return HomeController.createSectionsLayout(section: sectionIndex)
     })
     
+    private let noPlaylistsView = ActionLabelView()
+    
+    private let refreshControl = UIRefreshControl()
+    
     // MARK: - LifeCycle
 
     override func viewDidLoad() {
@@ -42,18 +46,46 @@ class HomeController: UIViewController {
         fetchData()
         
         addLongTapGesture()
+        
+        setupNoPlaylistsView()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        noPlaylistsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        noPlaylistsView.center = view.center
         
         collectionView.frame = view.bounds
     }
     
     // MARK: - Helper Functions
     
+    private func setupNoPlaylistsView() {
+        view.addSubview(noPlaylistsView)
+        
+        noPlaylistsView.actionLabelViewDelegate = self
+        
+        ///
+        /// this will start off hidden and configured with a view model data
+        ///
+        noPlaylistsView.configure(
+            with: ActionLabelViewModel(
+                text: "Failed to load! \nPlease check your Intertnet Connection \nand try again",
+                actionTitle: ""
+            )
+        )
+        
+        noPlaylistsView.button.isHidden = true
+        
+    }
+    
     private func configureCollectionView() {
         view.addSubview(collectionView)
+                
+        collectionView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
         
         /// each section in the collection view is gonna use its own different cell
         collectionView.register(
@@ -87,6 +119,15 @@ class HomeController: UIViewController {
     
     // fetch the New Releases, Featured Playlists, Recommended Tracks data from their 3 api calls
     func fetchData() {
+        self.noPlaylistsView.isHidden = true
+        
+        newAlbums.removeAll()
+        tracks.removeAll()
+        playlists.removeAll()
+        sections.removeAll()
+        
+        collectionView.reloadData()
+        
         MBProgressHUD.showAdded(to: view, animated: true)
         
         // enter the execution of the nubmer of the api calls we wanna execute
@@ -169,8 +210,26 @@ class HomeController: UIViewController {
             }
         }
         
-        // once the 3 api calls are dont getting the data notify the main thread with that
+        ///
+        /// once the 3 api calls are dont getting the data notify the main thread with that
+        ///
         group.notify(queue: .main) {
+            if (newReleases == nil) || (featuredPlaylists == nil) || (recommendations == nil) {
+                DispatchQueue.main.async {
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                    self.noPlaylistsView.isHidden = false
+                    self.refreshControl.endRefreshing()
+                    self.sections = []
+                    self.collectionView.reloadData()
+                }
+            }
+            
+            MBProgressHUD.hide(for: self.view, animated: true)
+            
+            self.noPlaylistsView.isHidden = true
+            
+            self.refreshControl.endRefreshing()
+            
             guard
                 // extract the data we wanna use from the responses models we got from the api
                 let newAlbums = newReleases?.albums.items,
@@ -180,12 +239,11 @@ class HomeController: UIViewController {
                 return
             }
             
-            MBProgressHUD.hide(for: self.view, animated: true)
-            
-            // pass the data we extracted to this function to convert them into 3 viewmodels
+            ///
+            /// pass the data we extracted to this function to convert them into 3 viewmodels
+            ///
             self.configureModels(newAlbums: newAlbums, playlists: playlists, tracks: tracks)
         }
-    
     }
     
     // convert the models params into viewmodels so we can append those viewmodels to the sections enums array
@@ -224,7 +282,9 @@ class HomeController: UIViewController {
             )
         })))
         
-        collectionView.reloadData()
+        self.noPlaylistsView.isHidden = true
+        
+        self.collectionView.reloadData()
     }
     
     // create the layouts for the collection view sections
@@ -477,7 +537,21 @@ class HomeController: UIViewController {
                         
         present(actionSheet, animated: true, completion: nil)
     }
+    
+    @objc private func refresh(_ sender: Any) {
+        sections = []
+        
+        fetchData()
+    }
 
+}
+
+extension HomeController: ActionLabelViewDelegate {
+    
+    func actionLabelViewDidTapButton(_ actionView: ActionLabelView) {
+        
+    }
+    
 }
 
 // MARK: - UICollectionViewDataSource

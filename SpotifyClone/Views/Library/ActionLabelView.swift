@@ -33,7 +33,7 @@ class ActionLabelView: UIView {
         return label
     }()
     
-    private let button: UIButton = {
+    let button: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 20
         button.backgroundColor = .systemGray

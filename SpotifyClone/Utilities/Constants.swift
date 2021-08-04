@@ -52,7 +52,7 @@ struct Constants {
         
         // MARK: - Search
         
-        static let search = "\(Constants.baseAPIURL)/search?limit=20&type=album,artist,playlist,track"
+        static let search = "\(Constants.baseAPIURL)/search?limit=50&type=album,artist,playlist,track"
         
         // MARK: - Library
         

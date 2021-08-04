@@ -39,6 +39,15 @@ class SearchResultsController: UIViewController {
         )
         return tableView
     }()
+    
+    private let label: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.text = "Failed to load, Please try again."
+        label.sizeToFit()
+        label.isHidden = true
+        label.textColor = .secondaryLabel
+        return label
+    }()
 
     // MARK: - LifeCycle -
     
@@ -56,6 +65,9 @@ class SearchResultsController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        view.addSubview(label)
+        label.center = view.center
         
         tableView.frame = view.bounds
     }
@@ -136,6 +148,10 @@ class SearchResultsController: UIViewController {
         } else {
             MBProgressHUD.hide(for: self.view, animated: true)
         }
+    }
+    
+    func showLabel(isHidden: Bool) {
+        label.isHidden = isHidden
     }
         
     ///
@@ -242,7 +258,7 @@ class SearchResultsController: UIViewController {
 
 }
 
-// MARK: - UITableViewDataSource -
+// MARK: - UITableViewDataSource
 
 extension SearchResultsController: UITableViewDataSource {
     
@@ -338,7 +354,7 @@ extension SearchResultsController: UITableViewDataSource {
     
 }
 
-// MARK: - UITableViewDelegate -
+// MARK: - UITableViewDelegate
 
 extension SearchResultsController: UITableViewDelegate {
     

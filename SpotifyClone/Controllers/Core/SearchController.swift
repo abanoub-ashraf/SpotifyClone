@@ -50,6 +50,19 @@ class SearchController: UIViewController {
             }
         )
     )
+    
+    private let refreshControl = UIRefreshControl()
+    
+    private let label: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.isHidden = true
+        label.text = "Failed to load! \nPlease check your \nInternet Connection \nand pull to Refresh"
+        label.sizeToFit()
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = .secondaryLabel
+        return label
+    }()
 
     // MARK: - LifeCycle
     
@@ -63,6 +76,10 @@ class SearchController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        view.addSubview(label)
+        label.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+        label.center = view.center
         
         collectionView.frame = view.bounds
     }
@@ -98,13 +115,24 @@ class SearchController: UIViewController {
             CategoryCollectionViewCell.self,
             forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier
         )
+        
+        collectionView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
     }
     
     private func fetchCategories() {
+        label.isHidden = true
+        
         MBProgressHUD.showAdded(to: view, animated: true)
+        
+        categories.removeAll()
+        collectionView.reloadData()
 
         NetworkManager.shared.getCategories { [weak self] result in
             DispatchQueue.main.async {
+                self?.label.isHidden = true
+                
                 switch result {
                     case .success(let categories):
                         ///
@@ -115,11 +143,16 @@ class SearchController: UIViewController {
                         MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
 
                         self?.collectionView.reloadData()
+                        
+                        self?.refreshControl.endRefreshing()
                     case .failure(let error):
                         MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
-
+                        
+                        self?.refreshControl.endRefreshing()
+                        
+                        self?.label.isHidden = false
+                        
                         print(error.localizedDescription)
-                        break
                 }
             }
         }
@@ -130,6 +163,14 @@ class SearchController: UIViewController {
             return
         }
         resultsController.reset()
+    }
+    
+    // MARK: - Selectors
+
+    @objc private func refresh(_ sender: Any) {
+        categories = []
+        
+        fetchCategories()
     }
 
 }
@@ -221,6 +262,8 @@ extension SearchController: UISearchBarDelegate {
         
         resultsController.startProgressHud(isLoading: true)
         
+        resultsController.showLabel(isHidden: true)
+        
         // perform the search api call
         //
         NetworkManager.shared.search(with: query) { [weak self] result in
@@ -234,6 +277,8 @@ extension SearchController: UISearchBarDelegate {
                         resultsController.startProgressHud(isLoading: false)
                     case .failure(let error):
                         resultsController.startProgressHud(isLoading: false)
+                        
+                        resultsController.showLabel(isHidden: false)
 
                         print(error.localizedDescription)
                 }

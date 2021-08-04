@@ -279,6 +279,12 @@ class AlbumController: UIViewController {
                 } else {
                     DispatchQueue.main.async {
                         MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+                        
+                        createAlert(
+                            title: "Failed to save!",
+                            message: "Please check your Connection and try again",
+                            viewController: self ?? UIViewController()
+                        )
                     }
                     
                     HapticsManager.shared.vibrate(for: .error)
