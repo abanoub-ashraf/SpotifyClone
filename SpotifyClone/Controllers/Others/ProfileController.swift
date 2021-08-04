@@ -76,6 +76,10 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         models.append("Email Address: \(model.email)")
         models.append("User ID: \(model.id)")
         models.append("Plan: \(model.product)")
+        models.append("Country: \(model.country)")
+        models.append("Product: \(model.product)")
+        models.append("Type: \(model.type)")
+        models.append("Followers: \(model.followers.total ?? 0)")
         createTableHeader(with: model.images.first?.url)
         tableView.reloadData()
     }
@@ -106,12 +110,17 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
     
     // in case we failed at fetching the current profile data
     private func failedToGetProfile() {
+        tableView.isHidden = false
+        
         let label = UILabel(frame: .zero)
-        label.text = "Failed to load Current User's Profile."
+        label.text = "Failed to load your Profile! \nPlease check your Internet Connection"
         label.sizeToFit()
-        label.textColor = .secondaryLabel
+        label.numberOfLines = 0
+        label.textColor = Constants.mainColor
+        label.textAlignment = .center
         
         view.addSubview(label)
+        label.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         label.center = view.center
     }
     

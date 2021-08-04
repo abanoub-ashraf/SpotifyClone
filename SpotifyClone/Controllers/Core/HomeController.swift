@@ -77,6 +77,7 @@ class HomeController: UIViewController {
         )
         
         noPlaylistsView.button.isHidden = true
+        noPlaylistsView.label.textColor = Constants.mainColor
         
     }
     
@@ -217,6 +218,7 @@ class HomeController: UIViewController {
             if (newReleases == nil) || (featuredPlaylists == nil) || (recommendations == nil) {
                 DispatchQueue.main.async {
                     MBProgressHUD.hide(for: self.view, animated: true)
+                    
                     self.noPlaylistsView.isHidden = false
                     self.refreshControl.endRefreshing()
                     self.sections = []

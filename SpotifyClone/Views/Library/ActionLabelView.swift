@@ -24,7 +24,7 @@ class ActionLabelView: UIView {
     
     // MARK: - UI
     
-    private let label: UILabel = {
+    let label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0

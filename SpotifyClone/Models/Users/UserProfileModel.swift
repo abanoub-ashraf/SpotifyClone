@@ -9,6 +9,13 @@ struct UserProfileModel: Codable {
     let id: String
     let product: String
     let images: [APIImage]
+    let type: String
+    let followers: Followers
+}
+
+struct Followers: Codable {
+    let href: String?
+    let total: Int?
 }
 
 /**

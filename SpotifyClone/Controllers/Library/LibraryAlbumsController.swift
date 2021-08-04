@@ -104,7 +104,7 @@ class LibraryAlbumsController: UIViewController {
         ///
         noAlbumsView.configure(
             with: ActionLabelViewModel(
-                text: "You have not saved any Albums yet",
+                text: "You have not saved any Albums yet. \nif you already did, then pull to refresh",
                 actionTitle: "Browse"
             )
         )
@@ -139,6 +139,12 @@ class LibraryAlbumsController: UIViewController {
                         MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
 
                         print(error.localizedDescription)
+                        
+                        self?.refreshControl.endRefreshing()
+                        
+                        self?.noAlbumsView.isHidden = false
+                        
+                        self?.tableView.isHidden = false
                 }
             }
         }

@@ -45,7 +45,7 @@ class SearchResultsController: UIViewController {
         label.text = "Failed to load, Please try again."
         label.sizeToFit()
         label.isHidden = true
-        label.textColor = .secondaryLabel
+        label.textColor = Constants.mainColor
         return label
     }()
 

@@ -60,7 +60,7 @@ class SearchController: UIViewController {
         label.sizeToFit()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .secondaryLabel
+        label.textColor = Constants.mainColor
         return label
     }()
 
