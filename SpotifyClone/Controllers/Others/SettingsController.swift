@@ -133,6 +133,8 @@ extension SettingsController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = model.title
+        cell.backgroundColor = .systemGray6
+        cell.textLabel?.textColor = Constants.mainColor
         return cell
     }
     
