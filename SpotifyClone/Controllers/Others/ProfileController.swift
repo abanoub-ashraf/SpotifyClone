@@ -2,20 +2,65 @@ import UIKit
 import SDWebImage
 import MBProgressHUD
 
-class ProfileController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ProfileController: UIViewController {
     
     // MARK: - Variables
     
     private var models = [String]()
     
+    private var model: UserProfileModel?
+    
     // MARK: - UI
     
-    // tableview to display the user data
-    private let tableView: UITableView = {
-        let tableview = UITableView()
-        tableview.isHidden = true
-        tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        return tableview
+    private let profileImage: UIImageView = {
+        let image = UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        image.contentMode = .scaleAspectFill
+        image.layer.borderWidth = 1.0
+        image.layer.masksToBounds = false
+        image.layer.borderColor = Constants.mainColor?.cgColor
+        image.layer.cornerRadius = image.frame.size.height / 2
+        image.clipsToBounds = true
+        return image
+    }()
+    
+    private let profileName: UILabel = {
+        let label = UILabel()
+        label.text = "User Name"
+        label.textColor = Constants.mainColor
+        label.font = .systemFont(ofSize: 26)
+        label.sizeToFit()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let profileEmail: UILabel = {
+        let label = UILabel()
+        label.text = "User Email"
+        label.font = .systemFont(ofSize: 24)
+        label.textColor = Constants.mainColor
+        label.sizeToFit()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let profileFollowers: UILabel = {
+        let label = UILabel()
+        label.text = "Followers: 0"
+        label.font = .systemFont(ofSize: 22)
+        label.textColor = Constants.mainColor
+        label.sizeToFit()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let profileCountry: UILabel = {
+        let label = UILabel()
+        label.text = "Country:"
+        label.font = .systemFont(ofSize: 22)
+        label.textColor = Constants.mainColor
+        label.sizeToFit()
+        label.textAlignment = .center
+        return label
     }()
 
     // MARK: - LifeCycle
@@ -27,25 +72,65 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         
         fetchProfile()
         
-        view.backgroundColor = .systemBackground
-        view.addSubview(tableView)
-        
-        tableView.delegate = self
-        tableView.dataSource = self
+        setupUI()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
         
-        tableView.frame = view.bounds
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .action,
+            target: self,
+            action: #selector(didTapShare)
+        )
+        
+        [profileImage, profileName, profileEmail, profileFollowers, profileCountry].forEach { subView in
+            subView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(subView)
+        }
+        
+        setupConstraints()
+
     }
     
     // MARK: - Helper Functions
     
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            profileImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileImage.widthAnchor.constraint(equalToConstant: 200),
+            profileImage.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        NSLayoutConstraint.activate([
+            profileName.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20),
+            profileName.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileName.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        NSLayoutConstraint.activate([
+            profileEmail.topAnchor.constraint(equalTo: profileName.bottomAnchor, constant: 20),
+            profileEmail.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileEmail.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        NSLayoutConstraint.activate([
+            profileFollowers.topAnchor.constraint(equalTo: profileEmail.bottomAnchor, constant: 20),
+            profileFollowers.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileFollowers.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        NSLayoutConstraint.activate([
+            profileCountry.topAnchor.constraint(equalTo: profileFollowers.bottomAnchor, constant: 20),
+            profileCountry.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileCountry.heightAnchor.constraint(equalToConstant: 44)
+        ])
+    }
+    
     // fetch the current logged in user profile
     private func fetchProfile() {
         models.removeAll()
-        tableView.reloadData()
         
         MBProgressHUD.showAdded(to: self.view ?? UIView(), animated: true)
 
@@ -53,6 +138,8 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
             DispatchQueue.main.async {
                 switch result {
                     case .success(let model):
+                        self?.model = model
+                        
                         MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
                         
                         self?.updateUI(with: model)
@@ -69,50 +156,38 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
     
     // fill the ui with the user profile's data
     private func updateUI(with model: UserProfileModel) {
-        tableView.isHidden = false
-        tableView.separatorStyle = .none
+        profileImage.isHidden     = false
+        profileName.isHidden      = false
+        profileEmail.isHidden     = false
+        profileFollowers.isHidden = false
+        profileCountry.isHidden   = false
         
-        models.append("Full Name: \(model.display_name)")
-        models.append("Email Address: \(model.email)")
-        models.append("User ID: \(model.id)")
-        models.append("Plan: \(model.product)")
-        models.append("Country: \(model.country)")
-        models.append("Product: \(model.product)")
-        models.append("Type: \(model.type)")
-        models.append("Followers: \(model.followers.total ?? 0)")
-        createTableHeader(with: model.images.first?.url)
-        tableView.reloadData()
+        profileImage.sd_setImage(
+            with: URL(string: model.images.first?.url ?? ""),
+            placeholderImage: Constants.Images.personPlaceholderImage
+        )
+        
+        profileName.text = model.display_name
+        
+        profileEmail.text = model.email
+        
+        profileFollowers.text = "Followers: \(model.followers.total ?? 0)"
+        
+        profileCountry.text = "Country: \(model.country)"
     }
-    
-    // a header for the table view that contains the image of the user profile
-    private func createTableHeader(with string: String?) {
-        guard let urlString = string, let url = URL(string: urlString) else {
-            return
-        }
-        
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: view.width / 1.5))
-        
-        let imageSize: CGFloat = headerView.height / 2
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: imageSize, height: imageSize))
-        
-        headerView.addSubview(imageView)
-        
-        imageView.center = headerView.center
-        imageView.contentMode = .scaleAspectFill
-        imageView.sd_setImage(with: url, placeholderImage: Constants.Images.personPlaceholderImage)
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = imageSize / 2
-        imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = Constants.mainColor?.cgColor
-        
-        tableView.tableHeaderView = headerView
-    }
-    
-    // in case we failed at fetching the current profile data
+
+    ///
+    /// in case we failed at fetching the current profile data
+    ///
     private func failedToGetProfile() {
-        tableView.isHidden = false
+        profileImage.isHidden     = true
+        profileName.isHidden      = true
+        profileEmail.isHidden     = true
+        profileFollowers.isHidden = true
+        profileCountry.isHidden   = true
         
         let label = UILabel(frame: .zero)
+        
         label.text = "Failed to load your Profile! \nPlease check your Internet Connection"
         label.sizeToFit()
         label.numberOfLines = 0
@@ -120,21 +195,28 @@ class ProfileController: UIViewController, UITableViewDataSource, UITableViewDel
         label.textAlignment = .center
         
         view.addSubview(label)
+        
         label.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
         label.center = view.center
     }
     
-    // MARK: - TableView Methods
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return models.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = models[indexPath.row]
-        cell.selectionStyle = .none
-        return cell
+    // MARK: - Selectors
+
+    @objc private func didTapShare() {
+        guard let url = URL(string: model?.external_urls["spotify"] ?? "") else { return }
+        
+        let vc = UIActivityViewController(
+            activityItems: [url],
+            applicationActivities: []
+        )
+        
+        vc.view.backgroundColor = Constants.mainColor
+        
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        
+        present(vc, animated: true) {
+            UINavigationBar.appearance().tintColor = Constants.mainColor
+        }
     }
     
 }
