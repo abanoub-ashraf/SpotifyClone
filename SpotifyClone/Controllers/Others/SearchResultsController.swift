@@ -215,8 +215,6 @@ class SearchResultsController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
             DispatchQueue.main.async {
-                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
-
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
@@ -231,16 +229,8 @@ class SearchResultsController: UIViewController {
                             
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                             
-                            DispatchQueue.main.async {
-                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
-                            }
-                            
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
-                            DispatchQueue.main.async {
-                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
-                            }
-                            
                             HapticsManager.shared.vibrate(for: .error)
                         }
                         

@@ -590,4 +590,100 @@ final class NetworkManager {
         }
     }
     
+    
+    // MARK: - Artists
+    
+    public func getArtists() {
+        
+    }
+    
+    public func getArtistDetails(
+        for artist: ArtistModel,
+        completion: @escaping (Result<ArtistModel, Error>) -> Void
+    ) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getArtistDetails + "\(artist.id)"),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let artistData = try JSONDecoder().decode(ArtistModel.self, from: data)
+                                        
+                    completion(.success(artistData))
+                } catch {
+                    print(error.localizedDescription)
+                    
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    }
+    
+    public func getArtistAlbums(for artist: ArtistModel, completion: @escaping (Result<[AlbumModel], Error>) -> Void) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getArtistAlbums + "\(artist.id)/albums?limit=50"),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(AlbumsResponse.self, from: data)
+                    
+                    completion(.success(results.items))
+                } catch {
+                    print(error.localizedDescription)
+                    
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    }
+    
+    // MARK: - Episodes
+    
+    // MARK: - Follow
+    
+    /// remove album
+    
+    /// check user's saved albums
+    
+    /// check user's saved tracks
+    
+    /// user's saved episodes
+    
+    /// save episodes
+    
+    /// remove episodes
+    
+    /// check user's saved episodes
+    
+    /// shows
+    
+    /// Get a User's Top Artists and Tracks
+    
+    /// Get Current User's Recently Played Tracks
+    
+    /// Upload a Custom Playlist Cover Image
+    
+    /// Get Several Tracks
+    
+    /// Get a Track
+    
+    /// get a user profile
+    
+    /// the border color of the image in the playlist controller and the album controller
+
 }

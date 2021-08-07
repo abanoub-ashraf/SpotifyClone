@@ -75,6 +75,10 @@ struct Constants {
         static let getCurrentUserSavedAlbums = "\(Constants.baseAPIURL)/me/albums"
         static let saveAlbumToLibrary        = "\(Constants.baseAPIURL)/me/albums"
         
+        // MARK: - Artists
+        
+        static let getArtistDetails = "\(Constants.baseAPIURL)/artists/"
+        static let getArtistAlbums  = "\(Constants.baseAPIURL)/artists/"
     }
     
     // MARK: - CollectionViews

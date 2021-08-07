@@ -311,18 +311,14 @@ extension SearchController: SearchResultsControllerDelegate {
     func didTapResult(_ result: SearchResult) {
         switch result {
             case .artist(model: let model):
-                /// display the artist page in a safari controller
-                ///
-                guard let url = URL(string: model.external_urls["spotify"] ?? "") else { return }
+                let vc = ArtistController(artist: model)
                 
-                let vc = SFSafariViewController(url: url)
-                vc.modalPresentationStyle = .fullScreen
-                vc.preferredControlTintColor = Constants.mainColor
-                
-                present(vc, animated: true, completion: nil)
+                vc.navigationItem.largeTitleDisplayMode = .never
+                navigationController?.pushViewController(vc, animated: true)
                 
             case .album(model: let model):
                 let vc = AlbumController(album: model)
+                
                 vc.navigationItem.largeTitleDisplayMode = .never
                 navigationController?.pushViewController(vc, animated: true)
             
@@ -334,6 +330,7 @@ extension SearchController: SearchResultsControllerDelegate {
     
             case .playlist(model: let model):
                 let vc = PlaylistController(playlist: model)
+                
                 vc.navigationItem.largeTitleDisplayMode = .never
                 navigationController?.pushViewController(vc, animated: true)
         }

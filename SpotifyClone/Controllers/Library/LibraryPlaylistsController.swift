@@ -252,6 +252,10 @@ class LibraryPlaylistsController: UIViewController {
     // MARK: - Selectors
 
     @objc func didTapClose() {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -336,7 +340,13 @@ extension LibraryPlaylistsController: UITableViewDelegate {
         ///
         guard selectionHandler == nil else {
             selectionHandler?(playlist)
-            dismiss(animated: true, completion: nil)
+            
+            dismiss(animated: true, completion: {
+                DispatchQueue.main.async {
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                }
+            })
+            
             return
         }
         

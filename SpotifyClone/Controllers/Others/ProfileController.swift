@@ -6,8 +6,6 @@ class ProfileController: UIViewController {
     
     // MARK: - Variables
     
-    private var models = [String]()
-    
     private var model: UserProfileModel?
     
     // MARK: - UI
@@ -57,6 +55,16 @@ class ProfileController: UIViewController {
         let label = UILabel()
         label.text = "Your Country"
         label.font = .systemFont(ofSize: 22)
+        label.textColor = Constants.mainColor
+        label.sizeToFit()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let profileType: UILabel = {
+        let label = UILabel()
+        label.text = "User Type"
+        label.font = .systemFont(ofSize: 20)
         label.textColor = Constants.mainColor
         label.sizeToFit()
         label.textAlignment = .center
@@ -113,6 +121,7 @@ class ProfileController: UIViewController {
             profileEmail,
             profileFollowers,
             profileCountry,
+            profileType,
             errorLabel,
             errorButton
         ].forEach { subView in
@@ -159,6 +168,12 @@ class ProfileController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
+            profileType.topAnchor.constraint(equalTo: profileCountry.bottomAnchor, constant: 20),
+            profileType.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileType.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        NSLayoutConstraint.activate([
             errorLabel.widthAnchor.constraint(equalToConstant: 300),
             errorLabel.heightAnchor.constraint(equalToConstant: 300),
             errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -172,10 +187,7 @@ class ProfileController: UIViewController {
         ])
     }
     
-    // fetch the current logged in user profile
     private func fetchProfile() {
-        models.removeAll()
-        
         MBProgressHUD.showAdded(to: self.view ?? UIView(), animated: true)
 
         NetworkManager.shared.getCurrentUserProfile { [weak self] result in
@@ -198,24 +210,24 @@ class ProfileController: UIViewController {
         }
     }
     
-    // fill the ui with the user profile's data
     private func updateUI(with model: UserProfileModel) {
-        profileImage.isHidden     = false
-        profileName.isHidden      = false
-        profileEmail.isHidden     = false
-        profileFollowers.isHidden = false
-        profileCountry.isHidden   = false
-        
-        view.addSubview(profileImage)
-        view.addSubview(profileName)
-        view.addSubview(profileEmail)
-        view.addSubview(profileFollowers)
-        view.addSubview(profileCountry)
+        [
+            profileImage,
+            profileName,
+            profileEmail,
+            profileFollowers,
+            profileCountry,
+            profileType
+        ].forEach { subView in
+            subView.isHidden = false
+            view.addSubview(subView)
+        }
         
         setupConstraints()
         
-        errorLabel.isHidden = true
-        errorButton.isHidden = true
+        [errorLabel, errorButton].forEach { (subView) in
+            subView.isHidden = true
+        }
         
         profileImage.sd_setImage(
             with: URL(string: model.images.first?.url ?? ""),
@@ -229,27 +241,33 @@ class ProfileController: UIViewController {
         profileFollowers.text = "Followers: \(model.followers.total ?? 0)"
         
         profileCountry.text = "Country: \(model.country)"
+        
+        if model.type == "user" {
+            profileType.text = "User Type: User"
+        } else {
+            profileType.text = "User Type: \(model.type)"
+        }
     }
 
     ///
     /// in case we failed at fetching the current profile data
     ///
     private func failedToGetProfile() {
-        profileImage.isHidden     = true
-        profileName.isHidden      = true
-        profileEmail.isHidden     = true
-        profileFollowers.isHidden = true
-        profileCountry.isHidden   = true
-        
-        profileImage.removeFromSuperview()
-        profileName.removeFromSuperview()
-        profileEmail.removeFromSuperview()
-        profileFollowers.removeFromSuperview()
-        profileCountry.removeFromSuperview()
-
+        [
+            profileImage,
+            profileName,
+            profileEmail,
+            profileFollowers,
+            profileCountry,
+            profileType
+        ].forEach { subView in
+            subView.isHidden = true
+            subView.removeFromSuperview()
+        }
     
-        errorLabel.isHidden = false
-        errorButton.isHidden = false
+        [errorLabel, errorButton].forEach({ subView in
+            subView.isHidden = false
+        })
     }
     
     // MARK: - Selectors

@@ -10,6 +10,7 @@ struct AlbumsResponse: Codable {
 
 struct AlbumModel: Codable {
     let album_type: String
+    let album_group: String?
     let available_markets: [String]
     let id: String
     var images: [APIImage]

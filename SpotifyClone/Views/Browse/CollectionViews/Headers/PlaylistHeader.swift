@@ -153,6 +153,9 @@ final class PlaylistHeader: UICollectionReusableView {
             with: viewModel.artworkURL,
             placeholderImage: Constants.Images.playlistsPlaceholderImage
         )
+        
+        imageView.layer.borderColor = Constants.mainColor?.cgColor
+        imageView.layer.borderWidth = 1.0
     }
     
     private func animateUI() {

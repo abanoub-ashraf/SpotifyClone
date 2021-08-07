@@ -59,6 +59,14 @@ class HomeController: UIViewController {
         collectionView.frame = view.bounds
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+    }
+    
     // MARK: - Helper Functions
     
     private func setupNoPlaylistsView() {
@@ -501,12 +509,11 @@ class HomeController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default) { [weak self] _ in
             DispatchQueue.main.async {
-                MBProgressHUD.showAdded(to: self?.view ?? UIView(), animated: true)
-
                 let vc = LibraryPlaylistsController()
                 
                 vc.selectionHandler = { playlist in
                     NetworkManager.shared.addTrackToPlaylist(track: model, playlist: playlist) { [weak self] success in
+                        
                         ///
                         /// post a notification that a track has been added to a playlist
                         ///
@@ -515,16 +522,8 @@ class HomeController: UIViewController {
                             
                             NotificationCenter.default.post(name: .trackAddedToOrDeletedFromPlaylistNotification, object: nil)
                             
-                            DispatchQueue.main.async {
-                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
-                            }
-                            
                             createAlert(title: "Done!", message: "The song is added Successfully", viewController: self ?? UIViewController())
                         } else {
-                            DispatchQueue.main.async {
-                                MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
-                            }
-                            
                             HapticsManager.shared.vibrate(for: .error)
                         }
                     
