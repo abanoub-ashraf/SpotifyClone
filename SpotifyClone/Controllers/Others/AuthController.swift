@@ -90,15 +90,5 @@ extension AuthController: WKNavigationDelegate {
             }
         }
     }
-    
-//    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-//        if navigationAction.navigationType == .backForward {
-//            decisionHandler(.cancel)
-//        }
-//    }
-//
-//    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-//        decisionHandler(.cancel)
-//    }
-    
+
 }

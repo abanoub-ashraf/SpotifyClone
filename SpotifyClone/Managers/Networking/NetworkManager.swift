@@ -593,10 +593,6 @@ final class NetworkManager {
     
     // MARK: - Artists
     
-    public func getArtists() {
-        
-    }
-    
     public func getArtistDetails(
         for artist: ArtistModel,
         completion: @escaping (Result<ArtistModel, Error>) -> Void
@@ -656,34 +652,15 @@ final class NetworkManager {
     
     // MARK: - Follow
     
-    /// remove album
+    /// remove album ----------
     
-    /// check user's saved albums
+    /// check user's saved albums ---------
     
-    /// check user's saved tracks
+    /// check user's saved tracks ---------
     
-    /// user's saved episodes
-    
-    /// save episodes
-    
-    /// remove episodes
     
     /// check user's saved episodes
     
     /// shows
-    
-    /// Get a User's Top Artists and Tracks
-    
-    /// Get Current User's Recently Played Tracks
-    
-    /// Upload a Custom Playlist Cover Image
-    
-    /// Get Several Tracks
-    
-    /// Get a Track
-    
-    /// get a user profile
-    
-    /// the border color of the image in the playlist controller and the album controller
 
 }

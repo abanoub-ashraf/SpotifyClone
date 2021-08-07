@@ -106,6 +106,8 @@ class ProfileController: UIViewController {
         setupUI()
     }
     
+    // MARK: - Helper Functions
+    
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
@@ -132,8 +134,6 @@ class ProfileController: UIViewController {
         setupConstraints()
 
     }
-    
-    // MARK: - Helper Functions
     
     func setupConstraints() {
         NSLayoutConstraint.activate([

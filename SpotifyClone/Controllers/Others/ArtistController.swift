@@ -1,5 +1,6 @@
 import UIKit
 import SDWebImage
+import MBProgressHUD
 
 class ArtistController: UIViewController {
     
@@ -84,6 +85,31 @@ class ArtistController: UIViewController {
         label.textColor = Constants.mainColor
         return label
     }()
+    
+    private let errorLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.text = "Failed to load! \nPlease check your Internet Connection"
+        label.sizeToFit()
+        label.isHidden = true
+        label.numberOfLines = 0
+        label.textColor = Constants.mainColor
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let errorButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.setTitle("Click to Refresh", for: .normal)
+        button.isHidden = true
+        button.setTitleColor(Constants.mainColor, for: .normal)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 10
+        button.layer.masksToBounds = true
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = Constants.mainColor?.cgColor
+        button.addTarget(self, action: #selector(clickRefresh), for: .touchUpInside)
+        return button
+    }()
             
     // MARK: - Init
 
@@ -108,37 +134,6 @@ class ArtistController: UIViewController {
     
     // MARK: - Helper Functions
     
-    private func fetchArtistDetails() {
-        NetworkManager.shared.getArtistDetails(for: artist) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                    case .success(let artistData):
-                        self?.data = artistData
-                        
-                        self?.fetchArtistAlbums(artist: artistData)
-                        
-                        self?.updateUI(with: artistData)
-                    case .failure(let error):
-                        print(error)
-                }
-            }
-        }
-    }
-    
-    private func fetchArtistAlbums(artist: ArtistModel) {
-        NetworkManager.shared.getArtistAlbums(for: artist) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let albums):
-                    self?.artistAlbums = albums
-                    self?.tableView.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
@@ -155,7 +150,9 @@ class ArtistController: UIViewController {
             profilePopularity,
             profileType,
             tableView,
-            tableHeader
+            tableHeader,
+            errorLabel,
+            errorButton
         ].forEach { subView in
             subView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(subView)
@@ -214,9 +211,103 @@ class ArtistController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
         ])
+        
+        NSLayoutConstraint.activate([
+            errorLabel.widthAnchor.constraint(equalToConstant: 300),
+            errorLabel.heightAnchor.constraint(equalToConstant: 300),
+            errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        ])
+    
+        NSLayoutConstraint.activate([
+            errorButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            errorButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            errorButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func fetchArtistDetails() {
+        MBProgressHUD.showAdded(to: self.view ?? UIView(), animated: true)
+
+        NetworkManager.shared.getArtistDetails(for: artist) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                    case .success(let artistData):
+                        self?.data = artistData
+                        
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
+                        self?.fetchArtistAlbums(artist: artistData)
+                        
+                        self?.updateUI(with: artistData)
+                    case .failure(let error):
+                        MBProgressHUD.hide(for: self?.view ?? UIView(), animated: true)
+
+                        print(error)
+                        
+                        self?.failedToGetArtist()
+                }
+            }
+        }
+    }
+    
+    private func fetchArtistAlbums(artist: ArtistModel) {
+        NetworkManager.shared.getArtistAlbums(for: artist) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let albums):
+                    self?.artistAlbums = albums
+                    
+                    self?.tableView.reloadData()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    ///
+    /// in case we failed at fetching the artist data
+    ///
+    private func failedToGetArtist() {
+        [
+            profileImage,
+            profileName,
+            profileFollowers,
+            profilePopularity,
+            profileType,
+            tableView,
+            tableHeader
+        ].forEach { subView in
+            subView.isHidden = true
+            subView.removeFromSuperview()
+        }
+    
+        [errorLabel, errorButton].forEach({ subView in
+            subView.isHidden = false
+        })
     }
 
     private func updateUI(with artist: ArtistModel) {
+        [
+            profileImage,
+            profileName,
+            profileFollowers,
+            profilePopularity,
+            tableView,
+            tableHeader,
+            profileType
+        ].forEach { subView in
+            subView.isHidden = false
+            view.addSubview(subView)
+        }
+        
+        setupConstraints()
+        
+        [errorLabel, errorButton].forEach { (subView) in
+            subView.isHidden = true
+        }
+        
         profileImage.sd_setImage(
             with: URL(string: artist.images?.first?.url ?? ""),
             placeholderImage: Constants.Images.personPlaceholderImage
@@ -254,6 +345,13 @@ class ArtistController: UIViewController {
         present(vc, animated: true) {
             UINavigationBar.appearance().tintColor = Constants.mainColor
         }
+    }
+    
+    @objc private func clickRefresh() {
+        self.errorLabel.isHidden = true
+        self.errorButton.isHidden = true
+        
+        fetchArtistDetails()
     }
     
 }
