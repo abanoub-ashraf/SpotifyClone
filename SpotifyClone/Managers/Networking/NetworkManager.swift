@@ -432,6 +432,94 @@ final class NetworkManager {
         }
     }
     
+    //---------------------------------------------------------------
+    // Current User's Saved Labums
+    //---------------------------------------------------------------
+    
+    ///
+    /// get the saved albums of the current user
+    ///
+    public func getCurrentUserSavedAlbums(completion: @escaping (Result<[AlbumModel], Error>) -> Void) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.getCurrentUserSavedAlbums),
+            type: .GET
+        ) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(LibraryAlbumsResponse.self, from: data)
+                    completion(.success(result.items.compactMap({ $0.album })))
+                } catch {
+                    print(error.localizedDescription)
+                    completion(.failure(error))
+                }
+            }
+            
+            task.resume()
+        }
+    }
+    
+    ///
+    /// save an album to the library
+    ///
+    public func saveAlbumToLibrary(album: AlbumModel, completion: @escaping (Bool) -> Void) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.saveAlbumToLibrary + "?ids=\(album.id)"),
+            type: .PUT
+        ) { baseRequest in
+            var request = baseRequest
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard
+                    let _ = data,
+                    let code = (response as? HTTPURLResponse)?.statusCode,
+                    error == nil
+                else {
+                    completion(false)
+                    return
+                }
+                
+                completion(code == 200 ? true : false)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    public func removeAlbumFromLibrary(album: AlbumModel, completion: @escaping (Bool) -> Void) {
+        createRequest(
+            with: URL(string: Constants.EndPoints.removeAlbumFromLibrary + "?ids=\(album.id)"),
+            type: .DELETE
+        ) { baseRequest in
+            var request = baseRequest
+            
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard
+                    let _ = data,
+                    error == nil,
+                    let code = (response as? HTTPURLResponse)?.statusCode
+                else {
+                    completion(false)
+                    return
+                }
+                                
+                completion(code == 200 ? true : false)
+            }
+            
+            task.resume()
+        }
+    }
+    
+    // MARK: - Tracks
+    
     ///
     /// add a track to a playlist
     ///
@@ -530,67 +618,6 @@ final class NetworkManager {
         }
     }
     
-    //---------------------------------------------------------------
-    // Current User's Saved Labums
-    //---------------------------------------------------------------
-    
-    ///
-    /// get the saved albums of the current user
-    ///
-    public func getCurrentUserSavedAlbums(completion: @escaping (Result<[AlbumModel], Error>) -> Void) {
-        createRequest(
-            with: URL(string: Constants.EndPoints.getCurrentUserSavedAlbums),
-            type: .GET
-        ) { request in
-            let task = URLSession.shared.dataTask(with: request) { data, _, error in
-                guard let data = data, error == nil else {
-                    completion(.failure(APIError.failedToGetData))
-                    return
-                }
-                
-                do {
-                    let result = try JSONDecoder().decode(LibraryAlbumsResponse.self, from: data)
-                    completion(.success(result.items.compactMap({ $0.album })))
-                } catch {
-                    print(error.localizedDescription)
-                    completion(.failure(error))
-                }
-            }
-            
-            task.resume()
-        }
-    }
-    
-    ///
-    /// save an album to the library
-    ///
-    public func saveAlbumToLibrary(album: AlbumModel, completion: @escaping (Bool) -> Void) {
-        createRequest(
-            with: URL(string: Constants.EndPoints.saveAlbumToLibrary + "?ids=\(album.id)"),
-            type: .PUT
-        ) { baseRequest in
-            var request = baseRequest
-            
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                guard
-                    let _ = data,
-                    let code = (response as? HTTPURLResponse)?.statusCode,
-                    error == nil
-                else {
-                    completion(false)
-                    return
-                }
-                
-                completion(code == 200 ? true : false)
-            }
-            
-            task.resume()
-        }
-    }
-    
-    
     // MARK: - Artists
     
     public func getArtistDetails(
@@ -647,20 +674,5 @@ final class NetworkManager {
             task.resume()
         }
     }
-    
-    // MARK: - Episodes
-    
-    // MARK: - Follow
-    
-    /// remove album ----------
-    
-    /// check user's saved albums ---------
-    
-    /// check user's saved tracks ---------
-    
-    
-    /// check user's saved episodes
-    
-    /// shows
 
 }

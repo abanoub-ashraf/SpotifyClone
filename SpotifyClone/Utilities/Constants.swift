@@ -61,19 +61,21 @@ struct Constants {
         ///
         static let getCurrentUser = "\(Constants.baseAPIURL)/me"
         
-        ///
-        /// Current User's Playlists
-        ///
+        // MARK: - Current User's Playlists
+        
         static let getCurrentUserPlaylists = "\(Constants.baseAPIURL)/me/playlists?limit=50"
         static let createNewPlaylist       = "\(Constants.baseAPIURL)/users/"
+        
+        // MARK: - Tracks
+        
         static let addTrackToPlaylist      = "\(Constants.baseAPIURL)/playlists/"
         static let removeTrackFromPlaylist = "\(Constants.baseAPIURL)/playlists/"
         
-        ///
-        /// Current User's saved Albums
-        ///
+        // MARK: - Current User's saved Albums
+        
         static let getCurrentUserSavedAlbums = "\(Constants.baseAPIURL)/me/albums"
         static let saveAlbumToLibrary        = "\(Constants.baseAPIURL)/me/albums"
+        static let removeAlbumFromLibrary    = "\(Constants.baseAPIURL)/me/albums"
         
         // MARK: - Artists
         

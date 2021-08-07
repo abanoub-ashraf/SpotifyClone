@@ -46,22 +46,11 @@ class LibraryAlbumsController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        view.backgroundColor = .systemBackground
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.addSubview(refreshControl)
-        
-        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
-        
-        view.addSubview(tableView)
-        
-        setupNoAlbumsView()
-        
+        setupView()
+                
         fetchCurrentUserSavedAlbumsFromAPI()
         
         addObservers()
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -82,6 +71,24 @@ class LibraryAlbumsController: UIViewController {
     }
     
     // MARK: - Helper Functions
+    
+    private func setupView() {
+        view.backgroundColor = .systemBackground
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.addSubview(refreshControl)
+        
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
+        
+        view.addSubview(tableView)
+        
+        setupNoAlbumsView()
+
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        tableView.addGestureRecognizer(gesture)
+    }
     
     private func addObservers() {
         observer = NotificationCenter.default.addObserver(
@@ -175,6 +182,56 @@ class LibraryAlbumsController: UIViewController {
     @objc private func refresh(_ sender: Any) {
         fetchCurrentUserSavedAlbumsFromAPI()
     }
+    
+    @objc func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let touchPoint = gesture.location(in: tableView)
+        
+        guard
+            let indexPath = tableView.indexPathForRow(at: touchPoint),
+            indexPath.section == 0
+        else {
+            return
+        }
+        
+        let model = albums[indexPath.row]
+        
+        let actionSheet = UIAlertController(
+            title: model.name,
+            message: "Would you like to remove this Album from Library?",
+            preferredStyle: .actionSheet
+        )
+        
+        actionSheet.view.tintColor = Constants.mainColor
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+            guard let strongSelf = self else { return }
+            
+            DispatchQueue.main.async {
+                NetworkManager.shared.removeAlbumFromLibrary(album: model) { success in
+                    if success {
+                        DispatchQueue.main.async {
+                            strongSelf.fetchCurrentUserSavedAlbumsFromAPI()
+                            
+                            HapticsManager.shared.vibrate(for: .success)
+                        }
+                        
+                        createAlert(title: "Done!", message: "Album is removed Successfully", viewController: strongSelf)
+                    } else {
+                        createAlert(title: "Failed!", message: "", viewController: strongSelf)
+                        
+                        HapticsManager.shared.vibrate(for: .error)
+                    }
+                }
+            }
+        })
+                        
+        present(actionSheet, animated: true, completion: nil)
+    }
+
     
 }
 
