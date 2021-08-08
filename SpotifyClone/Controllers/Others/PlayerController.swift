@@ -73,6 +73,8 @@ class PlayerController: UIViewController {
         imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
         imageView.layer.cornerRadius = 25
         imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 1.0
+        imageView.layer.borderColor = Constants.mainColor?.cgColor
 
     }
     
@@ -80,10 +82,10 @@ class PlayerController: UIViewController {
         super.viewDidLayoutSubviews()
         
         imageView.frame = CGRect(
-            x: 0,
-            y: view.safeAreaInsets.top,
-            width: view.width,
-            height: view.width
+            x: 16,
+            y: view.safeAreaInsets.top + 16,
+            width: view.width - 32,
+            height: view.width - 32
         )
         
         controlsView.frame = CGRect(

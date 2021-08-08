@@ -29,6 +29,7 @@ final class PlayerControlsView: UIView {
     private let volumeSlider: UISlider = {
         let slider = UISlider()
         slider.value = 0.5
+        slider.tintColor = Constants.mainColor
         return slider
     }()
     
@@ -36,6 +37,7 @@ final class PlayerControlsView: UIView {
         let label = UILabel()
         label.text = "This Is My Song"
         label.numberOfLines = 1
+        label.textColor = Constants.mainColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
     }()
@@ -45,7 +47,7 @@ final class PlayerControlsView: UIView {
         label.text = "Drake (feat. Some Other Artist)"
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .secondaryLabel
+        label.textColor = Constants.mainColor
         return label
     }()
     
@@ -57,6 +59,7 @@ final class PlayerControlsView: UIView {
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
         button.setImage(image, for: .normal)
+        button.tintColor = Constants.mainColor
         return button
     }()
     
@@ -68,6 +71,7 @@ final class PlayerControlsView: UIView {
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
         button.setImage(image, for: .normal)
+        button.tintColor = Constants.mainColor
         return button
     }()
     
@@ -78,8 +82,33 @@ final class PlayerControlsView: UIView {
             systemName: "pause",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
         )
+        button.tintColor = Constants.mainColor
         button.setImage(image, for: .normal)
         return button
+    }()
+    
+    private let volumeLow: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        let image = UIImage(
+            systemName: "speaker.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        )
+        imageView.tintColor = Constants.mainColor
+        imageView.image = image
+        return imageView
+    }()
+    
+    private let volumeHigh: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        let image = UIImage(
+            systemName: "speaker.wave.3.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        )
+        imageView.tintColor = Constants.mainColor
+        imageView.image = image
+        return imageView
     }()
     
     // MARK: - Init
@@ -87,6 +116,16 @@ final class PlayerControlsView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
                 
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func setupView() {
         backgroundColor = .clear
         
         addSubview(nameLabel)
@@ -95,6 +134,8 @@ final class PlayerControlsView: UIView {
         addSubview(backButton)
         addSubview(nextButton)
         addSubview(playPauseButton)
+        addSubview(volumeLow)
+        addSubview(volumeHigh)
         
         backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(didTapNext), for: .touchUpInside)
@@ -102,63 +143,69 @@ final class PlayerControlsView: UIView {
         volumeSlider.addTarget(self, action: #selector(didSlideSlider), for: .valueChanged)
         
         clipsToBounds = true
+        
+        setupConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError()
-    }
-    
-    // MARK: - LifeCycle
+    private func setupConstraints() {
+        [
+            nameLabel,
+            subtitleLabel,
+            volumeSlider,
+            backButton,
+            nextButton,
+            playPauseButton,
+            volumeLow,
+            volumeHigh
+        ].forEach { subView in
+            subView.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        NSLayoutConstraint.activate([
+            nameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            nameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            subtitleLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 22),
+            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            volumeLow.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeLow.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            volumeLow.centerYAnchor.constraint(equalTo: volumeSlider.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            volumeSlider.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeSlider.leadingAnchor.constraint(equalTo: volumeLow.trailingAnchor, constant: 16),
+            volumeSlider.trailingAnchor.constraint(equalTo: volumeHigh.leadingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            volumeHigh.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeHigh.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            volumeHigh.centerYAnchor.constraint(equalTo: volumeSlider.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            backButton.topAnchor.constraint(equalTo: volumeLow.bottomAnchor, constant: 33)
+        ])
+        
+        NSLayoutConstraint.activate([
+            playPauseButton.topAnchor.constraint(equalTo: volumeSlider.bottomAnchor, constant: 33),
+            playPauseButton.centerXAnchor.constraint(equalTo: centerXAnchor)
+        ])
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        nameLabel.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: width,
-            height: 50
-        )
-        
-        subtitleLabel.frame = CGRect(
-            x: 0,
-            y: nameLabel.bottom + 10,
-            width: width,
-            height: 50
-        )
-        
-        volumeSlider.frame = CGRect(
-            x: 10,
-            y: subtitleLabel.bottom + 20,
-            width: width - 20,
-            height: 44
-        )
-        
-        let buttonSize: CGFloat = 60
-        
-        playPauseButton.frame = CGRect(
-            x: (width - buttonSize) / 2,
-            y: volumeSlider.bottom + 30,
-            width: buttonSize,
-            height: buttonSize
-        )
-        
-        backButton.frame = CGRect(
-            x: playPauseButton.left - 80 - buttonSize,
-            y: playPauseButton.top,
-            width: buttonSize,
-            height: buttonSize
-        )
-        
-        nextButton.frame = CGRect(
-            x: playPauseButton.right + 80,
-            y: playPauseButton.top,
-            width: buttonSize,
-            height: buttonSize
-        )
+        NSLayoutConstraint.activate([
+            nextButton.topAnchor.constraint(equalTo: volumeHigh.bottomAnchor, constant: 33),
+            nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+        ])
     }
-    
-    // MARK: - Helper Functions
 
     ///
     /// configure the ui of this controls view with the view model
