@@ -104,12 +104,6 @@ class PlayerController: UIViewController {
             target: self,
             action: #selector(didTapClose)
         )
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .action,
-            target: self,
-            action: #selector(didTapAction)
-        )
     }
     
     ///
@@ -145,10 +139,6 @@ class PlayerController: UIViewController {
 
     @objc private func didTapClose() {
         dismiss(animated: true, completion: nil)
-    }
-    
-    @objc private func didTapAction() {
-        // Actions
     }
     
 }

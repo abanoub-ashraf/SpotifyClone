@@ -176,7 +176,6 @@ final class PlaybackPresenter {
             return AVPlayerItem(url: url)
         })
         
-//        self.playerQueue = nil
         self.playerQueue = AVQueuePlayer(items: items)
         self.player?.pause()
         self.player = nil
@@ -191,15 +190,17 @@ final class PlaybackPresenter {
         /// will present the player in a navigation controller
         ///
         viewController.present(UINavigationController(rootViewController: vc), animated: true) { [weak self] in
-            if self?.player?.timeControlStatus == .playing {
-                self?.player?.pause()
-                self?.player = nil
+            DispatchQueue.main.async {
+                if self?.player?.timeControlStatus == .playing {
+                    self?.player?.pause()
+                    self?.player = nil
+                }
+                if self?.playerQueue?.timeControlStatus == .playing {
+                    self?.playerQueue?.pause()
+                }
+                self?.playerQueue?.automaticallyWaitsToMinimizeStalling = false
+                self?.playerQueue?.play()
             }
-            if self?.playerQueue?.timeControlStatus == .playing {
-                self?.playerQueue?.pause()
-            }
-            self?.playerQueue?.automaticallyWaitsToMinimizeStalling = false
-            self?.playerQueue?.play()
         }
         
         ///

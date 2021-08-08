@@ -36,7 +36,8 @@ final class PlayerControlsView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "This Is My Song"
-        label.numberOfLines = 1
+        label.numberOfLines = 0
+        label.textAlignment = .center
         label.textColor = Constants.mainColor
         label.font = .systemFont(ofSize: 20, weight: .semibold)
         return label
@@ -45,7 +46,8 @@ final class PlayerControlsView: UIView {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Drake (feat. Some Other Artist)"
-        label.numberOfLines = 1
+        label.numberOfLines = 0
+        label.textAlignment = .center
         label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textColor = Constants.mainColor
         return label
@@ -168,41 +170,41 @@ final class PlayerControlsView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            subtitleLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 22),
+            subtitleLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 35),
             subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            volumeLow.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeLow.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 36),
             volumeLow.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             volumeLow.centerYAnchor.constraint(equalTo: volumeSlider.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            volumeSlider.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeSlider.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 36),
             volumeSlider.leadingAnchor.constraint(equalTo: volumeLow.trailingAnchor, constant: 16),
             volumeSlider.trailingAnchor.constraint(equalTo: volumeHigh.leadingAnchor, constant: -16)
         ])
         
         NSLayoutConstraint.activate([
-            volumeHigh.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 25),
+            volumeHigh.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 36),
             volumeHigh.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             volumeHigh.centerYAnchor.constraint(equalTo: volumeSlider.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
             backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            backButton.topAnchor.constraint(equalTo: volumeLow.bottomAnchor, constant: 33)
+            backButton.topAnchor.constraint(equalTo: volumeLow.bottomAnchor, constant: 44)
         ])
         
         NSLayoutConstraint.activate([
-            playPauseButton.topAnchor.constraint(equalTo: volumeSlider.bottomAnchor, constant: 33),
+            playPauseButton.topAnchor.constraint(equalTo: volumeSlider.bottomAnchor, constant: 44),
             playPauseButton.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
 
         NSLayoutConstraint.activate([
-            nextButton.topAnchor.constraint(equalTo: volumeHigh.bottomAnchor, constant: 33),
+            nextButton.topAnchor.constraint(equalTo: volumeHigh.bottomAnchor, constant: 44),
             nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
     }
